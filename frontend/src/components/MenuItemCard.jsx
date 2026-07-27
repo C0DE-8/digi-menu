@@ -1,4 +1,5 @@
 import { FiClock } from 'react-icons/fi'
+import { resolveAssetUrl } from '../api/assets'
 
 function formatNaira(value) {
   return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(value || 0)
@@ -10,7 +11,7 @@ function MenuItemCard({ item, onView }) {
   return (
     <article className="menu-item-card" onClick={() => onView?.(item)}>
       <img
-        src={item.image_url || fallbackImage}
+        src={resolveAssetUrl(item.image_url) || fallbackImage}
         alt={item.name}
         onError={(event) => {
           event.currentTarget.src = fallbackImage

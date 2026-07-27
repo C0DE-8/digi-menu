@@ -289,7 +289,9 @@ label {
   font-weight: 800;
 }
 
-input {
+input,
+select,
+textarea {
   width: 100%;
   min-height: 46px;
   border: 1px solid var(--line);
@@ -297,6 +299,21 @@ input {
   padding: 0 14px;
   background: var(--white);
   color: var(--ink);
+}
+
+select {
+  appearance: none;
+}
+
+textarea {
+  min-height: 92px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
 }
 
 .input-wrap {
@@ -354,6 +371,49 @@ input {
 
 .panel {
   padding: 22px;
+}
+
+.panel form,
+.panel {
+  min-width: 0;
+}
+
+.file-picker {
+  min-height: 112px;
+  border: 1px dashed var(--green);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--mint);
+  color: var(--green);
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-picker span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-picker input {
+  min-height: auto;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.image-preview {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 16px;
 }
 
 .wide {

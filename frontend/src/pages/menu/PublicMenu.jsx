@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { FiMapPin, FiPhone, FiSearch, FiShare2 } from 'react-icons/fi'
 import api from '../../api/client'
+import { resolveAssetUrl } from '../../api/assets'
 import MenuItemCard from '../../components/MenuItemCard'
 import SkeletonPage from '../../components/SkeletonPage'
 import { getMenuFallback } from '../../data/demoMenu'
@@ -58,9 +59,9 @@ function PublicMenu() {
 
   return (
     <main className="public-menu">
-      <section className="menu-hero" style={{ backgroundImage: `url(${data.restaurant.cover_url})` }}>
+      <section className="menu-hero" style={{ backgroundImage: `url(${resolveAssetUrl(data.restaurant.cover_url)})` }}>
         <div>
-          <img src={data.restaurant.logo_url} alt={`${data.restaurant.name} logo`} />
+          <img src={resolveAssetUrl(data.restaurant.logo_url)} alt={`${data.restaurant.name} logo`} />
           <p className="eyebrow">Digital menu</p>
           <h1>{data.restaurant.name}</h1>
           <p>{data.restaurant.description}</p>
