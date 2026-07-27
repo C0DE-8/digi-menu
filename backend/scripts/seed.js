@@ -86,20 +86,20 @@ async function seedPlans() {
 async function seedMenu(restaurantId) {
   const menu = {
     Breakfast: [
-      ["Sunrise Akara Plate", "Crisp akara, pap, honey drizzle, and fruit.", 4500, "15 min", 1, 1, 0],
-      ["Yam & Egg Sauce", "Golden yam wedges with rich peppered egg sauce.", 5200, "20 min", 1, 0, 1]
+      ["Sunrise Akara Plate", "Crisp akara, pap, honey drizzle, and fruit.", 4500, "15 min", 1, 1, 0, "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=80"],
+      ["Yam & Egg Sauce", "Golden yam wedges with rich peppered egg sauce.", 5200, "20 min", 1, 0, 1, "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=900&q=80"]
     ],
     Rice: [
-      ["Smoky Party Jollof", "Long-grain rice cooked in smoky tomato stew with plantain.", 6800, "25 min", 1, 0, 0],
-      ["Native Rice Bowl", "Palm oil rice with seafood, scent leaf, and vegetables.", 7500, "30 min", 0, 1, 1]
+      ["Smoky Party Jollof", "Long-grain rice cooked in smoky tomato stew with plantain.", 6800, "25 min", 1, 0, 0, "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=900&q=80"],
+      ["Native Rice Bowl", "Palm oil rice with seafood, scent leaf, and vegetables.", 7500, "30 min", 0, 1, 1, "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=80"]
     ],
     Grills: [
-      ["Suya Chicken Skewers", "Spiced chicken skewers with onion, tomato, and yaji.", 8200, "25 min", 1, 0, 1],
-      ["Peppered Croaker", "Whole croaker with pepper sauce and herb potatoes.", 14500, "35 min", 0, 0, 1]
+      ["Suya Chicken Skewers", "Spiced chicken skewers with onion, tomato, and yaji.", 8200, "25 min", 1, 0, 1, "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=900&q=80"],
+      ["Peppered Croaker", "Whole croaker with pepper sauce and herb potatoes.", 14500, "35 min", 0, 0, 1, "https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=900&q=80"]
     ],
     Drinks: [
-      ["Zobo Citrus Cooler", "Hibiscus, orange, ginger, and mint served chilled.", 2500, "5 min", 1, 0, 0],
-      ["Chapman", "Classic Nigerian mocktail with cucumber and citrus.", 3000, "5 min", 0, 0, 0]
+      ["Zobo Citrus Cooler", "Hibiscus, orange, ginger, and mint served chilled.", 2500, "5 min", 1, 0, 0, "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80"],
+      ["Chapman", "Classic Nigerian mocktail with cucumber and citrus.", 3000, "5 min", 0, 0, 0, "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=900&q=80"]
     ]
   };
 
@@ -116,7 +116,7 @@ async function seedMenu(restaurantId) {
       category = await get("SELECT * FROM menu_categories WHERE restaurant_id = ? AND name = ?", [restaurantId, categoryName]);
     }
 
-    for (const [name, description, price, prepTime, popular, isNew, spicy] of items) {
+    for (const [name, description, price, prepTime, popular, isNew, spicy, imageUrl] of items) {
       const existing = await get("SELECT * FROM menu_items WHERE restaurant_id = ? AND name = ?", [restaurantId, name]);
       if (!existing) {
         await run(
@@ -130,7 +130,7 @@ async function seedMenu(restaurantId) {
             name,
             description,
             price,
-            `https://source.unsplash.com/700x500/?restaurant,${encodeURIComponent(name)}`,
+            imageUrl,
             prepTime,
             popular,
             isNew,
@@ -139,6 +139,8 @@ async function seedMenu(restaurantId) {
             order
           ]
         );
+      } else if (existing.image_url !== imageUrl) {
+        await run("UPDATE menu_items SET image_url = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [imageUrl, existing.id]);
       }
       order += 1;
     }
@@ -178,9 +180,13 @@ async function seedManagerStaff(restaurantId) {
 
 async function seedQr(restaurantId, slug) {
   const existing = await get("SELECT * FROM qr_codes WHERE restaurant_id = ?", [restaurantId]);
-  if (existing) return;
-  const menuUrl = `http://localhost:5173/menu/${slug}`;
+  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://digi-menu-iota.vercel.app").replace(/\/$/, "");
+  const menuUrl = `${baseUrl}/menu/${slug}`;
   const image = await QRCode.toDataURL(menuUrl);
+  if (existing) {
+    await run("UPDATE qr_codes SET menu_url = ?, image_data_url = ? WHERE restaurant_id = ?", [menuUrl, image, restaurantId]);
+    return;
+  }
   await run("INSERT INTO qr_codes (restaurant_id, menu_url, image_data_url, scans) VALUES (?, ?, ?, 42)", [
     restaurantId,
     menuUrl,

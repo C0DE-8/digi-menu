@@ -5,9 +5,17 @@ function formatNaira(value) {
 }
 
 function MenuItemCard({ item, onView }) {
+  const fallbackImage = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80'
+
   return (
     <article className="menu-item-card" onClick={() => onView?.(item)}>
-      <img src={item.image_url} alt={item.name} />
+      <img
+        src={item.image_url || fallbackImage}
+        alt={item.name}
+        onError={(event) => {
+          event.currentTarget.src = fallbackImage
+        }}
+      />
       <div>
         <div className="item-title-row">
           <h3>{item.name}</h3>
