@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiMapPin, FiMonitor, FiMousePointer, FiTrendingUp } from 'react-icons/fi'
-import api from '../api/client'
-import StatCard from '../components/StatCard'
+import api from '../../api/client'
+import StatCard from '../../components/StatCard'
 
 function Analytics() {
   const [data, setData] = useState(null)

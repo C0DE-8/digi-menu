@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiDollarSign, FiShield, FiUsers } from 'react-icons/fi'
-import api from '../api/client'
-import StatCard from '../components/StatCard'
+import api from '../../api/client'
+import StatCard from '../../components/StatCard'
 
 function AdminDashboard() {
   const [data, setData] = useState(null)

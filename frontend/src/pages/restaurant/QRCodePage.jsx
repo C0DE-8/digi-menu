@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FiDownload, FiRefreshCw } from 'react-icons/fi'
-import api from '../api/client'
+import api from '../../api/client'
 
 function QRCodePage() {
   const [data, setData] = useState(null)

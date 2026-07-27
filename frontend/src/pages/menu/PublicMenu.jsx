@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { FiMapPin, FiPhone, FiSearch, FiShare2 } from 'react-icons/fi'
-import api from '../api/client'
-import MenuItemCard from '../components/MenuItemCard'
+import api from '../../api/client'
+import MenuItemCard from '../../components/MenuItemCard'
 
 function PublicMenu() {
   const { slug } = useParams()

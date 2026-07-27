@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiActivity, FiEye, FiGrid, FiMousePointer } from 'react-icons/fi'
-import api from '../api/client'
-import StatCard from '../components/StatCard'
+import api from '../../api/client'
+import StatCard from '../../components/StatCard'
 
 function Dashboard() {
   const [data, setData] = useState(null)

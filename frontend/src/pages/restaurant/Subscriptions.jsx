@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiCheckCircle, FiCreditCard, FiFileText } from 'react-icons/fi'
-import api from '../api/client'
-import StatCard from '../components/StatCard'
+import api from '../../api/client'
+import StatCard from '../../components/StatCard'
 
 function formatNaira(value) {
   if (value === null || value === undefined) return 'Custom'

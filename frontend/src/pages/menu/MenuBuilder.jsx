@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { FiPlus } from 'react-icons/fi'
-import api from '../api/client'
-import MenuItemCard from '../components/MenuItemCard'
+import api from '../../api/client'
+import MenuItemCard from '../../components/MenuItemCard'
 
 function MenuBuilder() {
   const [data, setData] = useState(null)

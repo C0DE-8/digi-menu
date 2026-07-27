@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FiArrowRight, FiBarChart2, FiCreditCard, FiSmartphone } from 'react-icons/fi'
-import StatCard from '../components/StatCard'
+import StatCard from '../../components/StatCard'
 
 function Home() {
   return (

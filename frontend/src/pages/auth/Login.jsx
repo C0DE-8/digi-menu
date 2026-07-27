@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiLock, FiMail } from 'react-icons/fi'
-import api, { setSession } from '../api/client'
+import api, { setSession } from '../../api/client'
 
 function Login() {
   const [email, setEmail] = useState('8amlight@gmail.com')
