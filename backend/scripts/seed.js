@@ -9,6 +9,7 @@ async function seed() {
 
   await upsertUser("Admin", "admin@admin.com", bcrypt.hashSync("123456", 10), "admin");
   await upsertUser("8am Light Kitchen", "8amlight@gmail.com", bcrypt.hashSync("123456", 10), "owner");
+  await upsertUser("Digi Menu Manager", "manager@digimenu.com", bcrypt.hashSync("123456", 10), "manager");
   await seedPlans();
 
   const owner = await get("SELECT * FROM users WHERE email = ?", ["8amlight@gmail.com"]);
@@ -43,11 +44,12 @@ async function seed() {
   }
 
   await seedMenu(restaurant.id);
+  await seedManagerStaff(restaurant.id);
   await seedSubscription(restaurant.id);
   await seedQr(restaurant.id, restaurant.slug);
   await seedAnalytics(restaurant.id);
 
-  console.log("Seed complete: admin@admin.com / 123456 and 8amlight@gmail.com / 123456");
+  console.log("Seed complete: admin@admin.com / 123456, 8amlight@gmail.com / 123456, manager@digimenu.com / 123456");
 }
 
 async function upsertUser(name, email, passwordHash, role) {
@@ -148,7 +150,7 @@ async function seedSubscription(restaurantId) {
   let subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurantId]);
   if (!subscription) {
     await run(
-      "INSERT INTO subscriptions (restaurant_id, plan_id, status, starts_at, ends_at, trial_ends_at) VALUES (?, ?, 'active', date('now'), date('now', '+30 days'), date('now', '+14 days'))",
+      "INSERT INTO subscriptions (restaurant_id, plan_id, status, starts_at, ends_at, trial_ends_at) VALUES (?, ?, 'active', CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY))",
       [restaurantId, plan.id]
     );
     subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurantId]);
@@ -161,6 +163,17 @@ async function seedSubscription(restaurantId) {
       [restaurantId, subscription.id]
     );
   }
+}
+
+async function seedManagerStaff(restaurantId) {
+  const manager = await get("SELECT * FROM users WHERE email = ?", ["manager@digimenu.com"]);
+  const existing = await get("SELECT * FROM restaurant_staff WHERE restaurant_id = ? AND user_id = ?", [restaurantId, manager.id]);
+  if (existing) return;
+  await run("INSERT INTO restaurant_staff (restaurant_id, user_id, role, permissions) VALUES (?, ?, 'manager', ?)", [
+    restaurantId,
+    manager.id,
+    JSON.stringify(["menu:update", "profile:update", "qr:view", "analytics:view"])
+  ]);
 }
 
 async function seedQr(restaurantId, slug) {

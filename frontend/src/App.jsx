@@ -10,6 +10,9 @@ import MenuBuilder from './pages/MenuBuilder'
 import RestaurantSettings from './pages/RestaurantSettings'
 import PublicMenu from './pages/PublicMenu'
 import AdminDashboard from './pages/AdminDashboard'
+import Analytics from './pages/Analytics'
+import QRCodePage from './pages/QRCodePage'
+import Subscriptions from './pages/Subscriptions'
 
 function App() {
   return (
@@ -40,6 +43,30 @@ function App() {
           element={
             <ProtectedRoute>
               <RestaurantSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/qr-code"
+          element={
+            <ProtectedRoute>
+              <QRCodePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subscriptions"
+          element={
+            <ProtectedRoute>
+              <Subscriptions />
             </ProtectedRoute>
           }
         />

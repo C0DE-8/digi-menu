@@ -325,6 +325,13 @@ input {
   margin: 12px 0;
 }
 
+.qr-large {
+  width: min(100%, 360px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 16px 0;
+}
+
 .big-line {
   font-size: 28px;
   font-weight: 900;

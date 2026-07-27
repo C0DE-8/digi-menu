@@ -8,7 +8,7 @@
     "dev": "node server.js",
     "migrate": "node -e \"require('./data/database').initDatabase().then(() => console.log('Migrations complete'))\"",
     "seed": "node scripts/seed.js",
-    "test": "node --check server.js && node --check db.js && node --check diamond-sql.js && node --check data/database.js && node --check scripts/seed.js"
+    "test": "node --check server.js && node --check db.js && node --check diamond-sql.js && node --check data/database.js && node --check scripts/seed.js && node --check middleware/auth.js && node --check services/restaurants.js && node --check routes/auth.route.js && node --check routes/dashboard.route.js && node --check routes/restaurant.route.js && node --check routes/menu.route.js && node --check routes/public.route.js && node --check routes/admin.route.js && node --check routes/qr.route.js"
   },
   "keywords": [],
   "author": "",

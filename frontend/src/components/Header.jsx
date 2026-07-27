@@ -12,6 +12,9 @@ function Header() {
     ? [
         { to: '/dashboard', label: 'Dashboard' },
         { to: '/menu-builder', label: 'Menu' },
+        { to: '/analytics', label: 'Analytics' },
+        { to: '/qr-code', label: 'QR' },
+        { to: '/subscriptions', label: 'Billing' },
         { to: '/settings', label: 'Settings' },
         ...(user.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : []),
         { to: '/menu/8am-light-kitchen', label: 'Public menu' },

@@ -51,6 +51,9 @@ function Login() {
           <button type="button" onClick={() => setEmail('8amlight@gmail.com')}>
             User: 8amlight@gmail.com / 123456
           </button>
+          <button type="button" onClick={() => setEmail('manager@digimenu.com')}>
+            Manager: manager@digimenu.com / 123456
+          </button>
         </div>
       </form>
     </main>
