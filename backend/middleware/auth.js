@@ -20,7 +20,12 @@ async function requireAuth(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  if (req.user.role !== "admin") return res.status(403).json({ error: "Admin access required" });
+  if (!["admin", "super_admin"].includes(req.user.role)) return res.status(403).json({ error: "Admin access required" });
+  return next();
+}
+
+function requireSuperAdmin(req, res, next) {
+  if (req.user.role !== "super_admin") return res.status(403).json({ error: "Super admin access required" });
   return next();
 }
 
@@ -29,4 +34,4 @@ function publicUser(user) {
   return safeUser;
 }
 
-module.exports = { publicUser, requireAdmin, requireAuth };
+module.exports = { publicUser, requireAdmin, requireAuth, requireSuperAdmin };

@@ -12,7 +12,7 @@ function MenuBuilder() {
   const [itemName, setItemName] = useState('')
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
-  const [prepTime, setPrepTime] = useState('')
+  const [prepTime, setPrepTime] = useState('20 min')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
   const [editingItem, setEditingItem] = useState(null)
@@ -103,7 +103,7 @@ function MenuBuilder() {
     setItemName(item.name || '')
     setDescription(item.description || '')
     setPrice(String(item.price || ''))
-    setPrepTime(item.prep_time || '')
+    setPrepTime(item.prep_time || '20 min')
     setImageFile(null)
     setImagePreview(item.image_url ? resolveAssetUrl(item.image_url) : '')
     setError('')
@@ -115,7 +115,7 @@ function MenuBuilder() {
     setItemName('')
     setDescription('')
     setPrice('')
-    setPrepTime('')
+    setPrepTime('20 min')
     setImageFile(null)
     setImagePreview('')
     setError('')
@@ -179,7 +179,10 @@ function MenuBuilder() {
           <input placeholder="Food name" value={itemName} onChange={(event) => setItemName(event.target.value)} required />
           <textarea placeholder="Short description" value={description} onChange={(event) => setDescription(event.target.value)} />
           <input placeholder="Price in naira" value={price} onChange={(event) => setPrice(event.target.value)} required />
-          <input placeholder="Prep time, e.g. 20 min" value={prepTime} onChange={(event) => setPrepTime(event.target.value)} />
+          <label>
+            <span>Preparation time</span>
+            <input placeholder="20 min" value={prepTime} onChange={(event) => setPrepTime(event.target.value)} />
+          </label>
           <label className="file-picker">
             <span><FiUpload /> {editingItem ? 'Replace item image' : 'Upload item image'}</span>
             <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={selectImage} />

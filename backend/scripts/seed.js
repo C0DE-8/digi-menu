@@ -7,9 +7,11 @@ const { get, initDatabase, run } = require("../data/database");
 async function seed() {
   await initDatabase();
 
+  await upsertUser("Super Admin", "superadmin@admin.com", bcrypt.hashSync("123456", 10), "super_admin");
   await upsertUser("Admin", "admin@admin.com", bcrypt.hashSync("123456", 10), "admin");
   await upsertUser("8am Light Kitchen", "8amlight@gmail.com", bcrypt.hashSync("123456", 10), "owner");
   await upsertUser("Digi Menu Manager", "manager@digimenu.com", bcrypt.hashSync("123456", 10), "manager");
+  await seedSystemSettings();
   await seedPlans();
 
   const owner = await get("SELECT * FROM users WHERE email = ?", ["8amlight@gmail.com"]);
@@ -54,13 +56,22 @@ async function seed() {
 
 async function upsertUser(name, email, passwordHash, role) {
   const existing = await get("SELECT * FROM users WHERE email = ?", [email]);
-  if (existing) return;
+  if (existing) {
+    if (existing.role !== role) await run("UPDATE users SET role = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [role, existing.id]);
+    return;
+  }
   await run("INSERT INTO users (name, email, password_hash, role, status) VALUES (?, ?, ?, ?, 'active')", [
     name,
     email,
     passwordHash,
     role
   ]);
+}
+
+async function seedSystemSettings() {
+  const existing = await get("SELECT * FROM system_settings WHERE setting_key = 'upload_provider'");
+  if (existing) return;
+  await run("INSERT INTO system_settings (setting_key, setting_value) VALUES ('upload_provider', 'cloudinary')");
 }
 
 async function seedPlans() {

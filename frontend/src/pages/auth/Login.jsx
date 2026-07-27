@@ -15,7 +15,7 @@ function Login() {
     try {
       const { data } = await api.post('/auth/login', { email, password })
       setSession(data)
-      navigate(data.user.role === 'admin' ? '/admin' : '/dashboard')
+      navigate(['admin', 'super_admin'].includes(data.user.role) ? '/admin' : '/dashboard')
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed')
     }

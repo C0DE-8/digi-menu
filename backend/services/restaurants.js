@@ -1,7 +1,7 @@
 const { all, get } = require("../data/database");
 
 async function getRestaurantForUser(user) {
-  if (user.role === "admin") return get("SELECT * FROM restaurants ORDER BY created_at LIMIT 1");
+  if (["admin", "super_admin"].includes(user.role)) return get("SELECT * FROM restaurants ORDER BY created_at LIMIT 1");
 
   const owned = await get("SELECT * FROM restaurants WHERE owner_id = ?", [user.id]);
   if (owned) return owned;

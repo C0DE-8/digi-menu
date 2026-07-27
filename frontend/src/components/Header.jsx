@@ -16,7 +16,7 @@ function Header() {
         { to: '/qr-code', label: 'QR' },
         { to: '/subscriptions', label: 'Billing' },
         { to: '/settings', label: 'Settings' },
-        ...(user.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : []),
+        ...(['admin', 'super_admin'].includes(user.role) ? [{ to: '/admin', label: 'Admin' }] : []),
         { to: '/menu/8am-light-kitchen', label: 'Public menu' },
       ]
     : [

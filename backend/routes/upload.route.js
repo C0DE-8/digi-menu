@@ -1,20 +1,29 @@
 const fs = require("fs");
 const path = require("path");
+const { Readable } = require("stream");
+const { v2: cloudinary } = require("cloudinary");
 const express = require("express");
 const multer = require("multer");
 const { requireAuth } = require("../middleware/auth");
+const { getUploadProvider } = require("../services/system-settings");
 
 const router = express.Router();
 const uploadRoot = path.join(__dirname, "..", "uploads");
 const menuUploadDir = path.join(uploadRoot, "menu-items");
 
 fs.mkdirSync(menuUploadDir, { recursive: true });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 function getBaseUrl(req) {
   return (process.env.BACKEND_BASE_URL || process.env.API_BASE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "");
 }
 
-const storage = multer.diskStorage({
+const localStorage = multer.diskStorage({
   destination: menuUploadDir,
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
@@ -29,20 +38,68 @@ const storage = multer.diskStorage({
   },
 });
 
+const memoryStorage = multer.memoryStorage();
+
+function imageFileFilter(_req, file, cb) {
+  if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.mimetype)) {
+    cb(new Error("Only JPG, PNG, WebP, and GIF images are allowed"));
+    return;
+  }
+  cb(null, true);
+}
+
 const upload = multer({
-  storage,
+  storage: memoryStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.mimetype)) {
-      cb(new Error("Only JPG, PNG, WebP, and GIF images are allowed"));
-      return;
-    }
-    cb(null, true);
-  },
+  fileFilter: imageFileFilter,
 });
 
-router.post("/menu-items", requireAuth, (req, res) => {
+const localUpload = multer({
+  storage: localStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: imageFileFilter,
+});
+
+router.post("/menu-items", requireAuth, async (req, res) => {
+  let provider = "cloudinary";
+  try {
+    provider = await getUploadProvider();
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Could not read upload settings" });
+    return;
+  }
+  if (provider === "local") {
+    uploadLocal(req, res);
+    return;
+  }
+
   upload.single("image")(req, res, (error) => {
+    if (error) {
+      res.status(400).json({ message: error.message });
+      return;
+    }
+
+    if (!req.file) {
+      res.status(400).json({ message: "Image file is required" });
+      return;
+    }
+
+    uploadCloudinary(req.file)
+      .then((result) => {
+        res.status(201).json({
+          image_url: result.secure_url,
+          provider: "cloudinary",
+          public_id: result.public_id,
+        });
+      })
+      .catch((uploadError) => {
+        res.status(500).json({ message: uploadError.message || "Cloudinary upload failed" });
+      });
+  });
+});
+
+function uploadLocal(req, res) {
+  localUpload.single("image")(req, res, (error) => {
     if (error) {
       res.status(400).json({ message: error.message });
       return;
@@ -58,8 +115,31 @@ router.post("/menu-items", requireAuth, (req, res) => {
       image_url: `${getBaseUrl(req)}${pathUrl}`,
       path: pathUrl,
       filename: req.file.filename,
+      provider: "local",
     });
   });
-});
+}
+
+function uploadCloudinary(file) {
+  return new Promise((resolve, reject) => {
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      reject(new Error("Cloudinary is selected, but Cloudinary credentials are missing"));
+      return;
+    }
+
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: process.env.CLOUDINARY_FOLDER || "digi-menu/menu-items",
+        resource_type: "image",
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
+
+    Readable.from(file.buffer).pipe(stream);
+  });
+}
 
 module.exports = router;
