@@ -4,15 +4,40 @@ import { FiMapPin, FiPhone, FiSearch, FiShare2 } from 'react-icons/fi'
 import api from '../../api/client'
 import MenuItemCard from '../../components/MenuItemCard'
 import SkeletonPage from '../../components/SkeletonPage'
+import { getMenuFallback } from '../../data/demoMenu'
 
 function PublicMenu() {
   const { slug } = useParams()
   const [data, setData] = useState(null)
+  const [usingFallback, setUsingFallback] = useState(false)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
 
   useEffect(() => {
-    api.get(`/public/menu/${slug}`).then((response) => setData(response.data))
+    let active = true
+
+    api
+      .get(`/public/menu/${slug}`)
+      .then((response) => {
+        if (active) {
+          setData(response.data)
+          setUsingFallback(false)
+        }
+      })
+      .catch(() => {
+        const fallback = getMenuFallback(slug)
+        if (active && fallback) {
+          setData(fallback)
+          setUsingFallback(true)
+        } else if (active) {
+          setData(null)
+          setUsingFallback(false)
+        }
+      })
+
+    return () => {
+      active = false
+    }
   }, [slug])
 
   const items = useMemo(() => {
@@ -25,7 +50,8 @@ function PublicMenu() {
   }, [data, query, category])
 
   async function track(item) {
-    await api.post(`/public/menu/${slug}/events`, { event_type: 'item_view', menu_item_id: item.id, category_id: item.category_id })
+    if (usingFallback) return
+    await api.post(`/public/menu/${slug}/events`, { event_type: 'item_view', menu_item_id: item.id, category_id: item.category_id }).catch(() => {})
   }
 
   if (!data) return <SkeletonPage variant="menu" />
@@ -46,6 +72,7 @@ function PublicMenu() {
         </div>
       </section>
       <section className="menu-browser">
+        {usingFallback ? <p className="fallback-note">Showing the saved demo menu while live data reconnects.</p> : null}
         <div className="search-row">
           <FiSearch />
           <input placeholder="Search meals, drinks, categories" value={query} onChange={(event) => setQuery(event.target.value)} />

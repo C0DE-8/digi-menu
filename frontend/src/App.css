@@ -523,6 +523,16 @@ input {
   background: var(--white);
 }
 
+.fallback-note {
+  border: 1px solid var(--orange-soft);
+  border-radius: 8px;
+  background: #fff7ed;
+  color: var(--orange);
+  font-weight: 800;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+}
+
 .search-row input {
   border: 0;
 }
