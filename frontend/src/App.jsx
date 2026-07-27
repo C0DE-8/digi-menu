@@ -13,6 +13,7 @@ import Dashboard from './pages/restaurant/Dashboard'
 import QRCodePage from './pages/restaurant/QRCodePage'
 import RestaurantSettings from './pages/restaurant/RestaurantSettings'
 import Subscriptions from './pages/restaurant/Subscriptions'
+import NotFound from './pages/system/NotFound'
 
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>

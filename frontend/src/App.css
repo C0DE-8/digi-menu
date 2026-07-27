@@ -234,6 +234,48 @@
     url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80') center/cover;
 }
 
+.not-found-page {
+  min-height: calc(100vh - 130px);
+  display: grid;
+  place-items: center;
+  padding: 32px 18px;
+  background:
+    linear-gradient(90deg, rgba(217, 244, 231, 0.72), rgba(255, 228, 210, 0.72)),
+    url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80') center/cover;
+}
+
+.not-found-panel {
+  width: min(100%, 620px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  padding: clamp(28px, 5vw, 48px);
+}
+
+.not-found-panel h1 {
+  margin: 8px 0 14px;
+  font-size: clamp(40px, 6vw, 68px);
+  line-height: 1;
+}
+
+.not-found-panel p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.not-found-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 24px;
+}
+
 .auth-card {
   width: min(100%, 460px);
   padding: 28px;
