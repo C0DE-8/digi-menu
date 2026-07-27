@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import PageTransitionLoader from './components/PageTransitionLoader'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import Login from './pages/auth/Login'
@@ -19,6 +20,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
+      <PageTransitionLoader />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

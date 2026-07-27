@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiCheckCircle, FiCreditCard, FiFileText } from 'react-icons/fi'
 import api from '../../api/client'
+import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
 
 function formatNaira(value) {
@@ -15,7 +16,7 @@ function Subscriptions() {
     api.get('/dashboard').then((response) => setData(response.data))
   }, [])
 
-  if (!data) return <main className="page-shell">Loading subscription...</main>
+  if (!data) return <SkeletonPage />
 
   return (
     <main className="page-shell">

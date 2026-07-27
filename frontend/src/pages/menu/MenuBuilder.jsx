@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { FiPlus } from 'react-icons/fi'
 import api from '../../api/client'
 import MenuItemCard from '../../components/MenuItemCard'
+import SkeletonPage from '../../components/SkeletonPage'
 
 function MenuBuilder() {
   const [data, setData] = useState(null)
@@ -49,7 +50,7 @@ function MenuBuilder() {
     }))
   }, [data])
 
-  if (!data) return <main className="page-shell">Loading menu builder...</main>
+  if (!data) return <SkeletonPage />
 
   return (
     <main className="page-shell">

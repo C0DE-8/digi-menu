@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../../api/client'
+import SkeletonPage from '../../components/SkeletonPage'
 
 function RestaurantSettings() {
   const [form, setForm] = useState(null)
@@ -9,7 +10,7 @@ function RestaurantSettings() {
     api.get('/dashboard').then((response) => setForm(response.data.restaurant))
   }, [])
 
-  if (!form) return <main className="page-shell">Loading settings...</main>
+  if (!form) return <SkeletonPage />
 
   function update(field, value) {
     setForm((current) => ({ ...current, [field]: value }))

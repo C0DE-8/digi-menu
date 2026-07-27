@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { FiMapPin, FiPhone, FiSearch, FiShare2 } from 'react-icons/fi'
 import api from '../../api/client'
 import MenuItemCard from '../../components/MenuItemCard'
+import SkeletonPage from '../../components/SkeletonPage'
 
 function PublicMenu() {
   const { slug } = useParams()
@@ -27,7 +28,7 @@ function PublicMenu() {
     await api.post(`/public/menu/${slug}/events`, { event_type: 'item_view', menu_item_id: item.id, category_id: item.category_id })
   }
 
-  if (!data) return <main className="page-shell">Loading public menu...</main>
+  if (!data) return <SkeletonPage variant="menu" />
 
   return (
     <main className="public-menu">

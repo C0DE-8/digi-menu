@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiDollarSign, FiShield, FiUsers } from 'react-icons/fi'
 import api from '../../api/client'
+import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
 
 function AdminDashboard() {
@@ -10,7 +11,7 @@ function AdminDashboard() {
     api.get('/admin/overview').then((response) => setData(response.data))
   }, [])
 
-  if (!data) return <main className="page-shell">Loading admin...</main>
+  if (!data) return <SkeletonPage />
 
   return (
     <main className="page-shell">

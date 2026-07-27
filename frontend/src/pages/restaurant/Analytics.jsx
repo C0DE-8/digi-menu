@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FiMapPin, FiMonitor, FiMousePointer, FiTrendingUp } from 'react-icons/fi'
 import api from '../../api/client'
+import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
 
 function Analytics() {
@@ -10,7 +11,7 @@ function Analytics() {
     api.get('/dashboard').then((response) => setData(response.data))
   }, [])
 
-  if (!data) return <main className="page-shell">Loading analytics...</main>
+  if (!data) return <SkeletonPage />
 
   return (
     <main className="page-shell">

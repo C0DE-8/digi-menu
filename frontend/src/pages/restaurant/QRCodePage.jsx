@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FiDownload, FiRefreshCw } from 'react-icons/fi'
 import api from '../../api/client'
+import SkeletonPage from '../../components/SkeletonPage'
 
 function QRCodePage() {
   const [data, setData] = useState(null)
@@ -18,7 +19,7 @@ function QRCodePage() {
     refresh()
   }
 
-  if (!data) return <main className="page-shell">Loading QR code...</main>
+  if (!data) return <SkeletonPage />
 
   return (
     <main className="page-shell">
