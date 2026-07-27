@@ -333,6 +333,26 @@ button:disabled {
   border: 0;
 }
 
+.suffix-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.suffix-input input {
+  border: 0;
+  border-radius: 0;
+}
+
+.suffix-input span {
+  padding: 0 14px;
+  color: var(--muted);
+  font-weight: 900;
+}
+
 .demo-accounts {
   display: grid;
   gap: 8px;

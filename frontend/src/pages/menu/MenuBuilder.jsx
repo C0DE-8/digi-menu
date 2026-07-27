@@ -5,6 +5,15 @@ import { resolveAssetUrl } from '../../api/assets'
 import MenuItemCard from '../../components/MenuItemCard'
 import SkeletonPage from '../../components/SkeletonPage'
 
+function prepTimeToMinutes(value) {
+  return String(value || '20').replace(/\s*min(?:ute)?s?\s*$/i, '').trim() || '20'
+}
+
+function minutesToPrepTime(value) {
+  const minutes = prepTimeToMinutes(value)
+  return `${minutes} min`
+}
+
 function MenuBuilder() {
   const [data, setData] = useState(null)
   const [categoryName, setCategoryName] = useState('')
@@ -12,7 +21,7 @@ function MenuBuilder() {
   const [itemName, setItemName] = useState('')
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
-  const [prepTime, setPrepTime] = useState('20 min')
+  const [prepTime, setPrepTime] = useState('20')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
   const [editingItem, setEditingItem] = useState(null)
@@ -64,7 +73,7 @@ function MenuBuilder() {
         description: description || 'New menu item added from Digi Menu.',
         availability: editingItem?.availability || 'available',
         image_url: imageUrl,
-        prep_time: prepTime || '20 min',
+        prep_time: minutesToPrepTime(prepTime),
         is_new: editingItem ? editingItem.is_new : true,
         is_popular: editingItem?.is_popular,
         is_spicy: editingItem?.is_spicy,
@@ -103,7 +112,7 @@ function MenuBuilder() {
     setItemName(item.name || '')
     setDescription(item.description || '')
     setPrice(String(item.price || ''))
-    setPrepTime(item.prep_time || '20 min')
+    setPrepTime(prepTimeToMinutes(item.prep_time))
     setImageFile(null)
     setImagePreview(item.image_url ? resolveAssetUrl(item.image_url) : '')
     setError('')
@@ -115,7 +124,7 @@ function MenuBuilder() {
     setItemName('')
     setDescription('')
     setPrice('')
-    setPrepTime('20 min')
+    setPrepTime('20')
     setImageFile(null)
     setImagePreview('')
     setError('')
@@ -181,7 +190,10 @@ function MenuBuilder() {
           <input placeholder="Price in naira" value={price} onChange={(event) => setPrice(event.target.value)} required />
           <label>
             <span>Preparation time</span>
-            <input placeholder="20 min" value={prepTime} onChange={(event) => setPrepTime(event.target.value)} />
+            <div className="suffix-input">
+              <input placeholder="20" value={prepTime} onChange={(event) => setPrepTime(event.target.value)} inputMode="numeric" />
+              <span>min</span>
+            </div>
           </label>
           <label className="file-picker">
             <span><FiUpload /> {editingItem ? 'Replace item image' : 'Upload item image'}</span>

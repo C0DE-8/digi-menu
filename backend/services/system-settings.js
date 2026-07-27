@@ -21,10 +21,10 @@ async function getUploadProvider() {
 
 async function getCloudinarySettings() {
   return {
-    cloudName: await getSetting(CLOUDINARY_SETTING_KEYS.cloudName, process.env.CLOUDINARY_CLOUD_NAME || ""),
-    apiKey: await getSetting(CLOUDINARY_SETTING_KEYS.apiKey, process.env.CLOUDINARY_API_KEY || ""),
-    apiSecret: await getSetting(CLOUDINARY_SETTING_KEYS.apiSecret, process.env.CLOUDINARY_API_SECRET || ""),
-    folder: await getSetting(CLOUDINARY_SETTING_KEYS.folder, process.env.CLOUDINARY_FOLDER || "digi-menu/menu-items"),
+    cloudName: await getSetting(CLOUDINARY_SETTING_KEYS.cloudName, ""),
+    apiKey: await getSetting(CLOUDINARY_SETTING_KEYS.apiKey, ""),
+    apiSecret: await getSetting(CLOUDINARY_SETTING_KEYS.apiSecret, ""),
+    folder: await getSetting(CLOUDINARY_SETTING_KEYS.folder, "digi-menu/menu-items"),
   };
 }
 

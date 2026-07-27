@@ -5,6 +5,13 @@ function formatNaira(value) {
   return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', maximumFractionDigits: 0 }).format(value || 0)
 }
 
+function formatPrepTime(value) {
+  const text = String(value || '').trim()
+  if (!text) return 'Ready soon'
+  if (/\bmin\b/i.test(text)) return text
+  return `${text} min`
+}
+
 function MenuItemCard({ item, onView }) {
   const fallbackImage = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80'
 
@@ -30,7 +37,7 @@ function MenuItemCard({ item, onView }) {
           {item.is_halal ? <span>Halal</span> : null}
         </div>
         <small>
-          <FiClock aria-hidden="true" /> {item.prep_time || 'Ready soon'}
+          <FiClock aria-hidden="true" /> {formatPrepTime(item.prep_time)}
         </small>
       </div>
     </article>
