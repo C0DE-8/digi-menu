@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 const { Readable } = require("stream");
 const { v2: cloudinary } = require("cloudinary");
@@ -6,12 +5,11 @@ const express = require("express");
 const multer = require("multer");
 const { requireAuth } = require("../middleware/auth");
 const { getUploadProvider } = require("../services/system-settings");
+const { ensureLocalUploadDirs } = require("../services/upload-storage");
 
 const router = express.Router();
-const uploadRoot = path.join(__dirname, "..", "uploads");
-const menuUploadDir = path.join(uploadRoot, "menu-items");
+ensureLocalUploadDirs();
 
-fs.mkdirSync(menuUploadDir, { recursive: true });
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -24,7 +22,9 @@ function getBaseUrl(req) {
 }
 
 const localStorage = multer.diskStorage({
-  destination: menuUploadDir,
+  destination: (_req, _file, cb) => {
+    cb(null, ensureLocalUploadDirs().menuItemsDir);
+  },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const stem =
