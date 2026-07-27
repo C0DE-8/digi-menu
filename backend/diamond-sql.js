@@ -37,7 +37,6 @@ function connectProject(siteId, options = {}) {
       if (error.name === "AbortError") {
         throw new Error(`DBMS request timed out after ${timeoutMs}ms`);
       }
-
       throw error;
     } finally {
       clearTimeout(timeout);

@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "test": "node --check server.js && node --check db.js && node --check diamond-sql.js"
+    "migrate": "node -e \"require('./data/database').initDatabase().then(() => console.log('Migrations complete'))\"",
+    "seed": "node scripts/seed.js",
+    "test": "node --check server.js && node --check db.js && node --check diamond-sql.js && node --check data/database.js && node --check scripts/seed.js"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,6 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.3",
-    "qrcode": "^1.5.4",
-    "sql.js": "^1.14.1"
+    "qrcode": "^1.5.4"
   }
 }
