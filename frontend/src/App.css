@@ -373,6 +373,17 @@ button:disabled {
   padding: 22px;
 }
 
+.form-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.form-heading-row h2 {
+  margin: 0 0 12px;
+}
+
 .panel form,
 .panel {
   min-width: 0;
@@ -515,6 +526,24 @@ button:disabled {
   align-items: center;
   gap: 6px;
   color: var(--muted);
+  font-weight: 800;
+}
+
+.managed-menu-item {
+  min-width: 0;
+}
+
+.item-admin-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.item-admin-actions span {
+  color: var(--orange);
+  font-size: 13px;
   font-weight: 800;
 }
 
