@@ -9,16 +9,21 @@ function Header() {
   const user = getStoredUser()
 
   const links = user
-    ? [
-        { to: '/dashboard', label: 'Dashboard' },
-        { to: '/menu-builder', label: 'Menu' },
-        { to: '/analytics', label: 'Analytics' },
-        { to: '/qr-code', label: 'QR' },
-        { to: '/subscriptions', label: 'Billing' },
-        { to: '/settings', label: 'Settings' },
-        ...(['admin', 'super_admin'].includes(user.role) ? [{ to: '/admin', label: 'Admin' }] : []),
-        { to: '/menu/8am-light-kitchen', label: 'Public menu' },
-      ]
+    ? user.role === 'super_admin'
+      ? [
+          { to: '/super-admin', label: 'Super admin' },
+          { to: '/admin', label: 'Admin view' },
+        ]
+      : [
+          { to: '/dashboard', label: 'Dashboard' },
+          { to: '/menu-builder', label: 'Menu' },
+          { to: '/analytics', label: 'Analytics' },
+          { to: '/qr-code', label: 'QR' },
+          { to: '/subscriptions', label: 'Billing' },
+          { to: '/settings', label: 'Settings' },
+          ...(user.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : []),
+          { to: '/menu/8am-light-kitchen', label: 'Public menu' },
+        ]
     : [
         { to: '/', label: 'Home' },
         { to: '/menu/8am-light-kitchen', label: 'Demo menu' },

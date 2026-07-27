@@ -316,6 +316,10 @@ button:disabled {
   opacity: 0.62;
 }
 
+.spin {
+  animation: spin 820ms linear infinite;
+}
+
 .input-wrap {
   display: flex;
   align-items: center;
@@ -884,11 +888,18 @@ button:disabled {
   }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-loader,
   .page-loader-card,
   .loader-mark span,
-  .skeleton::after {
+  .skeleton::after,
+  .spin {
     animation: none;
   }
 }

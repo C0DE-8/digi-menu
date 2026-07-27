@@ -2,6 +2,12 @@ const { get, run } = require("../data/database");
 
 const DEFAULT_UPLOAD_PROVIDER = "cloudinary";
 const UPLOAD_PROVIDERS = new Set(["cloudinary", "local"]);
+const CLOUDINARY_SETTING_KEYS = {
+  cloudName: "cloudinary_cloud_name",
+  apiKey: "cloudinary_api_key",
+  apiSecret: "cloudinary_api_secret",
+  folder: "cloudinary_folder",
+};
 
 async function getSetting(key, fallback = "") {
   const setting = await get("SELECT setting_value FROM system_settings WHERE setting_key = ?", [key]);
@@ -11,6 +17,38 @@ async function getSetting(key, fallback = "") {
 async function getUploadProvider() {
   const provider = await getSetting("upload_provider", DEFAULT_UPLOAD_PROVIDER);
   return UPLOAD_PROVIDERS.has(provider) ? provider : DEFAULT_UPLOAD_PROVIDER;
+}
+
+async function getCloudinarySettings() {
+  return {
+    cloudName: await getSetting(CLOUDINARY_SETTING_KEYS.cloudName, process.env.CLOUDINARY_CLOUD_NAME || ""),
+    apiKey: await getSetting(CLOUDINARY_SETTING_KEYS.apiKey, process.env.CLOUDINARY_API_KEY || ""),
+    apiSecret: await getSetting(CLOUDINARY_SETTING_KEYS.apiSecret, process.env.CLOUDINARY_API_SECRET || ""),
+    folder: await getSetting(CLOUDINARY_SETTING_KEYS.folder, process.env.CLOUDINARY_FOLDER || "digi-menu/menu-items"),
+  };
+}
+
+async function getUploadSettings() {
+  return {
+    uploadProvider: await getUploadProvider(),
+    uploadProviders: Array.from(UPLOAD_PROVIDERS),
+    cloudinary: await getCloudinarySettings(),
+  };
+}
+
+async function setCloudinarySettings(settings) {
+  const updates = [
+    [CLOUDINARY_SETTING_KEYS.cloudName, settings.cloudName],
+    [CLOUDINARY_SETTING_KEYS.apiKey, settings.apiKey],
+    [CLOUDINARY_SETTING_KEYS.apiSecret, settings.apiSecret],
+    [CLOUDINARY_SETTING_KEYS.folder, settings.folder || "digi-menu/menu-items"],
+  ];
+
+  for (const [key, value] of updates) {
+    await setSetting(key, String(value || ""));
+  }
+
+  return getCloudinarySettings();
 }
 
 async function setSetting(key, value) {
@@ -23,4 +61,13 @@ async function setSetting(key, value) {
   return get("SELECT * FROM system_settings WHERE setting_key = ?", [key]);
 }
 
-module.exports = { DEFAULT_UPLOAD_PROVIDER, UPLOAD_PROVIDERS, getSetting, getUploadProvider, setSetting };
+module.exports = {
+  DEFAULT_UPLOAD_PROVIDER,
+  UPLOAD_PROVIDERS,
+  getCloudinarySettings,
+  getSetting,
+  getUploadProvider,
+  getUploadSettings,
+  setCloudinarySettings,
+  setSetting,
+};

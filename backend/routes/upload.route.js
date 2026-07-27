@@ -4,18 +4,11 @@ const { v2: cloudinary } = require("cloudinary");
 const express = require("express");
 const multer = require("multer");
 const { requireAuth } = require("../middleware/auth");
-const { getUploadProvider } = require("../services/system-settings");
+const { getCloudinarySettings, getUploadProvider } = require("../services/system-settings");
 const { ensureLocalUploadDirs } = require("../services/upload-storage");
 
 const router = express.Router();
 ensureLocalUploadDirs();
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
 
 function getBaseUrl(req) {
   return (process.env.BACKEND_BASE_URL || process.env.API_BASE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "");
@@ -120,16 +113,24 @@ function uploadLocal(req, res) {
   });
 }
 
-function uploadCloudinary(file) {
+async function uploadCloudinary(file) {
+  const settings = await getCloudinarySettings();
   return new Promise((resolve, reject) => {
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    if (!settings.cloudName || !settings.apiKey || !settings.apiSecret) {
       reject(new Error("Cloudinary is selected, but Cloudinary credentials are missing"));
       return;
     }
 
+    cloudinary.config({
+      cloud_name: settings.cloudName,
+      api_key: settings.apiKey,
+      api_secret: settings.apiSecret,
+      secure: true,
+    });
+
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: process.env.CLOUDINARY_FOLDER || "digi-menu/menu-items",
+        folder: settings.folder || "digi-menu/menu-items",
         resource_type: "image",
       },
       (error, result) => {

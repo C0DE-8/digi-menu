@@ -1,23 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FiLock, FiMail } from 'react-icons/fi'
+import { FiLoader, FiLock, FiMail } from 'react-icons/fi'
 import api, { setSession } from '../../api/client'
 
 function Login() {
   const [email, setEmail] = useState('8amlight@gmail.com')
   const [password, setPassword] = useState('123456')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   async function submit(event) {
     event.preventDefault()
     setError('')
+    setLoading(true)
     try {
       const { data } = await api.post('/auth/login', { email, password })
       setSession(data)
-      navigate(['admin', 'super_admin'].includes(data.user.role) ? '/admin' : '/dashboard')
+      navigate(data.user.role === 'super_admin' ? '/super-admin' : data.user.role === 'admin' ? '/admin' : '/dashboard')
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -41,8 +45,9 @@ function Login() {
           </div>
         </label>
         {error ? <p className="error-text">{error}</p> : null}
-        <button className="primary-button full" type="submit">
-          Login
+        <button className="primary-button full" type="submit" disabled={loading}>
+          {loading ? <FiLoader className="spin" /> : null}
+          {loading ? 'Signing in...' : 'Login'}
         </button>
         <div className="demo-accounts">
           <button type="button" onClick={() => setEmail('admin@admin.com')}>

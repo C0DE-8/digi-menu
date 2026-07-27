@@ -15,13 +15,13 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ error: "Invalid email or password" });
   }
 
-  const restaurant = await getRestaurantForUser(user);
+  const restaurant = user.role === "super_admin" ? null : await getRestaurantForUser(user);
   const token = jwt.sign({ id: user.id, role: user.role }, jwtSecret, { expiresIn: "7d" });
   return res.json({ token, user: publicUser(user), restaurant });
 });
 
 router.get("/me", requireAuth, async (req, res) => {
-  const restaurant = await getRestaurantForUser(req.user);
+  const restaurant = req.user.role === "super_admin" ? null : await getRestaurantForUser(req.user);
   res.json({ user: publicUser(req.user), restaurant });
 });
 

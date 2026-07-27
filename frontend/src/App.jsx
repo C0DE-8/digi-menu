@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import PageTransitionLoader from './components/PageTransitionLoader'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
+import SuperAdminDashboard from './pages/admin/SuperAdminDashboard'
 import Login from './pages/auth/Login'
 import Home from './pages/marketing/Home'
 import MenuBuilder from './pages/menu/MenuBuilder'
@@ -28,7 +29,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute restaurantOnly>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -36,7 +37,7 @@ function App() {
         <Route
           path="/menu-builder"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute restaurantOnly>
               <MenuBuilder />
             </ProtectedRoute>
           }
@@ -44,7 +45,7 @@ function App() {
         <Route
           path="/settings"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute restaurantOnly>
               <RestaurantSettings />
             </ProtectedRoute>
           }
@@ -52,7 +53,7 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute restaurantOnly>
               <Analytics />
             </ProtectedRoute>
           }
@@ -60,7 +61,7 @@ function App() {
         <Route
           path="/qr-code"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute restaurantOnly>
               <QRCodePage />
             </ProtectedRoute>
           }
@@ -68,8 +69,16 @@ function App() {
         <Route
           path="/subscriptions"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute restaurantOnly>
               <Subscriptions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/super-admin"
+          element={
+            <ProtectedRoute superAdminOnly>
+              <SuperAdminDashboard />
             </ProtectedRoute>
           }
         />
