@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { NavLink, Link, useNavigate } from 'react-router-dom'
+import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
 import { FiMenu, FiX, FiGrid, FiLogOut } from 'react-icons/fi'
-import { clearSession, getStoredUser } from '../api/client'
+import { clearSession, getStoredRestaurant, getStoredUser } from '../api/client'
 
 function Header() {
   const [open, setOpen] = useState(false)
+  useLocation()
   const navigate = useNavigate()
   const user = getStoredUser()
+  const restaurant = getStoredRestaurant()
 
   const links = user
     ? user.role === 'super_admin'
@@ -22,7 +24,7 @@ function Header() {
           { to: '/subscriptions', label: 'Billing' },
           { to: '/settings', label: 'Settings' },
           ...(user.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : []),
-          { to: '/menu/8am-light-kitchen', label: 'Public menu' },
+          ...(restaurant?.slug ? [{ to: `/menu/${restaurant.slug}`, label: 'Public menu' }] : []),
         ]
     : [
         { to: '/', label: 'Home' },
@@ -31,6 +33,7 @@ function Header() {
 
   function logout() {
     clearSession()
+    setOpen(false)
     navigate('/login')
   }
 

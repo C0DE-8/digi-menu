@@ -92,7 +92,7 @@ function Home() {
         .get('/public/restaurants', { params: query.trim() ? { search: query.trim() } : undefined })
         .then((response) => {
           if (active) {
-            setRestaurants(response.data.restaurants || [])
+            setRestaurants(mergeRestaurants(response.data.restaurants || [], query))
             setUsingFallback(false)
           }
         })
@@ -190,6 +190,22 @@ function Home() {
       </section>
     </main>
   )
+}
+
+function mergeRestaurants(liveRestaurants, query) {
+  const value = query.trim().toLowerCase()
+  const visibleFallbacks = value
+    ? fallbackRestaurants.filter((restaurant) =>
+        [restaurant.name, restaurant.description, restaurant.address].some((field) => String(field || '').toLowerCase().includes(value)),
+      )
+    : fallbackRestaurants
+  const bySlug = new Map(visibleFallbacks.map((restaurant) => [restaurant.slug, restaurant]))
+
+  for (const restaurant of liveRestaurants) {
+    bySlug.set(restaurant.slug, restaurant)
+  }
+
+  return [...bySlug.values()].sort((first, second) => first.name.localeCompare(second.name))
 }
 
 export default Home
