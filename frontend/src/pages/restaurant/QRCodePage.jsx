@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { FiDownload, FiRefreshCw } from 'react-icons/fi'
+import { FiDownload, FiFileText, FiRefreshCw } from 'react-icons/fi'
 import api from '../../api/client'
 import SkeletonPage from '../../components/SkeletonPage'
 
@@ -19,13 +19,17 @@ function QRCodePage() {
     refresh()
   }
 
+  function printPdf() {
+    window.print()
+  }
+
   if (!data) return <SkeletonPage />
 
   return (
     <main className="page-shell">
       <p className="eyebrow">QR code</p>
       <h1>Printable menu access</h1>
-      <section className="dashboard-grid">
+      <section className="dashboard-grid qr-print-area">
         <article className="panel">
           <h2>{data.restaurant.name}</h2>
           {data.qrCode?.image_data_url ? <img className="qr-large" src={data.qrCode.image_data_url} alt="Restaurant menu QR code" /> : null}
@@ -39,6 +43,9 @@ function QRCodePage() {
                 <FiDownload /> Download PNG
               </a>
             ) : null}
+            <button className="secondary-button" type="button" onClick={printPdf}>
+              <FiFileText /> Print / save PDF
+            </button>
           </div>
         </article>
         <article className="panel">

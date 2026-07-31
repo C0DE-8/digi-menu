@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { FiMapPin, FiPhone, FiSearch, FiShare2 } from 'react-icons/fi'
+import { FiMapPin, FiPhone, FiSearch, FiShare2, FiX } from 'react-icons/fi'
 import api from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
 import MenuItemCard from '../../components/MenuItemCard'
@@ -13,6 +13,7 @@ function PublicMenu() {
   const [usingFallback, setUsingFallback] = useState(false)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
+  const [selectedItem, setSelectedItem] = useState(null)
 
   useEffect(() => {
     let active = true
@@ -51,6 +52,7 @@ function PublicMenu() {
   }, [data, query, category])
 
   async function track(item) {
+    setSelectedItem(item)
     if (usingFallback) return
     await api.post(`/public/menu/${slug}/events`, { event_type: 'item_view', menu_item_id: item.id, category_id: item.category_id }).catch(() => {})
   }
@@ -92,6 +94,29 @@ function PublicMenu() {
           ))}
         </div>
       </section>
+      {selectedItem ? (
+        <div className="modal-backdrop" role="presentation" onClick={() => setSelectedItem(null)}>
+          <article className="item-detail-modal" role="dialog" aria-modal="true" aria-label={selectedItem.name} onClick={(event) => event.stopPropagation()}>
+            <button className="icon-button modal-close" type="button" onClick={() => setSelectedItem(null)} aria-label="Close item details">
+              <FiX />
+            </button>
+            <img src={resolveAssetUrl(selectedItem.image_url)} alt={selectedItem.name} />
+            <div>
+              <p className="eyebrow">Menu item</p>
+              <h2>{selectedItem.name}</h2>
+              <p>{selectedItem.description}</p>
+              <div className="badges">
+                {selectedItem.availability ? <span>{selectedItem.availability.replaceAll('_', ' ')}</span> : null}
+                {selectedItem.is_popular ? <span>Popular</span> : null}
+                {selectedItem.is_new ? <span>New</span> : null}
+                {selectedItem.is_spicy ? <span>Spicy</span> : null}
+              </div>
+              {selectedItem.ingredients ? <p><strong>Ingredients:</strong> {selectedItem.ingredients}</p> : null}
+              {selectedItem.calories ? <p><strong>Calories:</strong> {selectedItem.calories}</p> : null}
+            </div>
+          </article>
+        </div>
+      ) : null}
     </main>
   )
 }

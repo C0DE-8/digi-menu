@@ -12,7 +12,7 @@ Admin support/moderation needs more real workflows.
 No onboarding steps for restaurant owners.
 Recommended Build Phases
 
-Phase 1: Make The Menu Platform Solid
+Phase 1: Make The Menu Platform Solid ✅
 Finish restaurant registration.
 Add business type selection like Chowdeck vendor onboarding.
 Add restaurant onboarding checklist: profile, logo, cover, categories, first menu items, QR.

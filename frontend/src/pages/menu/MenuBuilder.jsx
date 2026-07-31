@@ -14,6 +14,14 @@ function minutesToPrepTime(value) {
   return `${minutes} min`
 }
 
+const availabilityOptions = [
+  { value: 'available', label: 'Available' },
+  { value: 'out_of_stock', label: 'Out of stock' },
+  { value: 'seasonal', label: 'Seasonal' },
+  { value: 'coming_soon', label: 'Coming soon' },
+  { value: 'hidden', label: 'Hidden' },
+]
+
 function MenuBuilder() {
   const [data, setData] = useState(null)
   const [categoryName, setCategoryName] = useState('')
@@ -22,6 +30,7 @@ function MenuBuilder() {
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
   const [prepTime, setPrepTime] = useState('20')
+  const [availability, setAvailability] = useState('available')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState('')
   const [editingItem, setEditingItem] = useState(null)
@@ -71,7 +80,7 @@ function MenuBuilder() {
         name: itemName,
         price,
         description: description || 'New menu item added from Digi Menu.',
-        availability: editingItem?.availability || 'available',
+        availability,
         image_url: imageUrl,
         prep_time: minutesToPrepTime(prepTime),
         is_new: editingItem ? editingItem.is_new : true,
@@ -113,6 +122,7 @@ function MenuBuilder() {
     setDescription(item.description || '')
     setPrice(String(item.price || ''))
     setPrepTime(prepTimeToMinutes(item.prep_time))
+    setAvailability(item.availability || 'available')
     setImageFile(null)
     setImagePreview(item.image_url ? resolveAssetUrl(item.image_url) : '')
     setError('')
@@ -125,6 +135,7 @@ function MenuBuilder() {
     setDescription('')
     setPrice('')
     setPrepTime('20')
+    setAvailability('available')
     setImageFile(null)
     setImagePreview('')
     setError('')
@@ -189,6 +200,14 @@ function MenuBuilder() {
           <textarea placeholder="Short description" value={description} onChange={(event) => setDescription(event.target.value)} />
           <input placeholder="Price in naira" value={price} onChange={(event) => setPrice(event.target.value)} required />
           <label>
+            <span>Availability</span>
+            <select value={availability} onChange={(event) => setAvailability(event.target.value)}>
+              {availabilityOptions.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
             <span>Preparation time</span>
             <div className="suffix-input">
               <input placeholder="20" value={prepTime} onChange={(event) => setPrepTime(event.target.value)} inputMode="numeric" />
@@ -222,6 +241,7 @@ function MenuBuilder() {
                     {item.availability === 'hidden' ? 'Turn on' : 'Turn off'}
                   </button>
                   {item.availability === 'hidden' ? <span>Hidden from public menu</span> : null}
+                  {item.availability && !['available', 'hidden'].includes(item.availability) ? <span>{availabilityOptions.find((option) => option.value === item.availability)?.label}</span> : null}
                 </div>
               </div>
             ))}

@@ -12,6 +12,14 @@ function formatPrepTime(value) {
   return `${text} min`
 }
 
+function availabilityLabel(value) {
+  return {
+    out_of_stock: 'Out of stock',
+    seasonal: 'Seasonal',
+    coming_soon: 'Coming soon',
+  }[value]
+}
+
 function MenuItemCard({ item, onView }) {
   const fallbackImage = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80'
 
@@ -35,6 +43,7 @@ function MenuItemCard({ item, onView }) {
           {item.is_new ? <span>New</span> : null}
           {item.is_spicy ? <span>Spicy</span> : null}
           {item.is_halal ? <span>Halal</span> : null}
+          {availabilityLabel(item.availability) ? <span>{availabilityLabel(item.availability)}</span> : null}
         </div>
         <small>
           <FiClock aria-hidden="true" /> {formatPrepTime(item.prep_time)}

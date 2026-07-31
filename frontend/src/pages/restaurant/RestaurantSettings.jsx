@@ -11,7 +11,7 @@ function RestaurantSettings() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get('/dashboard').then((response) => setForm(response.data.restaurant))
+    api.get('/dashboard').then((response) => setForm(toSettingsForm(response.data.restaurant)))
   }, [])
 
   if (!form) return <SkeletonPage />
@@ -24,8 +24,8 @@ function RestaurantSettings() {
     event.preventDefault()
     setError('')
     try {
-      const { data } = await api.put('/restaurant', form)
-      setForm(data)
+      const { data } = await api.put('/restaurant', toRestaurantPayload(form))
+      setForm(toSettingsForm(data))
       updateStoredRestaurant(data)
       setSaved(true)
     } catch (saveError) {
@@ -43,8 +43,8 @@ function RestaurantSettings() {
       body.append('image', file)
       const response = await api.post(`/uploads/restaurant-assets/${type}`, body)
       const updatedForm = { ...form, [`${type}_url`]: response.data.image_url }
-      const saveResponse = await api.put('/restaurant', updatedForm)
-      setForm(saveResponse.data)
+      const saveResponse = await api.put('/restaurant', toRestaurantPayload(updatedForm))
+      setForm(toSettingsForm(saveResponse.data))
       updateStoredRestaurant(saveResponse.data)
       setSaved(true)
     } catch (uploadError) {
@@ -93,12 +93,24 @@ function RestaurantSettings() {
           </label>
         </div>
 
-        {['name', 'description', 'phone', 'whatsapp', 'email', 'address', 'google_maps_url', 'delivery_info'].map((field) => (
+        {['name', 'business_type', 'description', 'phone', 'whatsapp', 'email', 'address', 'google_maps_url', 'delivery_info'].map((field) => (
           <label key={field}>
             <span>{field.replaceAll('_', ' ')}</span>
             <input value={form[field] || ''} onChange={(event) => update(field, event.target.value)} />
           </label>
         ))}
+        <label>
+          <span>Opening hours</span>
+          <textarea value={form.opening_hours_text || ''} onChange={(event) => update('opening_hours_text', event.target.value)} />
+        </label>
+        <label>
+          <span>Instagram URL</span>
+          <input value={form.instagram_url || ''} onChange={(event) => update('instagram_url', event.target.value)} />
+        </label>
+        <label>
+          <span>X URL</span>
+          <input value={form.x_url || ''} onChange={(event) => update('x_url', event.target.value)} />
+        </label>
         <label>
           <span>logo url</span>
           <input value={form.logo_url || ''} onChange={(event) => update('logo_url', event.target.value)} />
@@ -115,6 +127,33 @@ function RestaurantSettings() {
       </form>
     </main>
   )
+}
+
+function toSettingsForm(restaurant) {
+  const openingHours = restaurant.opening_hours && typeof restaurant.opening_hours === 'object' ? restaurant.opening_hours : {}
+  const socialLinks = restaurant.social_links && typeof restaurant.social_links === 'object' ? restaurant.social_links : {}
+  return {
+    ...restaurant,
+    opening_hours_text: Object.entries(openingHours).map(([day, hours]) => `${day}: ${hours}`).join('\n'),
+    instagram_url: socialLinks.instagram || '',
+    x_url: socialLinks.x || '',
+  }
+}
+
+function toRestaurantPayload(form) {
+  const opening_hours = {}
+  for (const line of String(form.opening_hours_text || '').split('\n')) {
+    const [day, ...hours] = line.split(':')
+    if (day?.trim() && hours.join(':').trim()) opening_hours[day.trim().toLowerCase()] = hours.join(':').trim()
+  }
+  return {
+    ...form,
+    opening_hours,
+    social_links: {
+      instagram: form.instagram_url || '',
+      x: form.x_url || '',
+    },
+  }
 }
 
 export default RestaurantSettings
