@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FiLoader, FiLock, FiMail } from 'react-icons/fi'
 import api, { setSession } from '../../api/client'
 
@@ -49,6 +49,9 @@ function Login() {
           {loading ? <FiLoader className="spin" /> : null}
           {loading ? 'Signing in...' : 'Login'}
         </button>
+        <Link className="secondary-button full" to="/register">
+          Register restaurant
+        </Link>
         <div className="demo-accounts">
           <button type="button" onClick={() => setEmail('admin@admin.com')}>
             Admin: admin@admin.com / 123456

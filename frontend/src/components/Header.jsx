@@ -41,6 +41,7 @@ function Header() {
     : [
         { to: '/', label: 'Home' },
         { to: '/#restaurants', label: 'Restaurants' },
+        { to: '/register', label: 'Start selling' },
       ]
 
   function logout() {

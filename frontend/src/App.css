@@ -366,6 +366,76 @@
     url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80') center/cover;
 }
 
+.vendor-register-page {
+  min-height: calc(100vh - 130px);
+  padding: clamp(18px, 4vw, 48px);
+  background: #f7faf5;
+}
+
+.vendor-register-shell {
+  width: min(100%, 980px);
+  margin: 0 auto;
+}
+
+.register-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: clamp(28px, 6vw, 72px);
+}
+
+.vendor-register-card {
+  width: min(100%, 760px);
+  margin: 0 auto;
+}
+
+.vendor-register-card h1 {
+  margin: 10px 0 28px;
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 1;
+  text-align: center;
+}
+
+.vendor-register-card .eyebrow {
+  text-align: center;
+}
+
+.business-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.business-type {
+  min-height: 126px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 900;
+  text-align: center;
+}
+
+.business-type svg {
+  color: var(--green);
+  font-size: 26px;
+}
+
+.business-type.active {
+  border-color: var(--green);
+  background: var(--mint);
+}
+
+.compact-grid {
+  margin: 0;
+}
+
 .not-found-page {
   min-height: calc(100vh - 130px);
   display: grid;

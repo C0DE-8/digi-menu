@@ -1,0 +1,63 @@
+Main Gaps
+Restaurant/vendor registration flow is missing.
+Email/phone verification is missing.
+Restaurant approval flow needs to be more complete.
+Public homepage is still more “directory/menu” than “customer discovery/order intent.”
+No customer location flow yet.
+No cart, checkout, pickup, delivery, or order tracking yet.
+Subscription payment is not real yet.
+QR download as PNG/PDF needs improvement.
+Analytics is seeded/basic, not fully event-driven.
+Admin support/moderation needs more real workflows.
+No onboarding steps for restaurant owners.
+Recommended Build Phases
+
+Phase 1: Make The Menu Platform Solid
+Finish restaurant registration.
+Add business type selection like Chowdeck vendor onboarding.
+Add restaurant onboarding checklist: profile, logo, cover, categories, first menu items, QR.
+Improve settings: opening hours, social links, delivery info.
+Improve QR: branded QR, download PNG, download PDF.
+Make public menu item detail modal.
+Improve availability states: available, out of stock, seasonal, coming soon, hidden.
+
+Phase 2: Make It Feel Real For Restaurants
+Add restaurant approval status screens.
+Add admin approval/rejection notes.
+Add better dashboard analytics from real events.
+Add profile completeness score.
+Add plan limits by subscription tier.
+Add invoice/payment history UI.
+Add coupon/trial fields if needed.
+
+Phase 3: Customer Discovery
+Redesign homepage closer to food discovery.
+Add location/search first experience.
+Add cuisine/category filters.
+Add restaurant status: open/closed.
+Add “near you” structure, even if location is manual at first.
+Add restaurant detail pages separate from menu pages.
+
+Phase 4: Ordering MVP
+Add cart.
+Add customer checkout form.
+Add pickup/delivery choice.
+Add order creation.
+Add restaurant order dashboard.
+Add kitchen notification view.
+Add WhatsApp fallback for order confirmation if payment is not ready.
+
+Phase 5: Payments
+Add real payment provider.
+Add subscription payments.
+Add customer order payments.
+Add transfer/card options.
+Add paid invoice records.
+Add failed/expired subscription handling.
+Phase 6: Restaurant Operations
+POS/walk-in orders.
+Kitchen display.
+Tables/waiters/cashier.
+Receipts.
+Inventory, ingredients, recipes, food cost.
+Accounting: revenue, expenses, profit, cashflow, tax reports.

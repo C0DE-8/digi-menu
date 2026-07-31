@@ -95,7 +95,8 @@ router.put("/items/:id", requireAuth, async (req, res) => {
 
 router.patch("/items/:id/availability", requireAuth, async (req, res) => {
   const restaurant = await getRestaurantForUser(req.user);
-  const availability = req.body.availability === "hidden" ? "hidden" : "available";
+  const availabilityOptions = new Set(["available", "out_of_stock", "seasonal", "coming_soon", "hidden"]);
+  const availability = availabilityOptions.has(req.body.availability) ? req.body.availability : "available";
   const existing = await get("SELECT * FROM menu_items WHERE id = ? AND restaurant_id = ?", [req.params.id, restaurant.id]);
   if (!existing) return res.status(404).json({ error: "Menu item not found" });
 

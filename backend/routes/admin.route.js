@@ -1,4 +1,5 @@
 const express = require("express");
+const QRCode = require("qrcode");
 const { all, get, run } = require("../data/database");
 const { requireAdmin, requireAuth, requireSuperAdmin } = require("../middleware/auth");
 const { UPLOAD_PROVIDERS, getUploadSettings, setCloudinarySettings, setSetting } = require("../services/system-settings");
@@ -58,8 +59,32 @@ router.put("/settings/cloudinary", requireAuth, requireSuperAdmin, async (req, r
 });
 
 router.patch("/restaurants/:id/status", requireAuth, requireAdmin, async (req, res) => {
-  await run("UPDATE restaurants SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [req.body.status, req.params.id]);
+  const status = ["approved", "rejected", "pending"].includes(req.body.status) ? req.body.status : "pending";
+  const note = String(req.body.approval_note || "").trim();
+  await run("UPDATE restaurants SET status = ?, approval_note = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [status, note, req.params.id]);
+  if (status === "approved") {
+    await ensureApprovedRestaurantSetup(req.params.id);
+  }
   res.json(await get("SELECT * FROM restaurants WHERE id = ?", [req.params.id]));
 });
+
+async function ensureApprovedRestaurantSetup(restaurantId) {
+  const restaurant = await get("SELECT * FROM restaurants WHERE id = ?", [restaurantId]);
+  const plan = await get("SELECT * FROM subscription_plans WHERE slug = ?", [restaurant.plan || "starter"]);
+  const subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurant.id]);
+  if (!subscription && plan) {
+    await run(
+      "INSERT INTO subscriptions (restaurant_id, plan_id, status, starts_at, ends_at, trial_ends_at) VALUES (?, ?, 'active', CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY))",
+      [restaurant.id, plan.id]
+    );
+  }
+
+  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://digi-menu-iota.vercel.app").replace(/\/$/, "");
+  const menuUrl = `${baseUrl}/menu/${restaurant.slug}`;
+  const qrCode = await get("SELECT * FROM qr_codes WHERE restaurant_id = ?", [restaurant.id]);
+  const image = await QRCode.toDataURL(menuUrl);
+  if (qrCode) await run("UPDATE qr_codes SET menu_url = ?, image_data_url = ? WHERE restaurant_id = ?", [menuUrl, image, restaurant.id]);
+  else await run("INSERT INTO qr_codes (restaurant_id, menu_url, image_data_url, scans) VALUES (?, ?, ?, 0)", [restaurant.id, menuUrl, image]);
+}
 
 module.exports = router;

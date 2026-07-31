@@ -136,7 +136,7 @@ function Home() {
             <a className="primary-button" href="#restaurants">
               Browse restaurants <FiArrowRight aria-hidden="true" />
             </a>
-            <Link className="secondary-button" to="/login">Restaurant login</Link>
+            <Link className="secondary-button" to="/register">Start selling</Link>
           </div>
         </div>
       </section>

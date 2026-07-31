@@ -9,8 +9,25 @@ router.put("/", requireAuth, async (req, res) => {
   const restaurant = await getRestaurantForUser(req.user);
   if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
 
-  const fields = ["name", "description", "phone", "whatsapp", "email", "address", "google_maps_url", "delivery_info", "logo_url", "cover_url"];
-  const values = fields.map((field) => req.body[field] ?? restaurant[field] ?? "");
+  const fields = [
+    "name",
+    "business_type",
+    "description",
+    "phone",
+    "whatsapp",
+    "email",
+    "address",
+    "google_maps_url",
+    "delivery_info",
+    "logo_url",
+    "cover_url",
+    "opening_hours",
+    "social_links"
+  ];
+  const values = fields.map((field) => {
+    const value = req.body[field] ?? restaurant[field] ?? "";
+    return ["opening_hours", "social_links"].includes(field) && typeof value !== "string" ? JSON.stringify(value) : value;
+  });
   await run(`UPDATE restaurants SET ${fields.map((field) => `${field} = ?`).join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [
     ...values,
     restaurant.id
