@@ -57,9 +57,14 @@ function MenuBuilder() {
 
   async function addCategory(event) {
     event.preventDefault()
-    await api.post('/categories', { name: categoryName })
-    setCategoryName('')
-    refresh()
+    setError('')
+    try {
+      await api.post('/categories', { name: categoryName })
+      setCategoryName('')
+      refresh()
+    } catch (categoryError) {
+      setError(categoryError.response?.data?.error || 'Could not add this category.')
+    }
   }
 
   async function saveItem(event) {
@@ -170,6 +175,9 @@ function MenuBuilder() {
         <div>
           <p className="eyebrow">Menu management</p>
           <h1>Categories and items</h1>
+          <p className="muted-line">
+            Plan usage: {data.items.length} / {data.planLimits?.menuItems || 'Unlimited'} items · {data.categories.length} / {data.planLimits?.categories || 'Unlimited'} categories
+          </p>
         </div>
       </div>
       <section className="form-grid">

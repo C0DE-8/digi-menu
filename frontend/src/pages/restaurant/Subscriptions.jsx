@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FiCheckCircle, FiCreditCard, FiFileText } from 'react-icons/fi'
+import { FiCheckCircle, FiCreditCard, FiFileText, FiTag } from 'react-icons/fi'
 import api from '../../api/client'
 import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
@@ -41,15 +41,53 @@ function Subscriptions() {
           </div>
         </article>
         <article className="panel">
-          <h2>Payment history</h2>
+          <h2>Plan limits</h2>
           <div className="table-list">
-            {data.invoices.map((invoice) => (
-              <div key={invoice.id}>
-                <span>{invoice.invoice_number}</span>
-                <strong>{formatNaira(invoice.amount)}</strong>
-              </div>
-            ))}
+            <div>
+              <span>Menu items</span>
+              <strong>{data.items.length} / {data.planLimits?.menuItems || 'Unlimited'}</strong>
+            </div>
+            <div>
+              <span>Categories</span>
+              <strong>{data.categories.length} / {data.planLimits?.categories || 'Unlimited'}</strong>
+            </div>
+            <div>
+              <span>Analytics</span>
+              <strong>{data.planLimits?.analytics || 'basic'}</strong>
+            </div>
+            <div>
+              <span>Support</span>
+              <strong>{data.planLimits?.support || 'standard'}</strong>
+            </div>
           </div>
+        </article>
+        <article className="panel">
+          <h2>Trial and coupons</h2>
+          <div className="table-list">
+            <div>
+              <span>Trial days</span>
+              <strong>{data.subscription?.trial_days || 14}</strong>
+            </div>
+            <div>
+              <span>Coupon code</span>
+              <strong><FiTag /> {data.subscription?.coupon_code || data.planLimits?.couponCode || 'No coupon'}</strong>
+            </div>
+          </div>
+        </article>
+        <article className="panel">
+          <h2>Payment history</h2>
+          {data.invoices.length ? (
+            <div className="table-list">
+              {data.invoices.map((invoice) => (
+                <div key={invoice.id}>
+                  <span>{invoice.invoice_number}</span>
+                  <strong>{formatNaira(invoice.amount)}</strong>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No invoices yet. Your first invoice will appear after approval.</p>
+          )}
         </article>
       </section>
     </main>

@@ -12,11 +12,14 @@ router.get("/overview", requireAuth, requireAdmin, async (req, res) => {
   const tickets = await all("SELECT * FROM support_tickets ORDER BY created_at DESC");
   const reports = await all("SELECT * FROM content_reports ORDER BY created_at DESC");
   const revenue = await get("SELECT COALESCE(SUM(amount), 0) AS total FROM invoices WHERE status = 'paid'");
+  const expiredSubscriptions = await get("SELECT COUNT(*) AS count FROM subscriptions WHERE ends_at IS NOT NULL AND ends_at < CURRENT_DATE");
   const payload = {
     stats: {
       restaurants: restaurants.length,
       activeRestaurants: restaurants.filter((item) => item.status === "approved").length,
-      expiredSubscriptions: 0,
+      pendingRestaurants: restaurants.filter((item) => item.status === "pending").length,
+      rejectedRestaurants: restaurants.filter((item) => item.status === "rejected").length,
+      expiredSubscriptions: expiredSubscriptions.count,
       revenue: revenue.total
     },
     restaurants,
@@ -74,8 +77,16 @@ async function ensureApprovedRestaurantSetup(restaurantId) {
   const subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurant.id]);
   if (!subscription && plan) {
     await run(
-      "INSERT INTO subscriptions (restaurant_id, plan_id, status, starts_at, ends_at, trial_ends_at) VALUES (?, ?, 'active', CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY), DATE_ADD(CURRENT_DATE, INTERVAL 14 DAY))",
-      [restaurant.id, plan.id]
+      "INSERT INTO subscriptions (restaurant_id, plan_id, status, starts_at, ends_at, trial_ends_at, coupon_code) VALUES (?, ?, 'active', CURRENT_DATE, DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY), DATE_ADD(CURRENT_DATE, INTERVAL COALESCE(?, 14) DAY), ?)",
+      [restaurant.id, plan.id, plan.trial_days, plan.coupon_code]
+    );
+  }
+  const activeSubscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurant.id]);
+  const invoice = await get("SELECT * FROM invoices WHERE restaurant_id = ?", [restaurant.id]);
+  if (!invoice && activeSubscription && plan) {
+    await run(
+      "INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at, description, payment_method) VALUES (?, ?, ?, ?, 'paid', CURRENT_TIMESTAMP, ?, 'manual')",
+      [restaurant.id, activeSubscription.id, plan.monthly_price || 0, `DM-${restaurant.slug.toUpperCase()}-PLAN`, `${plan.name} plan setup`]
     );
   }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FiMapPin, FiMonitor, FiMousePointer, FiTrendingUp } from 'react-icons/fi'
+import { FiClock, FiMapPin, FiMonitor, FiMousePointer, FiNavigation, FiTrendingUp } from 'react-icons/fi'
 import api from '../../api/client'
 import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
@@ -21,7 +21,9 @@ function Analytics() {
         <StatCard icon={<FiTrendingUp />} label="Monthly visitors" value={data.analytics.monthlyVisitors} tone="green" />
         <StatCard icon={<FiMousePointer />} label="QR scans" value={data.analytics.qrScans} tone="orange" />
         <StatCard icon={<FiMonitor />} label="Devices tracked" value={data.analytics.deviceTypes?.length || 0} tone="blue" />
-        <StatCard icon={<FiMapPin />} label="Locations" value={data.analytics.locations?.length || 0} />
+        <StatCard icon={<FiNavigation />} label="Link clicks" value={data.analytics.linkClicks || 0} />
+        <StatCard icon={<FiClock />} label="Avg. session" value={data.analytics.averageSession || '0s'} tone="green" />
+        <StatCard icon={<FiMapPin />} label="Locations" value={data.analytics.locations?.length || 0} tone="blue" />
       </div>
       <section className="dashboard-grid">
         <article className="panel">
@@ -44,6 +46,23 @@ function Analytics() {
                 <strong>{device.count}</strong>
               </div>
             ))}
+          </div>
+        </article>
+        <article className="panel">
+          <h2>Most viewed categories</h2>
+          <div className="table-list">
+            {(data.analytics.viewedCategories || []).map((category) => (
+              <div key={category.name}>
+                <span>{category.name}</span>
+                <strong>{category.views} views</strong>
+              </div>
+            ))}
+            {data.analytics.viewedCategories?.length ? null : (
+              <div>
+                <span>No category views yet</span>
+                <strong>0</strong>
+              </div>
+            )}
           </div>
         </article>
         <article className="panel wide">

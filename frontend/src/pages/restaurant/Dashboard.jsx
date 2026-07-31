@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FiActivity, FiCheckCircle, FiClock, FiEye, FiGrid, FiImage, FiList, FiMousePointer, FiSettings } from 'react-icons/fi'
+import { FiActivity, FiCheckCircle, FiClock, FiEye, FiGrid, FiImage, FiList, FiMousePointer, FiPieChart, FiSettings } from 'react-icons/fi'
 import api from '../../api/client'
 import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
@@ -70,7 +70,7 @@ function Dashboard() {
         <StatCard icon={<FiEye />} label="Today visitors" value={data.analytics.todayVisitors} tone="green" />
         <StatCard icon={<FiActivity />} label="Weekly visitors" value={data.analytics.weeklyVisitors} tone="blue" />
         <StatCard icon={<FiMousePointer />} label="QR scans" value={data.analytics.qrScans} tone="orange" />
-        <StatCard icon={<FiGrid />} label="Menu items" value={data.items.length} />
+        <StatCard icon={<FiPieChart />} label="Profile complete" value={`${data.profileCompleteness?.percent || 0}%`} />
       </div>
       <section className="dashboard-grid">
         <article className="panel">
@@ -82,7 +82,8 @@ function Dashboard() {
           <h2>Subscription</h2>
           <p className="big-line">{data.subscription?.plan_name || data.restaurant.plan}</p>
           <p>Status: {data.subscription?.status || 'trial'}</p>
-          <p>Next invoice: {data.invoices[0]?.invoice_number || 'No invoice yet'}</p>
+          <p>Menu limit: {data.items.length} / {data.planLimits?.menuItems || 'Unlimited'}</p>
+          <p>Next invoice: {data.invoices[0]?.invoice_number || 'Invoice will appear after approval'}</p>
         </article>
         <article className="panel wide">
           <h2>Popular foods</h2>

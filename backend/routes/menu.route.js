@@ -7,8 +7,10 @@ const router = express.Router();
 
 router.post("/categories", requireAuth, async (req, res) => {
   const restaurant = await getRestaurantForUser(req.user);
+  const limit = await getRestaurantPlanLimit(restaurant, "max_categories");
   const { name, description } = req.body;
   const sort = await get("SELECT COUNT(*) AS count FROM menu_categories WHERE restaurant_id = ?", [restaurant.id]);
+  if (limit && sort.count >= limit) return res.status(403).json({ error: `Your current plan allows up to ${limit} categories` });
   const id = await run("INSERT INTO menu_categories (restaurant_id, name, slug, description, sort_order) VALUES (?, ?, ?, ?, ?)", [
     restaurant.id,
     name,
@@ -21,6 +23,9 @@ router.post("/categories", requireAuth, async (req, res) => {
 
 router.post("/items", requireAuth, async (req, res) => {
   const restaurant = await getRestaurantForUser(req.user);
+  const limit = await getRestaurantPlanLimit(restaurant, "max_menu_items");
+  const itemCount = await get("SELECT COUNT(*) AS count FROM menu_items WHERE restaurant_id = ?", [restaurant.id]);
+  if (limit && itemCount.count >= limit) return res.status(403).json({ error: `Your current plan allows up to ${limit} menu items` });
   const item = req.body;
   const id = await run(
     `INSERT INTO menu_items (
@@ -107,5 +112,10 @@ router.patch("/items/:id/availability", requireAuth, async (req, res) => {
   ]);
   res.json(await get("SELECT * FROM menu_items WHERE id = ?", [existing.id]));
 });
+
+async function getRestaurantPlanLimit(restaurant, column) {
+  const plan = await get(`SELECT ${column} AS value FROM subscription_plans WHERE slug = ?`, [restaurant.plan || "starter"]);
+  return plan?.value || null;
+}
 
 module.exports = router;

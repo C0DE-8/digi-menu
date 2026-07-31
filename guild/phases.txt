@@ -21,7 +21,7 @@ Improve QR: branded QR, download PNG, download PDF.
 Make public menu item detail modal.
 Improve availability states: available, out of stock, seasonal, coming soon, hidden.
 
-Phase 2: Make It Feel Real For Restaurants
+Phase 2: Make It Feel Real For Restaurants ✅
 Add restaurant approval status screens.
 Add admin approval/rejection notes.
 Add better dashboard analytics from real events.

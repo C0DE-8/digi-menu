@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FiCheckCircle, FiDollarSign, FiShield, FiUsers, FiXCircle } from 'react-icons/fi'
+import { FiAlertCircle, FiCheckCircle, FiDollarSign, FiShield, FiUsers, FiXCircle } from 'react-icons/fi'
 import api from '../../api/client'
 import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
@@ -36,6 +36,8 @@ function AdminDashboard() {
       <div className="feature-grid">
         <StatCard icon={<FiUsers />} label="Restaurants" value={data.stats.restaurants} tone="green" />
         <StatCard icon={<FiShield />} label="Active restaurants" value={data.stats.activeRestaurants} tone="blue" />
+        <StatCard icon={<FiAlertCircle />} label="Pending approvals" value={data.stats.pendingRestaurants || 0} />
+        <StatCard icon={<FiAlertCircle />} label="Expired subscriptions" value={data.stats.expiredSubscriptions || 0} tone="orange" />
         <StatCard icon={<FiDollarSign />} label="Revenue" value={`₦${Number(data.stats.revenue).toLocaleString()}`} tone="orange" />
       </div>
       <section className="panel">
