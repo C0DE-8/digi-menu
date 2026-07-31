@@ -45,6 +45,7 @@ function Header() {
 
   function logout() {
     clearSession()
+    setSessionState({ user: null, restaurant: null })
     setOpen(false)
     navigate('/login')
   }

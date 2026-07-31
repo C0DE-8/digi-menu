@@ -583,6 +583,58 @@ button:disabled {
   margin-bottom: 16px;
 }
 
+.asset-upload-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  background: var(--white);
+  box-shadow: 0 8px 22px rgba(23, 32, 29, 0.06);
+}
+
+.asset-upload-card h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+
+.logo-preview,
+.cover-preview,
+.empty-image {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #edf2ee;
+}
+
+.logo-preview,
+.empty-image {
+  aspect-ratio: 1 / 1;
+}
+
+.logo-preview,
+.cover-preview {
+  object-fit: cover;
+}
+
+.cover-preview,
+.wide-preview {
+  aspect-ratio: 16 / 9;
+}
+
+.empty-image {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 28px;
+}
+
+.file-picker.compact {
+  min-height: 64px;
+  margin-bottom: 0;
+}
+
 .wide {
   grid-column: 1 / -1;
 }

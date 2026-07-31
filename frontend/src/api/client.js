@@ -57,6 +57,13 @@ export function getStoredRestaurant() {
   }
 }
 
+export function updateStoredRestaurant(restaurant) {
+  const token = localStorage.getItem('digiMenuToken')
+  if (!token || !restaurant) return
+  localStorage.setItem('digiMenuRestaurant', JSON.stringify(restaurant))
+  notifySessionChanged()
+}
+
 function isExpiredToken(token) {
   try {
     const payload = JSON.parse(window.atob(token.split('.')[1]))

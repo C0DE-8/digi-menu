@@ -13,8 +13,10 @@ function getLocalUploadRoot() {
 function ensureLocalUploadDirs() {
   const root = getLocalUploadRoot();
   const menuItemsDir = path.join(root, "menu-items");
+  const restaurantAssetsDir = path.join(root, "restaurant-assets");
   fs.mkdirSync(menuItemsDir, { recursive: true });
-  return { root, menuItemsDir };
+  fs.mkdirSync(restaurantAssetsDir, { recursive: true });
+  return { root, menuItemsDir, restaurantAssetsDir };
 }
 
 module.exports = { ensureLocalUploadDirs, getLocalUploadRoot };
