@@ -884,15 +884,31 @@
 }
 
 .customer-register-page {
-  min-height: calc(100vh - 130px);
+  min-height: calc(100vh - 74px);
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 520px);
+  grid-template-columns: minmax(0, 0.92fr) minmax(360px, 520px);
   gap: clamp(24px, 5vw, 64px);
   align-items: center;
   padding: clamp(28px, 6vw, 72px);
   background:
-    linear-gradient(135deg, rgba(13, 107, 79, 0.93), rgba(35, 91, 143, 0.82)),
-    url('https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1500&q=80') center/cover;
+    linear-gradient(115deg, rgba(13, 107, 79, 0.88), rgba(35, 91, 143, 0.76)),
+    url('https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=1800&q=80') center/cover;
+}
+
+.customer-register-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.18), transparent 26%),
+    linear-gradient(90deg, rgba(13, 107, 79, 0.34), transparent 48%);
+}
+
+.customer-register-hero,
+.customer-register-form {
+  position: relative;
+  z-index: 1;
 }
 
 .customer-register-hero {
@@ -900,9 +916,9 @@
 }
 
 .customer-register-hero h1 {
-  margin: 8px 0 16px;
   max-width: 760px;
-  font-size: clamp(46px, 7vw, 92px);
+  margin: 12px 0 18px;
+  font-size: clamp(56px, 8vw, 92px);
   line-height: 0.95;
 }
 
@@ -917,31 +933,42 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 22px;
+  margin-top: 26px;
 }
 
 .customer-benefits span {
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px);
   font-weight: 900;
   padding: 9px 12px;
 }
 
 .customer-register-form {
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 28px 90px rgba(23, 32, 29, 0.26);
+  backdrop-filter: blur(24px);
   padding: 24px;
 }
 
 .customer-register-form h2 {
   margin: 4px 0 0;
-  font-size: 28px;
+  font-size: 30px;
+}
+
+.customer-register-form input,
+.customer-register-form textarea {
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .preference-picker {
@@ -2160,6 +2187,7 @@ button:disabled {
 
   .customer-register-page {
     align-items: stretch;
+    min-height: auto;
   }
 
   .food-hero {
