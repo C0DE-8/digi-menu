@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { FiMenu, FiX, FiGrid, FiLogOut } from 'react-icons/fi'
+import { FiMenu, FiX, FiGrid, FiLogOut, FiShoppingBag } from 'react-icons/fi'
 import { clearSession, getStoredRestaurant, getStoredUser } from '../api/client'
 
 function Header() {
@@ -66,6 +66,10 @@ function Header() {
             {link.label}
           </NavLink>
         ))}
+        <button className="cart-nav-button" type="button" aria-label="Cart coming soon" title="Cart coming soon">
+          <FiShoppingBag aria-hidden="true" />
+          <span>0</span>
+        </button>
         {user ? (
           <div className="account-nav">
             <span>{user.name || user.email}</span>

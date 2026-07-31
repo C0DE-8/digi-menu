@@ -1,6 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FiArrowRight, FiBarChart2, FiMapPin, FiSearch, FiSmartphone } from 'react-icons/fi'
+import {
+  FiArrowRight,
+  FiBarChart2,
+  FiCheck,
+  FiMapPin,
+  FiMinus,
+  FiSearch,
+  FiShoppingBag,
+  FiSmartphone,
+  FiStar,
+  FiTruck,
+  FiX,
+} from 'react-icons/fi'
 import api from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
 import StatCard from '../../components/StatCard'
@@ -78,11 +90,19 @@ const fallbackRestaurants = [
   },
 ]
 
+const cuisineFilters = ['Rice', 'Breakfast', 'Grills', 'Cafe', 'Seafood', 'Healthy', 'Pastries']
+
+const cartPreviewItems = [
+  { name: 'Smoky Party Jollof', restaurant: '8am Light Kitchen', price: 6800, quantity: 1 },
+  { name: 'Iced Caramel Latte', restaurant: 'Lola Cafe', price: 4200, quantity: 2 },
+]
+
 function Home() {
   const [restaurants, setRestaurants] = useState(fallbackRestaurants)
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [usingFallback, setUsingFallback] = useState(false)
+  const [cookieVisible, setCookieVisible] = useState(() => localStorage.getItem('digiMenuCookieConsent') !== 'accepted')
 
   useEffect(() => {
     let active = true
@@ -121,42 +141,119 @@ function Home() {
     )
   }, [query, restaurants, usingFallback])
 
+  const featuredRestaurants = filteredRestaurants.slice(0, 6)
+  const cartTotal = cartPreviewItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  function acceptCookies() {
+    localStorage.setItem('digiMenuCookieConsent', 'accepted')
+    setCookieVisible(false)
+  }
+
   return (
-    <main>
-      <section className="hero-section">
-        <div className="hero-media" aria-hidden="true"></div>
-        <div className="hero-copy">
-          <p className="eyebrow">Restaurant directory and digital menus</p>
-          <h1>Digi Menu</h1>
+    <main className="landing-page">
+      <section className="food-hero">
+        <div className="food-hero-copy">
+          <p className="eyebrow">Food discovery and digital menus</p>
+          <h1>You don see menu?</h1>
           <p>
-            Find restaurants on the platform, open their live menus, and let each business manage meals, QR codes, analytics,
-            and subscription-ready operations from one system.
+            Browse restaurants, discover meals, preview your basket, and open live menus from food businesses already using
+            Digi Menu.
           </p>
-          <div className="hero-actions">
-            <a className="primary-button" href="#restaurants">
-              Browse restaurants <FiArrowRight aria-hidden="true" />
+          <div className="location-search">
+            <FiMapPin aria-hidden="true" />
+            <input placeholder="Enter your area or search meals" value={query} onChange={(event) => setQuery(event.target.value)} />
+            <a href="#restaurants">
+              Find food <FiArrowRight aria-hidden="true" />
             </a>
-            <Link className="secondary-button" to="/register">Start selling</Link>
           </div>
+          <div className="cuisine-strip" aria-label="Popular searches">
+            {cuisineFilters.map((filter) => (
+              <button key={filter} type="button" onClick={() => setQuery(filter)}>
+                {filter}
+              </button>
+            ))}
+          </div>
+          <div className="hero-actions">
+            <Link className="primary-button" to="/register">Start selling</Link>
+            <a className="secondary-button" href="#restaurants">Explore restaurants</a>
+          </div>
+        </div>
+        <div className="food-hero-board" aria-label="Featured meals and cart preview">
+          <article className="meal-showcase main-meal">
+            <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80" alt="Featured Nigerian meal" />
+            <div>
+              <span><FiStar /> Popular today</span>
+              <h2>Jollof, grills, cafe plates and more</h2>
+              <p>Customer ordering is coming next. For now, carts help shape the flow.</p>
+            </div>
+          </article>
+          <article className="mini-meal top">
+            <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=400&q=80" alt="Brunch plate" />
+            <strong>Brunch</strong>
+          </article>
+          <article className="mini-meal bottom">
+            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=400&q=80" alt="Grilled skewers" />
+            <strong>Grills</strong>
+          </article>
+          <article className="floating-cart">
+            <div className="cart-title-row">
+              <span><FiShoppingBag /> Cart preview</span>
+              <strong>Coming soon</strong>
+            </div>
+            {cartPreviewItems.map((item) => (
+              <div className="cart-preview-row" key={item.name}>
+                <button type="button" aria-label="Decrease quantity"><FiMinus /></button>
+                <div>
+                  <strong>{item.name}</strong>
+                  <small>{item.restaurant}</small>
+                </div>
+                <span>{item.quantity}x</span>
+              </div>
+            ))}
+            <div className="cart-total-row">
+              <span>Total</span>
+              <strong>₦{cartTotal.toLocaleString()}</strong>
+            </div>
+          </article>
         </div>
       </section>
 
-      <section className="band" id="restaurants">
-        <div className="section-heading">
-          <p className="eyebrow">Live restaurant menus</p>
-          <h2>Search restaurants already on Digi Menu</h2>
-        </div>
-        <div className="restaurant-search">
-          <FiSearch aria-hidden="true" />
-          <input
-            aria-label="Search restaurants"
-            placeholder="Search by restaurant, food, or location"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
+      <section className="landing-band quick-actions">
+        <article>
+          <FiSearch />
+          <h2>Search meals</h2>
+          <p>Find restaurants by name, food, or location.</p>
+        </article>
+        <article>
+          <FiShoppingBag />
+          <h2>Build a cart</h2>
+          <p>Cart UI is ready for the ordering phase.</p>
+        </article>
+        <article>
+          <FiTruck />
+          <h2>Pickup or delivery</h2>
+          <p>Delivery flow is planned for the next product stage.</p>
+        </article>
+      </section>
+
+      <section className="landing-band restaurant-market" id="restaurants">
+        <div className="market-heading">
+          <div>
+            <p className="eyebrow">Restaurants near the platform</p>
+            <h2>Order-ready menus, built for discovery</h2>
+          </div>
+          <div className="restaurant-search compact-search">
+            <FiSearch aria-hidden="true" />
+            <input
+              aria-label="Search restaurants"
+              placeholder="Search restaurant, food, or location"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </div>
         </div>
         <div className="restaurant-grid">
-          {filteredRestaurants.map((restaurant) => (
+          {featuredRestaurants.map((restaurant) => (
             <Link className="restaurant-card" key={restaurant.slug} to={`/menu/${restaurant.slug}`}>
               <img src={resolveAssetUrl(restaurant.cover_url)} alt="" />
               <div>
@@ -168,7 +265,10 @@ function Home() {
                 <small>
                   <FiMapPin aria-hidden="true" /> {restaurant.address}
                 </small>
-                <strong>{Number(restaurant.item_count || 0)} menu items</strong>
+                <div className="restaurant-meta-row">
+                  <strong>{Number(restaurant.item_count || 0)} menu items</strong>
+                  <span><FiShoppingBag /> Add later</span>
+                </div>
               </div>
             </Link>
           ))}
@@ -177,7 +277,18 @@ function Home() {
         {loading ? <p className="directory-note">Loading the latest restaurant list...</p> : null}
       </section>
 
-      <section className="band platform-band">
+      <section className="landing-band seller-band">
+        <div>
+          <p className="eyebrow">Join our growing network</p>
+          <h2>Own a restaurant, cafe, bakery, lounge, or cloud kitchen?</h2>
+          <p>Create a digital menu, upload food photos, print QR codes, and get ready for ordering.</p>
+        </div>
+        <Link className="primary-button" to="/register">
+          Start selling <FiArrowRight />
+        </Link>
+      </section>
+
+      <section className="landing-band platform-band">
         <div className="section-heading">
           <p className="eyebrow">Platform tools</p>
           <h2>Built for restaurants that update menus often</h2>
@@ -188,6 +299,18 @@ function Home() {
           <StatCard icon={<FiBarChart2 />} label="Analytics" value="Live events" tone="orange" />
         </div>
       </section>
+      {cookieVisible ? (
+        <aside className="cookie-banner" aria-label="Cookie notice">
+          <button className="icon-button" type="button" onClick={() => setCookieVisible(false)} aria-label="Close cookie notice">
+            <FiX />
+          </button>
+          <div>
+            <span><FiCheck /> Cookies</span>
+            <p>We use cookies to keep sessions working and understand how restaurants and customers use Digi Menu.</p>
+          </div>
+          <button className="primary-button" type="button" onClick={acceptCookies}>Accept</button>
+        </aside>
+      ) : null}
     </main>
   )
 }
