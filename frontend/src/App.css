@@ -149,7 +149,7 @@
 .food-hero {
   min-height: 720px;
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(380px, 1.05fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   align-items: center;
   gap: clamp(28px, 6vw, 86px);
   padding: clamp(34px, 6vw, 82px);
@@ -161,8 +161,19 @@
 .food-hero-copy h1 {
   margin: 10px 0 18px;
   max-width: 720px;
+  min-height: 2em;
   font-size: clamp(56px, 8vw, 118px);
   line-height: 0.9;
+}
+
+.animated-headline {
+  display: grid;
+  align-items: end;
+}
+
+.animated-headline span {
+  display: inline-block;
+  animation: headline-fade 900ms ease both;
 }
 
 .food-hero-copy p:not(.eyebrow) {
@@ -229,7 +240,9 @@
 
 .food-hero-board {
   position: relative;
+  width: min(100%, 680px);
   min-height: 570px;
+  justify-self: center;
 }
 
 .meal-showcase,
@@ -244,7 +257,7 @@
 
 .main-meal {
   overflow: hidden;
-  width: min(100%, 530px);
+  width: min(100%, 520px);
   margin: 0 auto;
 }
 
@@ -291,12 +304,12 @@
 
 .mini-meal.top {
   top: 26px;
-  right: 0;
+  right: 2px;
 }
 
 .mini-meal.bottom {
   bottom: 94px;
-  left: 0;
+  left: 2px;
 }
 
 .mini-meal img {
@@ -312,9 +325,9 @@
 
 .floating-cart {
   position: absolute;
-  right: 18px;
+  right: 24px;
   bottom: 8px;
-  width: min(100%, 330px);
+  width: min(calc(100% - 48px), 330px);
   padding: 16px;
 }
 
@@ -471,7 +484,7 @@
   bottom: clamp(14px, 3vw, 34px);
   z-index: 90;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   width: min(calc(100% - 28px), 520px);
   border: 1px solid rgba(13, 107, 79, 0.18);
@@ -502,6 +515,12 @@
   margin: 8px 0 0;
   color: var(--muted);
   line-height: 1.55;
+}
+
+.cookie-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .hero-section {
@@ -654,12 +673,14 @@
 
 .restaurant-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 16px;
   margin-top: 22px;
 }
 
 .restaurant-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -688,6 +709,7 @@
 
 .restaurant-card > div {
   display: grid;
+  grid-template-rows: auto minmax(78px, auto) auto auto;
   gap: 12px;
   padding: 16px;
 }
@@ -717,7 +739,6 @@
 }
 
 .restaurant-card p {
-  min-height: 76px;
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
@@ -1837,13 +1858,48 @@ button:disabled {
   }
 }
 
+@keyframes headline-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-loader,
   .page-loader-card,
   .loader-mark span,
   .skeleton::after,
-  .spin {
+  .spin,
+  .animated-headline span {
     animation: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .food-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .food-hero-board {
+    width: min(100%, 760px);
+  }
+
+  .main-meal {
+    width: min(100%, 560px);
+  }
+
+  .mini-meal.top {
+    right: 8px;
+  }
+
+  .mini-meal.bottom {
+    left: 8px;
   }
 }
 
@@ -1960,6 +2016,15 @@ button:disabled {
     right: 14px;
     bottom: 14px;
     width: auto;
+  }
+
+  .cookie-actions {
+    justify-content: stretch;
+  }
+
+  .cookie-actions button {
+    justify-content: center;
+    flex: 1;
   }
 }
 

@@ -92,6 +92,8 @@ const fallbackRestaurants = [
 
 const cuisineFilters = ['Rice', 'Breakfast', 'Grills', 'Cafe', 'Seafood', 'Healthy', 'Pastries']
 
+const heroHeadlines = ['You don see menu?', 'Find food fast.', 'Scan. Browse. Chow.', 'Your next meal is close.']
+
 const cartPreviewItems = [
   { name: 'Smoky Party Jollof', restaurant: '8am Light Kitchen', price: 6800, quantity: 1 },
   { name: 'Iced Caramel Latte', restaurant: 'Lola Cafe', price: 4200, quantity: 2 },
@@ -102,7 +104,19 @@ function Home() {
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [usingFallback, setUsingFallback] = useState(false)
-  const [cookieVisible, setCookieVisible] = useState(() => localStorage.getItem('digiMenuCookieConsent') !== 'accepted')
+  const [cookieVisible, setCookieVisible] = useState(() => !localStorage.getItem('digiMenuCookieConsent'))
+  const [headlineIndex, setHeadlineIndex] = useState(0)
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) return undefined
+
+    const interval = window.setInterval(() => {
+      setHeadlineIndex((current) => (current + 1) % heroHeadlines.length)
+    }, 5200)
+
+    return () => window.clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     let active = true
@@ -149,12 +163,19 @@ function Home() {
     setCookieVisible(false)
   }
 
+  function rejectCookies() {
+    localStorage.setItem('digiMenuCookieConsent', 'rejected')
+    setCookieVisible(false)
+  }
+
   return (
     <main className="landing-page">
       <section className="food-hero">
         <div className="food-hero-copy">
           <p className="eyebrow">Food discovery and digital menus</p>
-          <h1>You don see menu?</h1>
+          <h1 className="animated-headline" aria-live="polite">
+            <span key={heroHeadlines[headlineIndex]}>{heroHeadlines[headlineIndex]}</span>
+          </h1>
           <p>
             Browse restaurants, discover meals, preview your basket, and open live menus from food businesses already using
             Digi Menu.
@@ -301,14 +322,17 @@ function Home() {
       </section>
       {cookieVisible ? (
         <aside className="cookie-banner" aria-label="Cookie notice">
-          <button className="icon-button" type="button" onClick={() => setCookieVisible(false)} aria-label="Close cookie notice">
+          <button className="icon-button" type="button" onClick={rejectCookies} aria-label="Reject cookies and close notice">
             <FiX />
           </button>
           <div>
             <span><FiCheck /> Cookies</span>
             <p>We use cookies to keep sessions working and understand how restaurants and customers use Digi Menu.</p>
           </div>
-          <button className="primary-button" type="button" onClick={acceptCookies}>Accept</button>
+          <div className="cookie-actions">
+            <button className="secondary-button" type="button" onClick={rejectCookies}>Reject</button>
+            <button className="primary-button" type="button" onClick={acceptCookies}>Accept</button>
+          </div>
         </aside>
       ) : null}
     </main>
