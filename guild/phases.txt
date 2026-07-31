@@ -13,34 +13,34 @@ No onboarding steps for restaurant owners.
 Recommended Build Phases
 
 Phase 1: Make The Menu Platform Solid ✅
-Finish restaurant registration.
-Add business type selection like Chowdeck vendor onboarding.
-Add restaurant onboarding checklist: profile, logo, cover, categories, first menu items, QR.
-Improve settings: opening hours, social links, delivery info.
-Improve QR: branded QR, download PNG, download PDF.
-Make public menu item detail modal.
-Improve availability states: available, out of stock, seasonal, coming soon, hidden.
+Finish restaurant registration. ✅
+Add business type selection like Chowdeck vendor onboarding. ✅
+Add restaurant onboarding checklist: profile, logo, cover, categories, first menu items, QR. ✅
+Improve settings: opening hours, social links, delivery info. ✅
+Improve QR: branded QR, download PNG, download PDF. ✅
+Make public menu item detail modal. ✅
+Improve availability states: available, out of stock, seasonal, coming soon, hidden. ✅
 
 Phase 2: Make It Feel Real For Restaurants ✅
-Add restaurant approval status screens.
-Add admin approval/rejection notes.
-Add better dashboard analytics from real events.
-Add profile completeness score.
-Add plan limits by subscription tier.
-Add invoice/payment history UI.
-Add coupon/trial fields if needed.
+Add restaurant approval status screens. ✅
+Add admin approval/rejection notes. ✅
+Add better dashboard analytics from real events. ✅
+Add profile completeness score. ✅
+Add plan limits by subscription tier. ✅
+Add invoice/payment history UI. ✅
+Add coupon/trial fields if needed. ✅
 
-Phase 3: Customer Discovery
+Phase 3: Customer Discovery ✅
 Add customer registration and customer account role. ✅
-Redesign homepage closer to food discovery.
-Add location/search first experience.
-Add cuisine/category filters.
-Add restaurant status: open/closed.
-Add “near you” structure, even if location is manual at first.
-Add restaurant detail pages separate from menu pages.
+Redesign homepage closer to food discovery. ✅
+Add location/search first experience. ✅
+Add cuisine/category filters. ✅
+Add restaurant status: open/closed. ✅
+Add “near you” structure, even if location is manual at first. ✅
+Add restaurant detail pages separate from menu pages. ✅
 
 Phase 4: Ordering MVP
-Add cart.
+Add cart. ✅
 Add customer checkout form.
 Add pickup/delivery choice.
 Add order creation.
@@ -55,6 +55,7 @@ Add customer order payments.
 Add transfer/card options.
 Add paid invoice records.
 Add failed/expired subscription handling.
+
 Phase 6: Restaurant Operations
 POS/walk-in orders.
 Kitchen display.

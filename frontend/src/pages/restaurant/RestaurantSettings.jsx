@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FiImage, FiLoader, FiSave, FiUpload } from 'react-icons/fi'
+import { FiImage, FiLoader, FiSave, FiToggleLeft, FiToggleRight, FiUpload } from 'react-icons/fi'
 import api, { updateStoredRestaurant } from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
 import SkeletonPage from '../../components/SkeletonPage'
@@ -100,6 +100,37 @@ function RestaurantSettings() {
           </label>
         ))}
         <label>
+          <span>Service area</span>
+          <input placeholder="Lekki, Victoria Island, Ikeja..." value={form.service_area || ''} onChange={(event) => update('service_area', event.target.value)} />
+        </label>
+        <label>
+          <span>Estimated delivery minutes</span>
+          <input
+            min="5"
+            type="number"
+            value={form.estimated_delivery_minutes || 35}
+            onChange={(event) => update('estimated_delivery_minutes', event.target.value)}
+          />
+        </label>
+        <label className="wide">
+          <span>Cuisine tags</span>
+          <input
+            placeholder="Rice, Grills, Breakfast"
+            value={form.cuisine_tags_text || ''}
+            onChange={(event) => update('cuisine_tags_text', event.target.value)}
+          />
+        </label>
+        <div className="setting-toggle wide">
+          <div>
+            <span>Restaurant status</span>
+            <strong>{Number(form.is_open) ? 'Open for discovery' : 'Closed for now'}</strong>
+          </div>
+          <button className="secondary-button" type="button" onClick={() => update('is_open', Number(form.is_open) ? 0 : 1)}>
+            {Number(form.is_open) ? <FiToggleRight /> : <FiToggleLeft />}
+            {Number(form.is_open) ? 'Set closed' : 'Set open'}
+          </button>
+        </div>
+        <label>
           <span>Opening hours</span>
           <textarea value={form.opening_hours_text || ''} onChange={(event) => update('opening_hours_text', event.target.value)} />
         </label>
@@ -137,6 +168,9 @@ function toSettingsForm(restaurant) {
     opening_hours_text: Object.entries(openingHours).map(([day, hours]) => `${day}: ${hours}`).join('\n'),
     instagram_url: socialLinks.instagram || '',
     x_url: socialLinks.x || '',
+    cuisine_tags_text: Array.isArray(restaurant.cuisine_tags) ? restaurant.cuisine_tags.join(', ') : '',
+    is_open: Number(restaurant.is_open ?? 1),
+    estimated_delivery_minutes: restaurant.estimated_delivery_minutes || 35,
   }
 }
 
@@ -148,6 +182,12 @@ function toRestaurantPayload(form) {
   }
   return {
     ...form,
+    is_open: Number(form.is_open) ? 1 : 0,
+    estimated_delivery_minutes: Number(form.estimated_delivery_minutes) || 35,
+    cuisine_tags: String(form.cuisine_tags_text || '')
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean),
     opening_hours,
     social_links: {
       instagram: form.instagram_url || '',

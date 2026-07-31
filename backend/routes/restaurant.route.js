@@ -21,12 +21,16 @@ router.put("/", requireAuth, async (req, res) => {
     "delivery_info",
     "logo_url",
     "cover_url",
+    "service_area",
+    "is_open",
+    "estimated_delivery_minutes",
+    "cuisine_tags",
     "opening_hours",
     "social_links"
   ];
   const values = fields.map((field) => {
     const value = req.body[field] ?? restaurant[field] ?? "";
-    return ["opening_hours", "social_links"].includes(field) && typeof value !== "string" ? JSON.stringify(value) : value;
+    return ["opening_hours", "social_links", "cuisine_tags"].includes(field) && typeof value !== "string" ? JSON.stringify(value) : value;
   });
   await run(`UPDATE restaurants SET ${fields.map((field) => `${field} = ?`).join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`, [
     ...values,

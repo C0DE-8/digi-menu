@@ -17,6 +17,10 @@ const restaurants = [
     description: "Fresh Nigerian meals, grills, drinks, and quick lunch plates for busy teams and families.",
     phone: "+234 800 000 0000",
     address: "14 Admiralty Way, Lekki Phase 1, Lagos",
+    serviceArea: "Lekki",
+    isOpen: 1,
+    estimatedDeliveryMinutes: 25,
+    cuisineTags: ["Rice", "Grills", "Drinks"],
     delivery: "Pickup and delivery available within Lekki, Victoria Island, and Ikoyi.",
     socials: { instagram: "https://instagram.com/8amlight", x: "https://x.com/8amlight" },
     menu: baseMenu()
@@ -31,6 +35,10 @@ const restaurants = [
     description: "Cafe plates, fresh pastries, espresso drinks, and easy brunch for casual meetings.",
     phone: "+234 801 555 0101",
     address: "22 Akin Adesola Street, Victoria Island, Lagos",
+    serviceArea: "Victoria Island",
+    isOpen: 1,
+    estimatedDeliveryMinutes: 30,
+    cuisineTags: ["Cafe", "Breakfast", "Pastries"],
     delivery: "Counter pickup, office delivery, and weekend brunch reservations available.",
     socials: { instagram: "https://instagram.com/lolacafelagos" },
     menu: {
@@ -62,6 +70,10 @@ const restaurants = [
     description: "Open-flame suya, grilled fish, sharable sides, and cold drinks.",
     phone: "+234 801 555 0102",
     address: "9 Allen Avenue, Ikeja, Lagos",
+    serviceArea: "Ikeja",
+    isOpen: 1,
+    estimatedDeliveryMinutes: 35,
+    cuisineTags: ["Grills", "Suya"],
     delivery: "Evening delivery available across Ikeja, Maryland, and Ogba.",
     socials: { instagram: "https://instagram.com/suyastreetgrill" },
     menu: baseMenu("Suya Street")
@@ -76,6 +88,10 @@ const restaurants = [
     description: "Modern Nigerian bistro with rice bowls, soups, grills, and family platters.",
     phone: "+234 801 555 0103",
     address: "31 Herbert Macaulay Way, Yaba, Lagos",
+    serviceArea: "Yaba",
+    isOpen: 1,
+    estimatedDeliveryMinutes: 40,
+    cuisineTags: ["Rice", "Grills"],
     delivery: "Pickup and rider delivery available daily from 10 AM.",
     socials: { instagram: "https://instagram.com/bistromainland" },
     menu: baseMenu("Mainland")
@@ -90,6 +106,10 @@ const restaurants = [
     description: "Seafood bowls, pepper soup, grilled fish, and coastal platters.",
     phone: "+234 801 555 0104",
     address: "6 Admiralty Road, Lekki Phase 1, Lagos",
+    serviceArea: "Lekki",
+    isOpen: 0,
+    estimatedDeliveryMinutes: 25,
+    cuisineTags: ["Seafood", "Grills"],
     delivery: "Pre-order seafood platters for pickup, delivery, or private dining.",
     socials: { instagram: "https://instagram.com/oceanpearlseafood" },
     menu: baseMenu("Ocean Pearl")
@@ -104,6 +124,10 @@ const restaurants = [
     description: "Healthy bowls, smoothies, wraps, and vegetarian-friendly daily specials.",
     phone: "+234 801 555 0105",
     address: "18 Admiralty Road, Lekki Phase 1, Lagos",
+    serviceArea: "Lekki",
+    isOpen: 1,
+    estimatedDeliveryMinutes: 25,
+    cuisineTags: ["Healthy", "Salad", "Smoothies"],
     delivery: "Office lunch packs and subscription meal bowls available on weekdays.",
     socials: { instagram: "https://instagram.com/greenbowllagos" },
     menu: baseMenu("Green Bowl")
@@ -118,6 +142,10 @@ const restaurants = [
     description: "Homestyle soups, swallow, rice dishes, and party trays for families.",
     phone: "+234 801 555 0106",
     address: "12 Toyin Street, Ikeja, Lagos",
+    serviceArea: "Ikeja",
+    isOpen: 1,
+    estimatedDeliveryMinutes: 35,
+    cuisineTags: ["Rice", "Soups"],
     delivery: "Bulk lunch delivery and weekend event trays available by request.",
     socials: { instagram: "https://instagram.com/mamaadakitchen" },
     menu: baseMenu("Mama Ada")
@@ -171,8 +199,9 @@ async function seedRestaurant(item) {
     await run(
       `INSERT INTO restaurants (
         owner_id, name, slug, status, plan, logo_url, cover_url, description, phone, whatsapp, email,
-        address, google_maps_url, opening_hours, social_links, delivery_info
-      ) VALUES (?, ?, ?, 'approved', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        address, google_maps_url, opening_hours, social_links, delivery_info,
+        service_area, is_open, estimated_delivery_minutes, cuisine_tags
+      ) VALUES (?, ?, ?, 'approved', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         owner.id,
         item.name,
@@ -188,7 +217,11 @@ async function seedRestaurant(item) {
         "https://maps.google.com",
         openingHours,
         JSON.stringify(item.socials),
-        item.delivery
+        item.delivery,
+        item.serviceArea,
+        item.isOpen,
+        item.estimatedDeliveryMinutes,
+        JSON.stringify(item.cuisineTags)
       ]
     );
   } else {
@@ -196,7 +229,7 @@ async function seedRestaurant(item) {
       `UPDATE restaurants
        SET owner_id = ?, name = ?, status = 'approved', plan = ?, logo_url = ?, cover_url = ?, description = ?,
         phone = ?, whatsapp = ?, email = ?, address = ?, google_maps_url = ?, opening_hours = ?, social_links = ?,
-        delivery_info = ?, updated_at = CURRENT_TIMESTAMP
+        delivery_info = ?, service_area = ?, is_open = ?, estimated_delivery_minutes = ?, cuisine_tags = ?, updated_at = CURRENT_TIMESTAMP
        WHERE slug = ?`,
       [
         owner.id,
@@ -213,6 +246,10 @@ async function seedRestaurant(item) {
         openingHours,
         JSON.stringify(item.socials),
         item.delivery,
+        item.serviceArea,
+        item.isOpen,
+        item.estimatedDeliveryMinutes,
+        JSON.stringify(item.cuisineTags),
         item.slug
       ]
     );

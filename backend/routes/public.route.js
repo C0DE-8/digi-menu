@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/restaurants", async (req, res) => {
   const search = String(req.query.search || "").trim();
+  const area = String(req.query.area || "").trim();
+  const cuisine = String(req.query.cuisine || "").trim();
   const params = [];
   let where = "WHERE r.status = 'approved'";
 
@@ -23,9 +25,29 @@ router.get("/restaurants", async (req, res) => {
     params.push(term, term, term, term, term);
   }
 
+  if (area) {
+    where += " AND (r.service_area LIKE ? OR r.address LIKE ?)";
+    const areaTerm = `%${area}%`;
+    params.push(areaTerm, areaTerm);
+  }
+
+  if (cuisine) {
+    where += ` AND (
+      r.cuisine_tags LIKE ? OR
+      EXISTS (
+        SELECT 1 FROM menu_categories mc
+        WHERE mc.restaurant_id = r.id
+          AND mc.name LIKE ?
+      )
+    )`;
+    const cuisineTerm = `%${cuisine}%`;
+    params.push(cuisineTerm, cuisineTerm);
+  }
+
   const restaurants = await all(
     `SELECT
       r.id, r.name, r.slug, r.plan, r.logo_url, r.cover_url, r.description, r.address, r.delivery_info,
+      r.service_area, r.is_open, r.estimated_delivery_minutes, r.cuisine_tags,
       (SELECT COUNT(*) FROM menu_categories c WHERE c.restaurant_id = r.id AND c.is_active = 1) AS category_count,
       (SELECT COUNT(*) FROM menu_items i WHERE i.restaurant_id = r.id AND i.availability != 'hidden') AS item_count
     FROM restaurants r
@@ -35,6 +57,26 @@ router.get("/restaurants", async (req, res) => {
   );
 
   res.json({ restaurants });
+});
+
+router.get("/restaurants/:slug", async (req, res) => {
+  const restaurant = await get("SELECT * FROM restaurants WHERE slug = ? AND status = 'approved'", [req.params.slug]);
+  if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+
+  const categories = await all("SELECT * FROM menu_categories WHERE restaurant_id = ? AND is_active = 1 ORDER BY sort_order", [restaurant.id]);
+  const popularItems = await all(
+    `SELECT * FROM menu_items
+     WHERE restaurant_id = ? AND availability != 'hidden'
+     ORDER BY is_popular DESC, sort_order ASC
+     LIMIT 6`,
+    [restaurant.id]
+  );
+  const stats = {
+    categoryCount: categories.length,
+    itemCount: (await get("SELECT COUNT(*) AS count FROM menu_items WHERE restaurant_id = ? AND availability != 'hidden'", [restaurant.id]))?.count || 0,
+  };
+
+  res.json({ restaurant, categories, popularItems, stats });
 });
 
 router.get("/menu/:slug", async (req, res) => {

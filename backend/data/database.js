@@ -60,7 +60,7 @@ async function ensureInitialized() {
 function normalizeRows(rows) {
   return rows.map((row) => {
     const parsed = { ...row };
-    for (const key of ["opening_hours", "social_links", "features", "metadata"]) {
+    for (const key of ["opening_hours", "social_links", "features", "metadata", "cuisine_tags", "preferences"]) {
       if (typeof parsed[key] === "string" && parsed[key]) {
         try {
           parsed[key] = JSON.parse(parsed[key]);

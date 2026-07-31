@@ -10,6 +10,7 @@ import Login from './pages/auth/Login'
 import CustomerRegister from './pages/auth/CustomerRegister'
 import Register from './pages/auth/Register'
 import Home from './pages/marketing/Home'
+import RestaurantDetail from './pages/marketing/RestaurantDetail'
 import MenuBuilder from './pages/menu/MenuBuilder'
 import PublicMenu from './pages/menu/PublicMenu'
 import Analytics from './pages/restaurant/Analytics'
@@ -30,6 +31,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/store/sign-up" element={<CustomerRegister />} />
         <Route path="/customer/sign-up" element={<CustomerRegister />} />
+        <Route path="/restaurants/:slug" element={<RestaurantDetail />} />
         <Route path="/menu/:slug" element={<PublicMenu />} />
         <Route
           path="/dashboard"
