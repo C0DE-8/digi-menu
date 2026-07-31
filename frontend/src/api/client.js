@@ -18,12 +18,14 @@ export function setSession(session) {
   } else {
     localStorage.removeItem('digiMenuRestaurant')
   }
+  notifySessionChanged()
 }
 
 export function clearSession() {
   localStorage.removeItem('digiMenuToken')
   localStorage.removeItem('digiMenuUser')
   localStorage.removeItem('digiMenuRestaurant')
+  notifySessionChanged()
 }
 
 export function getStoredUser() {
@@ -62,6 +64,10 @@ function isExpiredToken(token) {
   } catch {
     return true
   }
+}
+
+function notifySessionChanged() {
+  window.dispatchEvent(new Event('digiMenuSessionChanged'))
 }
 
 export default api

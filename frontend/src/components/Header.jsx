@@ -1,14 +1,26 @@
-import { useState } from 'react'
-import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { FiMenu, FiX, FiGrid, FiLogOut } from 'react-icons/fi'
 import { clearSession, getStoredRestaurant, getStoredUser } from '../api/client'
 
 function Header() {
   const [open, setOpen] = useState(false)
-  useLocation()
   const navigate = useNavigate()
-  const user = getStoredUser()
-  const restaurant = getStoredRestaurant()
+  const [session, setSessionState] = useState(() => readSession())
+  const { user, restaurant } = session
+
+  useEffect(() => {
+    function refreshSession() {
+      setSessionState(readSession())
+    }
+
+    window.addEventListener('digiMenuSessionChanged', refreshSession)
+    window.addEventListener('storage', refreshSession)
+    return () => {
+      window.removeEventListener('digiMenuSessionChanged', refreshSession)
+      window.removeEventListener('storage', refreshSession)
+    }
+  }, [])
 
   const links = user
     ? user.role === 'super_admin'
@@ -53,9 +65,12 @@ function Header() {
           </NavLink>
         ))}
         {user ? (
-          <button className="text-button" type="button" onClick={logout}>
-            <FiLogOut aria-hidden="true" /> Logout
-          </button>
+          <div className="account-nav">
+            <span>{user.name || user.email}</span>
+            <button className="text-button" type="button" onClick={logout}>
+              <FiLogOut aria-hidden="true" /> Logout
+            </button>
+          </div>
         ) : (
           <NavLink className="nav-cta" to="/login" onClick={() => setOpen(false)}>
             Login
@@ -64,6 +79,13 @@ function Header() {
       </nav>
     </header>
   )
+}
+
+function readSession() {
+  return {
+    user: getStoredUser(),
+    restaurant: getStoredRestaurant(),
+  }
 }
 
 export default Header
