@@ -26,7 +26,7 @@ function Header() {
         ]
     : [
         { to: '/', label: 'Home' },
-        { to: '/menu/8am-light-kitchen', label: 'Demo menu' },
+        { to: '/#restaurants', label: 'Restaurants' },
       ]
 
   function logout() {

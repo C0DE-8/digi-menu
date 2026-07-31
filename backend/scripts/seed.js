@@ -4,54 +4,145 @@ const bcrypt = require("bcryptjs");
 const QRCode = require("qrcode");
 const { get, initDatabase, run } = require("../data/database");
 
+const passwordHash = bcrypt.hashSync("123456", 10);
+
+const restaurants = [
+  {
+    owner: ["8am Light Kitchen", "8amlight@gmail.com"],
+    name: "8am Light Kitchen",
+    slug: "8am-light-kitchen",
+    plan: "professional",
+    logo: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80",
+    description: "Fresh Nigerian meals, grills, drinks, and quick lunch plates for busy teams and families.",
+    phone: "+234 800 000 0000",
+    address: "14 Admiralty Way, Lekki Phase 1, Lagos",
+    delivery: "Pickup and delivery available within Lekki, Victoria Island, and Ikoyi.",
+    socials: { instagram: "https://instagram.com/8amlight", x: "https://x.com/8amlight" },
+    menu: baseMenu()
+  },
+  {
+    owner: ["Lola Cafe", "lola.cafe@digimenu.test"],
+    name: "Lola Cafe",
+    slug: "lola-cafe",
+    plan: "professional",
+    logo: "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=80",
+    description: "Cafe plates, fresh pastries, espresso drinks, and easy brunch for casual meetings.",
+    phone: "+234 801 555 0101",
+    address: "22 Akin Adesola Street, Victoria Island, Lagos",
+    delivery: "Counter pickup, office delivery, and weekend brunch reservations available.",
+    socials: { instagram: "https://instagram.com/lolacafelagos" },
+    menu: {
+      Breakfast: [
+        ["Lola French Toast", "Brioche toast with berries, cream, and maple syrup.", 6200, "18 min", 1, 1, 0, "https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=900&q=80"],
+        ["Avocado Egg Toast", "Sourdough, smashed avocado, eggs, herbs, and chili oil.", 5400, "15 min", 1, 0, 1, "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80"]
+      ],
+      Pastries: [
+        ["Butter Croissant", "Flaky croissant baked fresh with whipped butter.", 2800, "5 min", 1, 0, 0, "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80"],
+        ["Banana Bread Slice", "Moist banana loaf with toasted walnuts.", 3200, "5 min", 0, 1, 0, "https://images.unsplash.com/photo-1605286978633-2dec93ff88a2?auto=format&fit=crop&w=900&q=80"]
+      ],
+      Lunch: [
+        ["Chicken Pesto Panini", "Grilled chicken, pesto, tomato, mozzarella, and salad.", 7200, "20 min", 1, 0, 0, "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80"],
+        ["Harvest Salad", "Greens, roasted vegetables, feta, grains, and citrus dressing.", 6400, "15 min", 0, 1, 0, "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80"]
+      ],
+      Drinks: [
+        ["Iced Caramel Latte", "Espresso, milk, caramel, and ice.", 4200, "6 min", 1, 0, 0, "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=80"],
+        ["Berry Hibiscus Tea", "Hibiscus tea with berries and mint.", 3500, "5 min", 0, 1, 0, "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80"]
+      ]
+    }
+  },
+  {
+    owner: ["Suya Street Grill", "suya.street@digimenu.test"],
+    name: "Suya Street Grill",
+    slug: "suya-street-grill",
+    plan: "starter",
+    logo: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1400&q=80",
+    description: "Open-flame suya, grilled fish, sharable sides, and cold drinks.",
+    phone: "+234 801 555 0102",
+    address: "9 Allen Avenue, Ikeja, Lagos",
+    delivery: "Evening delivery available across Ikeja, Maryland, and Ogba.",
+    socials: { instagram: "https://instagram.com/suyastreetgrill" },
+    menu: baseMenu("Suya Street")
+  },
+  {
+    owner: ["Bistro Mainland", "bistro.mainland@digimenu.test"],
+    name: "Bistro Mainland",
+    slug: "bistro-mainland",
+    plan: "professional",
+    logo: "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
+    description: "Modern Nigerian bistro with rice bowls, soups, grills, and family platters.",
+    phone: "+234 801 555 0103",
+    address: "31 Herbert Macaulay Way, Yaba, Lagos",
+    delivery: "Pickup and rider delivery available daily from 10 AM.",
+    socials: { instagram: "https://instagram.com/bistromainland" },
+    menu: baseMenu("Mainland")
+  },
+  {
+    owner: ["Ocean Pearl Seafood", "ocean.pearl@digimenu.test"],
+    name: "Ocean Pearl Seafood",
+    slug: "ocean-pearl-seafood",
+    plan: "enterprise",
+    logo: "https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=1400&q=80",
+    description: "Seafood bowls, pepper soup, grilled fish, and coastal platters.",
+    phone: "+234 801 555 0104",
+    address: "6 Admiralty Road, Lekki Phase 1, Lagos",
+    delivery: "Pre-order seafood platters for pickup, delivery, or private dining.",
+    socials: { instagram: "https://instagram.com/oceanpearlseafood" },
+    menu: baseMenu("Ocean Pearl")
+  },
+  {
+    owner: ["Green Bowl Lagos", "green.bowl@digimenu.test"],
+    name: "Green Bowl Lagos",
+    slug: "green-bowl-lagos",
+    plan: "starter",
+    logo: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1400&q=80",
+    description: "Healthy bowls, smoothies, wraps, and vegetarian-friendly daily specials.",
+    phone: "+234 801 555 0105",
+    address: "18 Admiralty Road, Lekki Phase 1, Lagos",
+    delivery: "Office lunch packs and subscription meal bowls available on weekdays.",
+    socials: { instagram: "https://instagram.com/greenbowllagos" },
+    menu: baseMenu("Green Bowl")
+  },
+  {
+    owner: ["Mama Ada Kitchen", "mama.ada@digimenu.test"],
+    name: "Mama Ada Kitchen",
+    slug: "mama-ada-kitchen",
+    plan: "professional",
+    logo: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=240&q=80",
+    cover: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80",
+    description: "Homestyle soups, swallow, rice dishes, and party trays for families.",
+    phone: "+234 801 555 0106",
+    address: "12 Toyin Street, Ikeja, Lagos",
+    delivery: "Bulk lunch delivery and weekend event trays available by request.",
+    socials: { instagram: "https://instagram.com/mamaadakitchen" },
+    menu: baseMenu("Mama Ada")
+  }
+];
+
 async function seed() {
   await initDatabase();
 
-  await upsertUser("Super Admin", "superadmin@admin.com", bcrypt.hashSync("123456", 10), "super_admin");
-  await upsertUser("Admin", "admin@admin.com", bcrypt.hashSync("123456", 10), "admin");
-  await upsertUser("8am Light Kitchen", "8amlight@gmail.com", bcrypt.hashSync("123456", 10), "owner");
-  await upsertUser("Digi Menu Manager", "manager@digimenu.com", bcrypt.hashSync("123456", 10), "manager");
+  await upsertUser("Super Admin", "superadmin@admin.com", passwordHash, "super_admin");
+  await upsertUser("Admin", "admin@admin.com", passwordHash, "admin");
+  await upsertUser("Digi Menu Manager", "manager@digimenu.com", passwordHash, "manager");
   await seedSystemSettings();
   await seedPlans();
 
-  const owner = await get("SELECT * FROM users WHERE email = ?", ["8amlight@gmail.com"]);
-  let restaurant = await get("SELECT * FROM restaurants WHERE slug = ?", ["8am-light-kitchen"]);
-
-  if (!restaurant) {
-    await run(
-      `INSERT INTO restaurants (
-        owner_id, name, slug, status, plan, logo_url, cover_url, description, phone, whatsapp, email,
-        address, google_maps_url, opening_hours, social_links, delivery_info
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        owner.id,
-        "8am Light Kitchen",
-        "8am-light-kitchen",
-        "approved",
-        "professional",
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=240&q=80",
-        "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80",
-        "Fresh Nigerian meals, grills, drinks, and quick lunch plates for busy teams and families.",
-        "+234 800 000 0000",
-        "+234 800 000 0000",
-        "8amlight@gmail.com",
-        "14 Admiralty Way, Lekki Phase 1, Lagos",
-        "https://maps.google.com",
-        JSON.stringify({ monday: "8:00 AM - 10:00 PM", saturday: "9:00 AM - 11:00 PM", sunday: "12:00 PM - 9:00 PM" }),
-        JSON.stringify({ instagram: "https://instagram.com/8amlight", x: "https://x.com/8amlight" }),
-        "Pickup and delivery available within Lekki, Victoria Island, and Ikoyi."
-      ]
-    );
-    restaurant = await get("SELECT * FROM restaurants WHERE slug = ?", ["8am-light-kitchen"]);
+  for (const item of restaurants) {
+    const restaurant = await seedRestaurant(item);
+    await seedMenu(restaurant.id, item.menu);
+    await seedManagerStaff(restaurant.id);
+    await seedSubscription(restaurant.id, item.slug);
+    await seedQr(restaurant.id, restaurant.slug);
+    await seedAnalytics(restaurant.id);
   }
 
-  await seedMenu(restaurant.id);
-  await seedManagerStaff(restaurant.id);
-  await seedSubscription(restaurant.id);
-  await seedQr(restaurant.id, restaurant.slug);
-  await seedAnalytics(restaurant.id);
-
-  console.log("Seed complete: admin@admin.com / 123456, 8amlight@gmail.com / 123456, manager@digimenu.com / 123456");
+  console.log("Seed complete: admin@admin.com / 123456, restaurant owners / 123456, manager@digimenu.com / 123456");
 }
 
 async function upsertUser(name, email, passwordHash, role) {
@@ -66,6 +157,67 @@ async function upsertUser(name, email, passwordHash, role) {
     passwordHash,
     role
   ]);
+}
+
+async function seedRestaurant(item) {
+  await upsertUser(item.owner[0], item.owner[1], passwordHash, "owner");
+  const owner = await get("SELECT * FROM users WHERE email = ?", [item.owner[1]]);
+  const openingHours = JSON.stringify({ monday: "8:00 AM - 10:00 PM", saturday: "9:00 AM - 11:00 PM", sunday: "12:00 PM - 9:00 PM" });
+  let restaurant = await get("SELECT * FROM restaurants WHERE slug = ?", [item.slug]);
+
+  if (!restaurant) {
+    await run(
+      `INSERT INTO restaurants (
+        owner_id, name, slug, status, plan, logo_url, cover_url, description, phone, whatsapp, email,
+        address, google_maps_url, opening_hours, social_links, delivery_info
+      ) VALUES (?, ?, ?, 'approved', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        owner.id,
+        item.name,
+        item.slug,
+        item.plan,
+        item.logo,
+        item.cover,
+        item.description,
+        item.phone,
+        item.phone,
+        item.owner[1],
+        item.address,
+        "https://maps.google.com",
+        openingHours,
+        JSON.stringify(item.socials),
+        item.delivery
+      ]
+    );
+  } else {
+    await run(
+      `UPDATE restaurants
+       SET owner_id = ?, name = ?, status = 'approved', plan = ?, logo_url = ?, cover_url = ?, description = ?,
+        phone = ?, whatsapp = ?, email = ?, address = ?, google_maps_url = ?, opening_hours = ?, social_links = ?,
+        delivery_info = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE slug = ?`,
+      [
+        owner.id,
+        item.name,
+        item.plan,
+        item.logo,
+        item.cover,
+        item.description,
+        item.phone,
+        item.phone,
+        item.owner[1],
+        item.address,
+        "https://maps.google.com",
+        openingHours,
+        JSON.stringify(item.socials),
+        item.delivery,
+        item.slug
+      ]
+    );
+  }
+
+  restaurant = await get("SELECT * FROM restaurants WHERE slug = ?", [item.slug]);
+  return restaurant;
 }
 
 async function seedSystemSettings() {
@@ -94,26 +246,7 @@ async function seedPlans() {
   }
 }
 
-async function seedMenu(restaurantId) {
-  const menu = {
-    Breakfast: [
-      ["Sunrise Akara Plate", "Crisp akara, pap, honey drizzle, and fruit.", 4500, "15 min", 1, 1, 0, "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=80"],
-      ["Yam & Egg Sauce", "Golden yam wedges with rich peppered egg sauce.", 5200, "20 min", 1, 0, 1, "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=900&q=80"]
-    ],
-    Rice: [
-      ["Smoky Party Jollof", "Long-grain rice cooked in smoky tomato stew with plantain.", 6800, "25 min", 1, 0, 0, "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=900&q=80"],
-      ["Native Rice Bowl", "Palm oil rice with seafood, scent leaf, and vegetables.", 7500, "30 min", 0, 1, 1, "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=80"]
-    ],
-    Grills: [
-      ["Suya Chicken Skewers", "Spiced chicken skewers with onion, tomato, and yaji.", 8200, "25 min", 1, 0, 1, "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=900&q=80"],
-      ["Peppered Croaker", "Whole croaker with pepper sauce and herb potatoes.", 14500, "35 min", 0, 0, 1, "https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=900&q=80"]
-    ],
-    Drinks: [
-      ["Zobo Citrus Cooler", "Hibiscus, orange, ginger, and mint served chilled.", 2500, "5 min", 1, 0, 0, "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80"],
-      ["Chapman", "Classic Nigerian mocktail with cucumber and citrus.", 3000, "5 min", 0, 0, 0, "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=900&q=80"]
-    ]
-  };
-
+async function seedMenu(restaurantId, menu) {
   let order = 1;
   for (const [categoryName, items] of Object.entries(menu)) {
     let category = await get("SELECT * FROM menu_categories WHERE restaurant_id = ? AND name = ?", [restaurantId, categoryName]);
@@ -158,8 +291,9 @@ async function seedMenu(restaurantId) {
   }
 }
 
-async function seedSubscription(restaurantId) {
-  const plan = await get("SELECT * FROM subscription_plans WHERE slug = ?", ["professional"]);
+async function seedSubscription(restaurantId, slug) {
+  const restaurant = await get("SELECT * FROM restaurants WHERE id = ?", [restaurantId]);
+  const plan = await get("SELECT * FROM subscription_plans WHERE slug = ?", [restaurant.plan || "professional"]);
   let subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurantId]);
   if (!subscription) {
     await run(
@@ -169,11 +303,12 @@ async function seedSubscription(restaurantId) {
     subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurantId]);
   }
 
-  const invoice = await get("SELECT * FROM invoices WHERE invoice_number = ?", ["DM-0001"]);
+  const invoiceNumber = `DM-${slug.toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
+  const invoice = await get("SELECT * FROM invoices WHERE invoice_number = ?", [invoiceNumber]);
   if (!invoice) {
     await run(
-      "INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at) VALUES (?, ?, 10000, 'DM-0001', 'paid', CURRENT_TIMESTAMP)",
-      [restaurantId, subscription.id]
+      "INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at) VALUES (?, ?, ?, ?, 'paid', CURRENT_TIMESTAMP)",
+      [restaurantId, subscription.id, plan.monthly_price || 25000, invoiceNumber]
     );
   }
 }
@@ -226,6 +361,28 @@ async function seedAnalytics(restaurantId) {
 
 function slugify(value) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+function baseMenu(prefix = "") {
+  const label = prefix ? `${prefix} ` : "";
+  return {
+    Breakfast: [
+      [`${label}Sunrise Akara Plate`, "Crisp akara, pap, honey drizzle, and fruit.", 4500, "15 min", 1, 1, 0, "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=80"],
+      [`${label}Yam & Egg Sauce`, "Golden yam wedges with rich peppered egg sauce.", 5200, "20 min", 1, 0, 1, "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=900&q=80"]
+    ],
+    Rice: [
+      [`${label}Smoky Party Jollof`, "Long-grain rice cooked in smoky tomato stew with plantain.", 6800, "25 min", 1, 0, 0, "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=900&q=80"],
+      [`${label}Native Rice Bowl`, "Palm oil rice with seafood, scent leaf, and vegetables.", 7500, "30 min", 0, 1, 1, "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=900&q=80"]
+    ],
+    Grills: [
+      [`${label}Suya Chicken Skewers`, "Spiced chicken skewers with onion, tomato, and yaji.", 8200, "25 min", 1, 0, 1, "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=900&q=80"],
+      [`${label}Peppered Croaker`, "Whole croaker with pepper sauce and herb potatoes.", 14500, "35 min", 0, 0, 1, "https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?auto=format&fit=crop&w=900&q=80"]
+    ],
+    Drinks: [
+      [`${label}Zobo Citrus Cooler`, "Hibiscus, orange, ginger, and mint served chilled.", 2500, "5 min", 1, 0, 0, "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80"],
+      [`${label}Chapman`, "Classic Nigerian mocktail with cucumber and citrus.", 3000, "5 min", 0, 0, 0, "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=900&q=80"]
+    ]
+  };
 }
 
 if (require.main === module) {

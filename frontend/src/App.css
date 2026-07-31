@@ -168,7 +168,7 @@
 
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -222,6 +222,122 @@
   display: block;
   margin-top: 6px;
   font-size: 28px;
+}
+
+.restaurant-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 720px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 14px;
+  background: var(--white);
+  box-shadow: 0 8px 22px rgba(23, 32, 29, 0.05);
+}
+
+.restaurant-search svg {
+  flex: 0 0 auto;
+  color: var(--green);
+}
+
+.restaurant-search input {
+  border: 0;
+}
+
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.restaurant-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 8px 22px rgba(23, 32, 29, 0.06);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.restaurant-card:hover {
+  border-color: rgba(13, 107, 79, 0.45);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.restaurant-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.restaurant-card > div {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.restaurant-card-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.restaurant-card h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.restaurant-card-title span {
+  border-radius: 6px;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 900;
+  padding: 5px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.restaurant-card p {
+  min-height: 76px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.restaurant-card small {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.restaurant-card strong {
+  color: var(--orange);
+}
+
+.empty-state,
+.directory-note {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.platform-band {
+  border-top: 1px solid var(--line);
+  background: #f4f8f4;
 }
 
 .auth-page {
@@ -948,6 +1064,7 @@ button:disabled {
 
   .hero-section,
   .feature-grid,
+  .restaurant-grid,
   .dashboard-grid,
   .form-grid,
   .menu-grid,

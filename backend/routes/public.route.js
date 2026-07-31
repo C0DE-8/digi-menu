@@ -4,6 +4,39 @@ const { deviceFromAgent } = require("../services/restaurants");
 
 const router = express.Router();
 
+router.get("/restaurants", async (req, res) => {
+  const search = String(req.query.search || "").trim();
+  const params = [];
+  let where = "WHERE r.status = 'approved'";
+
+  if (search) {
+    where += ` AND (
+      r.name LIKE ? OR r.description LIKE ? OR r.address LIKE ? OR
+      EXISTS (
+        SELECT 1 FROM menu_items mi
+        WHERE mi.restaurant_id = r.id
+          AND mi.availability != 'hidden'
+          AND (mi.name LIKE ? OR mi.description LIKE ?)
+      )
+    )`;
+    const term = `%${search}%`;
+    params.push(term, term, term, term, term);
+  }
+
+  const restaurants = await all(
+    `SELECT
+      r.id, r.name, r.slug, r.plan, r.logo_url, r.cover_url, r.description, r.address, r.delivery_info,
+      (SELECT COUNT(*) FROM menu_categories c WHERE c.restaurant_id = r.id AND c.is_active = 1) AS category_count,
+      (SELECT COUNT(*) FROM menu_items i WHERE i.restaurant_id = r.id AND i.availability != 'hidden') AS item_count
+    FROM restaurants r
+    ${where}
+    ORDER BY r.name ASC`,
+    params
+  );
+
+  res.json({ restaurants });
+});
+
 router.get("/menu/:slug", async (req, res) => {
   const restaurant = await get("SELECT * FROM restaurants WHERE slug = ? AND status = 'approved'", [req.params.slug]);
   if (!restaurant) return res.status(404).json({ error: "Menu not found" });
