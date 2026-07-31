@@ -1,15 +1,21 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FiArrowRight, FiBriefcase, FiCoffee, FiHome, FiLoader, FiMapPin, FiShoppingBag, FiTruck } from 'react-icons/fi'
+import { FiArrowRight, FiLoader } from 'react-icons/fi'
 import api, { setSession } from '../../api/client'
 
 const businessTypes = [
-  { value: 'restaurant', label: 'Restaurant', icon: <FiBriefcase /> },
-  { value: 'cafe', label: 'Cafe', icon: <FiCoffee /> },
-  { value: 'cloud_kitchen', label: 'Cloud kitchen', icon: <FiHome /> },
-  { value: 'food_truck', label: 'Food truck', icon: <FiTruck /> },
-  { value: 'bakery', label: 'Bakery', icon: <FiShoppingBag /> },
-  { value: 'bar_lounge', label: 'Bar or lounge', icon: <FiMapPin /> },
+  {
+    value: 'restaurant',
+    label: 'Restaurant',
+    description: 'Restaurants, cafés, food trucks, cloud kitchens..',
+    visual: 'meal',
+  },
+  {
+    value: 'shop',
+    label: 'Shop',
+    description: 'Mini marts, super markets, electronics, beauty stores.',
+    visual: 'shop',
+  },
 ]
 
 function Register() {
@@ -28,6 +34,7 @@ function Register() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const businessLabel = form.business_type === 'shop' ? 'Shop' : 'Restaurant'
 
   function update(field, value) {
     setForm((current) => ({ ...current, [field]: value }))
@@ -69,8 +76,9 @@ function Register() {
                     type="button"
                     onClick={() => update('business_type', type.value)}
                   >
-                    {type.icon}
-                    <span>{type.label}</span>
+                    <strong>{type.label}</strong>
+                    <p>{type.description}</p>
+                    <BusinessTypeVisual type={type.visual} />
                   </button>
                 ))}
               </div>
@@ -80,7 +88,7 @@ function Register() {
             </>
           ) : (
             <>
-              <p className="eyebrow">Restaurant details</p>
+              <p className="eyebrow">{businessLabel} details</p>
               <h1>Create your account</h1>
               <div className="form-grid compact-grid">
                 <label>
@@ -96,7 +104,7 @@ function Register() {
                   <input type="password" value={form.password} onChange={(event) => update('password', event.target.value)} minLength={6} required />
                 </label>
                 <label>
-                  <span>Restaurant name</span>
+                  <span>{businessLabel} name</span>
                   <input value={form.restaurant_name} onChange={(event) => update('restaurant_name', event.target.value)} required />
                 </label>
                 <label>
@@ -129,6 +137,28 @@ function Register() {
         </form>
       </section>
     </main>
+  )
+}
+
+function BusinessTypeVisual({ type }) {
+  if (type === 'shop') {
+    return (
+      <div className="business-visual shop-visual" aria-hidden="true">
+        <span className="shop-awning"></span>
+        <span className="shop-body"></span>
+        <span className="shop-window"></span>
+        <span className="shop-bag"></span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="business-visual meal-visual" aria-hidden="true">
+      <span className="meal-bowl"></span>
+      <span className="meal-food"></span>
+      <span className="meal-fork"></span>
+      <span className="meal-leaf"></span>
+    </div>
   )
 }
 
