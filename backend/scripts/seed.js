@@ -130,6 +130,8 @@ async function seed() {
   await upsertUser("Super Admin", "superadmin@admin.com", passwordHash, "super_admin");
   await upsertUser("Admin", "admin@admin.com", passwordHash, "admin");
   await upsertUser("Digi Menu Manager", "manager@digimenu.com", passwordHash, "manager");
+  await upsertUser("Demo Customer", "customer@digimenu.com", passwordHash, "customer");
+  await seedCustomerProfile();
   await seedSystemSettings();
   await seedPlans();
 
@@ -218,6 +220,20 @@ async function seedRestaurant(item) {
 
   restaurant = await get("SELECT * FROM restaurants WHERE slug = ?", [item.slug]);
   return restaurant;
+}
+
+async function seedCustomerProfile() {
+  const customer = await get("SELECT * FROM users WHERE email = ?", ["customer@digimenu.com"]);
+  if (!customer) return;
+  const existing = await get("SELECT * FROM customer_profiles WHERE user_id = ?", [customer.id]);
+  if (existing) return;
+  await run("INSERT INTO customer_profiles (user_id, phone, delivery_address, city, preferences) VALUES (?, ?, ?, ?, ?)", [
+    customer.id,
+    "+234 801 555 0200",
+    "Lekki Phase 1, Lagos",
+    "Lagos",
+    JSON.stringify(["rice", "grills", "cafe"])
+  ]);
 }
 
 async function seedSystemSettings() {

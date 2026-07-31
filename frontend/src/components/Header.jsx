@@ -23,7 +23,12 @@ function Header() {
   }, [])
 
   const links = user
-    ? user.role === 'super_admin'
+    ? user.role === 'customer'
+      ? [
+          { to: '/', label: 'Home' },
+          { to: '/#restaurants', label: 'Restaurants' },
+        ]
+      : user.role === 'super_admin'
       ? [
           { to: '/super-admin', label: 'Super admin' },
           { to: '/admin', label: 'Admin view' },
@@ -41,6 +46,7 @@ function Header() {
     : [
         { to: '/', label: 'Home' },
         { to: '/#restaurants', label: 'Restaurants' },
+        { to: '/store/sign-up', label: 'Customer sign up' },
         { to: '/register', label: 'Start selling' },
       ]
 

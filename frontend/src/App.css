@@ -778,6 +778,97 @@
     url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80') center/cover;
 }
 
+.customer-register-page {
+  min-height: calc(100vh - 130px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 520px);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: center;
+  padding: clamp(28px, 6vw, 72px);
+  background:
+    linear-gradient(135deg, rgba(13, 107, 79, 0.93), rgba(35, 91, 143, 0.82)),
+    url('https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1500&q=80') center/cover;
+}
+
+.customer-register-hero {
+  color: #fff;
+}
+
+.customer-register-hero h1 {
+  margin: 8px 0 16px;
+  max-width: 760px;
+  font-size: clamp(46px, 7vw, 92px);
+  line-height: 0.95;
+}
+
+.customer-register-hero p:not(.eyebrow) {
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.customer-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.customer-benefits span {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 900;
+  padding: 9px 12px;
+}
+
+.customer-register-form {
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.customer-register-form h2 {
+  margin: 4px 0 0;
+  font-size: 28px;
+}
+
+.preference-picker {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.preference-picker > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preference-picker button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 900;
+  padding: 8px 11px;
+}
+
+.preference-picker button.active {
+  border-color: var(--green);
+  background: var(--mint);
+  color: var(--green);
+}
+
 .vendor-register-page {
   min-height: calc(100vh - 130px);
   padding: clamp(18px, 4vw, 48px);
@@ -1932,9 +2023,14 @@ button:disabled {
 
   .business-type-grid,
   .approval-row,
+  .customer-register-page,
   .food-hero,
   .quick-actions {
     grid-template-columns: 1fr;
+  }
+
+  .customer-register-page {
+    align-items: stretch;
   }
 
   .food-hero {

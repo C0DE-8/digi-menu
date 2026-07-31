@@ -17,7 +17,7 @@ function Login() {
     try {
       const { data } = await api.post('/auth/login', { email, password })
       setSession(data)
-      navigate(data.user.role === 'super_admin' ? '/super-admin' : data.user.role === 'admin' ? '/admin' : '/dashboard')
+      navigate(data.user.role === 'super_admin' ? '/super-admin' : data.user.role === 'admin' ? '/admin' : data.user.role === 'customer' ? '/#restaurants' : '/dashboard')
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed')
     } finally {
@@ -52,6 +52,9 @@ function Login() {
         <Link className="secondary-button full" to="/register">
           Register restaurant
         </Link>
+        <Link className="secondary-button full" to="/store/sign-up">
+          Create customer account
+        </Link>
         <div className="demo-accounts">
           <button type="button" onClick={() => setEmail('admin@admin.com')}>
             Admin: admin@admin.com / 123456
@@ -61,6 +64,9 @@ function Login() {
           </button>
           <button type="button" onClick={() => setEmail('manager@digimenu.com')}>
             Manager: manager@digimenu.com / 123456
+          </button>
+          <button type="button" onClick={() => setEmail('customer@digimenu.com')}>
+            Customer: customer@digimenu.com / 123456
           </button>
         </div>
       </form>

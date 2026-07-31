@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import SuperAdminDashboard from './pages/admin/SuperAdminDashboard'
 import Login from './pages/auth/Login'
+import CustomerRegister from './pages/auth/CustomerRegister'
 import Register from './pages/auth/Register'
 import Home from './pages/marketing/Home'
 import MenuBuilder from './pages/menu/MenuBuilder'
@@ -27,6 +28,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/store/sign-up" element={<CustomerRegister />} />
+        <Route path="/customer/sign-up" element={<CustomerRegister />} />
         <Route path="/menu/:slug" element={<PublicMenu />} />
         <Route
           path="/dashboard"

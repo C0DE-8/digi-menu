@@ -31,6 +31,7 @@ Add invoice/payment history UI.
 Add coupon/trial fields if needed.
 
 Phase 3: Customer Discovery
+Add customer registration and customer account role. ✅
 Redesign homepage closer to food discovery.
 Add location/search first experience.
 Add cuisine/category filters.

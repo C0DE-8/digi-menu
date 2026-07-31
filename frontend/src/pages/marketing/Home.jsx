@@ -195,6 +195,7 @@ function Home() {
             ))}
           </div>
           <div className="hero-actions">
+            <Link className="primary-button" to="/store/sign-up">Create customer account</Link>
             <Link className="primary-button" to="/register">Start selling</Link>
             <a className="secondary-button" href="#restaurants">Explore restaurants</a>
           </div>

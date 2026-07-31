@@ -66,6 +66,32 @@ router.post("/register", async (req, res) => {
   return res.status(201).json({ token, user: publicUser(user), restaurant });
 });
 
+router.post("/customers/register", async (req, res) => {
+  const { name, email, password, phone, delivery_address, city, preferences } = req.body;
+  if (!name || !email || !password || !phone) {
+    return res.status(400).json({ error: "Name, email, password, and phone are required" });
+  }
+
+  const existingUser = await get("SELECT * FROM users WHERE email = ?", [email]);
+  if (existingUser) return res.status(409).json({ error: "An account with this email already exists" });
+
+  const passwordHash = bcrypt.hashSync(password, 10);
+  const userId = await run("INSERT INTO users (name, email, password_hash, role, status) VALUES (?, ?, ?, 'customer', 'active')", [
+    name,
+    email,
+    passwordHash
+  ]);
+
+  await run(
+    "INSERT INTO customer_profiles (user_id, phone, delivery_address, city, preferences) VALUES (?, ?, ?, ?, ?)",
+    [userId, phone, delivery_address || "", city || "", JSON.stringify(preferences || [])]
+  );
+
+  const user = await get("SELECT * FROM users WHERE id = ?", [userId]);
+  const token = jwt.sign({ id: user.id, role: user.role }, jwtSecret, { expiresIn: "7d" });
+  return res.status(201).json({ token, user: publicUser(user), restaurant: null });
+});
+
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await get("SELECT * FROM users WHERE email = ?", [email]);
@@ -73,13 +99,13 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ error: "Invalid email or password" });
   }
 
-  const restaurant = user.role === "super_admin" ? null : await getRestaurantForUser(user);
+  const restaurant = ["super_admin", "customer"].includes(user.role) ? null : await getRestaurantForUser(user);
   const token = jwt.sign({ id: user.id, role: user.role }, jwtSecret, { expiresIn: "7d" });
   return res.json({ token, user: publicUser(user), restaurant });
 });
 
 router.get("/me", requireAuth, async (req, res) => {
-  const restaurant = req.user.role === "super_admin" ? null : await getRestaurantForUser(req.user);
+  const restaurant = ["super_admin", "customer"].includes(req.user.role) ? null : await getRestaurantForUser(req.user);
   res.json({ user: publicUser(req.user), restaurant });
 });
 
