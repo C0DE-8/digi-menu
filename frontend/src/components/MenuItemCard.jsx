@@ -20,7 +20,7 @@ function availabilityLabel(value) {
   }[value]
 }
 
-function MenuItemCard({ item, onView }) {
+function MenuItemCard({ item, onAddToCart, onView }) {
   const fallbackImage = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80'
 
   return (
@@ -48,6 +48,19 @@ function MenuItemCard({ item, onView }) {
         <small>
           <FiClock aria-hidden="true" /> {formatPrepTime(item.prep_time)}
         </small>
+        {onAddToCart ? (
+          <button
+            className="secondary-button full item-cart-button"
+            type="button"
+            disabled={!['available', 'seasonal'].includes(item.availability || 'available')}
+            onClick={(event) => {
+              event.stopPropagation()
+              onAddToCart(item)
+            }}
+          >
+            Add to cart
+          </button>
+        ) : null}
       </div>
     </article>
   )

@@ -39,14 +39,14 @@ Add restaurant status: open/closed. ✅
 Add “near you” structure, even if location is manual at first. ✅
 Add restaurant detail pages separate from menu pages. ✅
 
-Phase 4: Ordering MVP
+Phase 4: Ordering MVP ✅
 Add cart. ✅
-Add customer checkout form.
-Add pickup/delivery choice.
-Add order creation.
-Add restaurant order dashboard.
-Add kitchen notification view.
-Add WhatsApp fallback for order confirmation if payment is not ready.
+Add customer checkout form. ✅
+Add pickup/delivery choice. ✅
+Add order creation. ✅
+Add restaurant order dashboard. ✅
+Add kitchen notification view. ✅
+Add WhatsApp fallback for order confirmation if payment is not ready. ✅
 
 Phase 5: Payments
 Add real payment provider.

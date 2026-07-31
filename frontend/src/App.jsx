@@ -8,6 +8,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import SuperAdminDashboard from './pages/admin/SuperAdminDashboard'
 import Login from './pages/auth/Login'
 import CustomerRegister from './pages/auth/CustomerRegister'
+import Checkout from './pages/customer/Checkout'
 import Register from './pages/auth/Register'
 import Home from './pages/marketing/Home'
 import RestaurantDetail from './pages/marketing/RestaurantDetail'
@@ -16,6 +17,8 @@ import PublicMenu from './pages/menu/PublicMenu'
 import Analytics from './pages/restaurant/Analytics'
 import Dashboard from './pages/restaurant/Dashboard'
 import QRCodePage from './pages/restaurant/QRCodePage'
+import Kitchen from './pages/restaurant/Kitchen'
+import Orders from './pages/restaurant/Orders'
 import RestaurantSettings from './pages/restaurant/RestaurantSettings'
 import Subscriptions from './pages/restaurant/Subscriptions'
 import NotFound from './pages/system/NotFound'
@@ -33,6 +36,7 @@ function App() {
         <Route path="/customer/sign-up" element={<CustomerRegister />} />
         <Route path="/restaurants/:slug" element={<RestaurantDetail />} />
         <Route path="/menu/:slug" element={<PublicMenu />} />
+        <Route path="/checkout/:slug" element={<Checkout />} />
         <Route
           path="/dashboard"
           element={
@@ -62,6 +66,22 @@ function App() {
           element={
             <ProtectedRoute restaurantOnly>
               <Analytics />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute restaurantOnly>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/kitchen"
+          element={
+            <ProtectedRoute restaurantOnly>
+              <Kitchen />
             </ProtectedRoute>
           }
         />

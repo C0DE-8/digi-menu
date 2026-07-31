@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { FiMapPin, FiPhone, FiSearch, FiShare2, FiX } from 'react-icons/fi'
+import { Link, useParams } from 'react-router-dom'
+import { FiMapPin, FiMinus, FiPhone, FiPlus, FiSearch, FiShare2, FiShoppingBag, FiTrash2, FiX } from 'react-icons/fi'
 import api from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
 import MenuItemCard from '../../components/MenuItemCard'
@@ -14,6 +14,7 @@ function PublicMenu() {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
   const [selectedItem, setSelectedItem] = useState(null)
+  const [cart, setCart] = useState(() => readCart(slug))
 
   useEffect(() => {
     let active = true
@@ -42,6 +43,16 @@ function PublicMenu() {
     }
   }, [slug])
 
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setCart(readCart(slug)), 0)
+    return () => window.clearTimeout(timeout)
+  }, [slug])
+
+  useEffect(() => {
+    localStorage.setItem(cartKey(slug), JSON.stringify(cart))
+    window.dispatchEvent(new Event('digiMenuCartChanged'))
+  }, [cart, slug])
+
   const items = useMemo(() => {
     if (!data) return []
     return data.items.filter((item) => {
@@ -57,7 +68,37 @@ function PublicMenu() {
     await api.post(`/public/menu/${slug}/events`, { event_type: 'item_view', menu_item_id: item.id, category_id: item.category_id }).catch(() => {})
   }
 
+  function addToCart(item) {
+    setCart((current) => {
+      const existing = current.find((cartItem) => cartItem.menu_item_id === item.id)
+      if (existing) {
+        return current.map((cartItem) => cartItem.menu_item_id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem)
+      }
+      return [
+        ...current,
+        {
+          menu_item_id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: 1,
+          image_url: item.image_url,
+        },
+      ]
+    })
+  }
+
+  function updateCartItem(menuItemId, quantity) {
+    setCart((current) => current.flatMap((item) => {
+      if (item.menu_item_id !== menuItemId) return [item]
+      if (quantity <= 0) return []
+      return [{ ...item, quantity }]
+    }))
+  }
+
   if (!data) return <SkeletonPage variant="menu" />
+
+  const cartTotal = cart.reduce((sum, item) => sum + Number(item.price || 0) * item.quantity, 0)
+  const cartQuantity = cart.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <main className="public-menu">
@@ -90,10 +131,46 @@ function PublicMenu() {
         </div>
         <div className="menu-grid">
           {items.map((item) => (
-            <MenuItemCard item={item} key={item.id} onView={track} />
+            <MenuItemCard item={item} key={item.id} onAddToCart={addToCart} onView={track} />
           ))}
         </div>
       </section>
+      <aside className="menu-cart-panel" aria-label="Cart">
+        <div className="cart-title-row">
+          <span><FiShoppingBag /> Cart</span>
+          <strong>{cartQuantity} item{cartQuantity === 1 ? '' : 's'}</strong>
+        </div>
+        {cart.length ? (
+          <>
+            <div className="cart-line-list">
+              {cart.map((item) => (
+                <div className="cart-line-item" key={item.menu_item_id}>
+                  <div>
+                    <strong>{item.name}</strong>
+                    <small>₦{Number(item.price || 0).toLocaleString()}</small>
+                  </div>
+                  <div className="quantity-stepper">
+                    <button type="button" onClick={() => updateCartItem(item.menu_item_id, item.quantity - 1)} aria-label={`Remove one ${item.name}`}>
+                      {item.quantity === 1 ? <FiTrash2 /> : <FiMinus />}
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button type="button" onClick={() => updateCartItem(item.menu_item_id, item.quantity + 1)} aria-label={`Add one ${item.name}`}>
+                      <FiPlus />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="cart-total-row">
+              <span>Total</span>
+              <strong>₦{cartTotal.toLocaleString()}</strong>
+            </div>
+            <Link className="primary-button full" to={`/checkout/${data.restaurant.slug}`}>Checkout</Link>
+          </>
+        ) : (
+          <p className="muted-line">Add meals from the menu to start an order.</p>
+        )}
+      </aside>
       {selectedItem ? (
         <div className="modal-backdrop" role="presentation" onClick={() => setSelectedItem(null)}>
           <article className="item-detail-modal" role="dialog" aria-modal="true" aria-label={selectedItem.name} onClick={(event) => event.stopPropagation()}>
@@ -119,6 +196,19 @@ function PublicMenu() {
       ) : null}
     </main>
   )
+}
+
+function cartKey(slug) {
+  return `digiMenuCart:${slug}`
+}
+
+function readCart(slug) {
+  try {
+    const saved = localStorage.getItem(cartKey(slug))
+    return saved ? JSON.parse(saved) : []
+  } catch {
+    return []
+  }
 }
 
 export default PublicMenu

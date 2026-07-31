@@ -1738,6 +1738,10 @@ button:disabled {
   font-weight: 800;
 }
 
+.item-cart-button {
+  margin-top: 14px;
+}
+
 .settings-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1781,6 +1785,227 @@ button:disabled {
   background-position: center;
   background-size: cover;
   position: relative;
+}
+
+.menu-cart-panel {
+  position: fixed;
+  right: clamp(14px, 3vw, 28px);
+  bottom: clamp(14px, 3vw, 28px);
+  z-index: 18;
+  width: min(calc(100% - 28px), 380px);
+  max-height: min(560px, calc(100vh - 110px));
+  overflow: auto;
+  border: 1px solid rgba(13, 107, 79, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 80px rgba(23, 32, 29, 0.18);
+  backdrop-filter: blur(16px);
+  padding: 16px;
+}
+
+.cart-line-list {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.cart-line-item,
+.summary-line,
+.summary-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-line-item {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.cart-line-item small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.quantity-stepper {
+  display: inline-grid;
+  grid-template-columns: 32px 32px 32px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.quantity-stepper button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.quantity-stepper span {
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: 18px;
+  align-items: start;
+}
+
+.checkout-form-panel,
+.order-summary-panel {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.checkout-form-panel h2,
+.order-summary-panel h2,
+.order-card h2,
+.kitchen-ticket h2 {
+  margin: 0;
+}
+
+.segmented-control {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 6px;
+}
+
+.segmented-control button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.segmented-control button.active {
+  background: var(--green);
+  color: #fff;
+}
+
+.delivery-note {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--muted);
+  font-weight: 800;
+  padding: 12px;
+}
+
+.summary-line {
+  border-bottom: 1px solid var(--line);
+  padding: 10px 0;
+}
+
+.summary-total {
+  color: var(--green);
+  font-size: 20px;
+  font-weight: 900;
+  padding: 10px 0;
+}
+
+.checkout-success {
+  max-width: 760px;
+  padding: 28px;
+}
+
+.order-list,
+.kitchen-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.kitchen-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.order-card,
+.kitchen-ticket {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.order-card-head,
+.order-meta-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.order-card-head span,
+.order-meta-grid span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.order-meta-grid {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.status-pill {
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  padding: 7px 10px;
+  text-transform: uppercase;
+}
+
+.status-pill.pending {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.status-pill.accepted,
+.status-pill.preparing {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.status-pill.ready,
+.status-pill.completed {
+  background: var(--mint);
+  color: var(--green);
+}
+
+.status-pill.cancelled {
+  background: #fee2e2;
+  color: #b42318;
 }
 
 .menu-hero::before {
@@ -2241,6 +2466,7 @@ button:disabled {
   }
 
   .hero-section,
+  .checkout-layout,
   .feature-grid,
   .restaurant-grid,
   .dashboard-grid,
@@ -2278,6 +2504,20 @@ button:disabled {
   .cookie-actions button {
     justify-content: center;
     flex: 1;
+  }
+
+  .menu-cart-panel {
+    position: sticky;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    max-height: none;
+    margin: 0 14px 18px;
+  }
+
+  .order-card-head,
+  .order-meta-grid {
+    flex-direction: column;
   }
 }
 

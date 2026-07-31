@@ -7,18 +7,26 @@ function Header() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const [session, setSessionState] = useState(() => readSession())
+  const [cartCount, setCartCount] = useState(() => readCartCount())
   const { user, restaurant } = session
 
   useEffect(() => {
     function refreshSession() {
       setSessionState(readSession())
     }
+    function refreshCart() {
+      setCartCount(readCartCount())
+    }
 
     window.addEventListener('digiMenuSessionChanged', refreshSession)
+    window.addEventListener('digiMenuCartChanged', refreshCart)
     window.addEventListener('storage', refreshSession)
+    window.addEventListener('storage', refreshCart)
     return () => {
       window.removeEventListener('digiMenuSessionChanged', refreshSession)
+      window.removeEventListener('digiMenuCartChanged', refreshCart)
       window.removeEventListener('storage', refreshSession)
+      window.removeEventListener('storage', refreshCart)
     }
   }, [])
 
@@ -36,6 +44,8 @@ function Header() {
       : [
           { to: '/dashboard', label: 'Dashboard' },
           { to: '/menu-builder', label: 'Menu' },
+          { to: '/orders', label: 'Orders' },
+          { to: '/kitchen', label: 'Kitchen' },
           { to: '/analytics', label: 'Analytics' },
           { to: '/qr-code', label: 'QR' },
           { to: '/subscriptions', label: 'Billing' },
@@ -72,9 +82,9 @@ function Header() {
             {link.label}
           </NavLink>
         ))}
-        <button className="cart-nav-button" type="button" aria-label="Cart coming soon" title="Cart coming soon">
+        <button className="cart-nav-button" type="button" aria-label="Cart">
           <FiShoppingBag aria-hidden="true" />
-          <span>0</span>
+          <span>{cartCount}</span>
         </button>
         {user ? (
           <div className="account-nav">
@@ -91,6 +101,19 @@ function Header() {
       </nav>
     </header>
   )
+}
+
+function readCartCount() {
+  return Object.keys(localStorage)
+    .filter((key) => key.startsWith('digiMenuCart:'))
+    .reduce((sum, key) => {
+      try {
+        const items = JSON.parse(localStorage.getItem(key) || '[]')
+        return sum + items.reduce((itemSum, item) => itemSum + Number(item.quantity || 0), 0)
+      } catch {
+        return sum
+      }
+    }, 0)
 }
 
 function readSession() {

@@ -7,7 +7,8 @@ const preferences = ['Rice', 'Grills', 'Cafe', 'Breakfast', 'Seafood', 'Healthy'
 
 function CustomerRegister() {
   const [form, setForm] = useState({
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     phone: '',
@@ -37,7 +38,10 @@ function CustomerRegister() {
     setError('')
     setLoading(true)
     try {
-      const response = await api.post('/auth/customers/register', form)
+      const response = await api.post('/auth/customers/register', {
+        ...form,
+        name: `${form.first_name} ${form.last_name}`.trim(),
+      })
       setSession(response.data)
       navigate('/#restaurants')
     } catch (registerError) {
@@ -71,10 +75,17 @@ function CustomerRegister() {
           <Link className="text-button" to="/login">Have an account?</Link>
         </div>
         <label>
-          <span>Full name</span>
+          <span>First name</span>
           <div className="input-wrap">
             <FiUser />
-            <input value={form.name} onChange={(event) => update('name', event.target.value)} required />
+            <input value={form.first_name} onChange={(event) => update('first_name', event.target.value)} required />
+          </div>
+        </label>
+        <label>
+          <span>Last name</span>
+          <div className="input-wrap">
+            <FiUser />
+            <input value={form.last_name} onChange={(event) => update('last_name', event.target.value)} required />
           </div>
         </label>
         <label>

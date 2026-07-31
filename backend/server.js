@@ -33,6 +33,7 @@ app.use("/api/restaurant", require("./routes/restaurant.route"));
 app.use("/api", require("./routes/menu.route"));
 app.use("/api/uploads", require("./routes/upload.route"));
 app.use("/api/public", require("./routes/public.route"));
+app.use("/api", require("./routes/orders.route"));
 app.use("/api/admin", require("./routes/admin.route"));
 app.use("/api/qr", require("./routes/qr.route"));
 
