@@ -1,6 +1,6 @@
-# Digi Menu
+# Ravi Menu
 
-Digi Menu is a restaurant and shop digital menu platform. It now covers vendor onboarding, admin approval, public restaurant discovery, customer registration, public menus, cart checkout, and a restaurant-side order workflow.
+Ravi Menu is a restaurant and shop digital menu platform. It now covers vendor onboarding, admin approval, public restaurant discovery, customer registration, public menus, cart checkout, and a restaurant-side order workflow.
 
 The product is still in testing, but it has moved past the original demo-only phase.
 
@@ -88,17 +88,17 @@ Each seeded restaurant has an owner account, profile data, service area, cuisine
 
 Default password for seeded accounts is `123456`.
 
-- Super admin: `superadmin@admin.com`
-- Admin: `admin@admin.com`
-- Manager: `manager@digimenu.com`
-- Demo customer: `customer@digimenu.com`
+- Super admin: `superadmin@ravimenu.com`
+- Admin: `admin@ravimenu.com`
+- Manager: `manager@ravimenu.com`
+- Demo customer: `customer@ravimenu.com`
 - 8am owner: `8amlight@gmail.com`
-- Lola Cafe owner: `lola.cafe@digimenu.test`
-- Suya Street owner: `suya.street@digimenu.test`
-- Bistro Mainland owner: `bistro.mainland@digimenu.test`
-- Ocean Pearl owner: `ocean.pearl@digimenu.test`
-- Green Bowl owner: `green.bowl@digimenu.test`
-- Mama Ada owner: `mama.ada@digimenu.test`
+- Lola Cafe owner: `lola.cafe@ravimenu.test`
+- Suya Street owner: `suya.street@ravimenu.test`
+- Bistro Mainland owner: `bistro.mainland@ravimenu.test`
+- Ocean Pearl owner: `ocean.pearl@ravimenu.test`
+- Green Bowl owner: `green.bowl@ravimenu.test`
+- Mama Ada owner: `mama.ada@ravimenu.test`
 
 ## Local Setup
 
@@ -124,6 +124,11 @@ Default local URLs:
 
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:5050`
+
+Production URLs:
+
+- Frontend: `https://ravimenu.com`
+- Backend API: `https://api.ravimenu.com`
 
 ## Database
 

@@ -18,13 +18,13 @@ function Header() {
       setCartCount(readCartCount())
     }
 
-    window.addEventListener('digiMenuSessionChanged', refreshSession)
-    window.addEventListener('digiMenuCartChanged', refreshCart)
+    window.addEventListener('raviMenuSessionChanged', refreshSession)
+    window.addEventListener('raviMenuCartChanged', refreshCart)
     window.addEventListener('storage', refreshSession)
     window.addEventListener('storage', refreshCart)
     return () => {
-      window.removeEventListener('digiMenuSessionChanged', refreshSession)
-      window.removeEventListener('digiMenuCartChanged', refreshCart)
+      window.removeEventListener('raviMenuSessionChanged', refreshSession)
+      window.removeEventListener('raviMenuCartChanged', refreshCart)
       window.removeEventListener('storage', refreshSession)
       window.removeEventListener('storage', refreshCart)
     }
@@ -73,7 +73,7 @@ function Header() {
     <header className="site-header">
       <Link className="brand" to="/">
         <FiGrid aria-hidden="true" />
-        <span>Digi Menu</span>
+        <span>Ravi Menu</span>
       </Link>
       <button className="icon-button mobile-only" type="button" onClick={() => setOpen(!open)} aria-label="Toggle navigation">
         {open ? <FiX /> : <FiMenu />}
@@ -107,7 +107,7 @@ function Header() {
 
 function readCartCount() {
   return Object.keys(localStorage)
-    .filter((key) => key.startsWith('digiMenuCart:'))
+    .filter((key) => key.startsWith('raviMenuCart:'))
     .reduce((sum, key) => {
       try {
         const items = JSON.parse(localStorage.getItem(key) || '[]')

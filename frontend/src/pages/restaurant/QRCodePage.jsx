@@ -39,7 +39,7 @@ function QRCodePage() {
               <FiRefreshCw /> Regenerate
             </button>
             {data.qrCode?.image_data_url ? (
-              <a className="secondary-button" href={data.qrCode.image_data_url} download="digi-menu-qr.png">
+              <a className="secondary-button" href={data.qrCode.image_data_url} download="ravi-menu-qr.png">
                 <FiDownload /> Download PNG
               </a>
             ) : null}

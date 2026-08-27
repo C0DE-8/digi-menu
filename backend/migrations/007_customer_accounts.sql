@@ -13,11 +13,11 @@ CREATE TABLE IF NOT EXISTS customer_profiles (
 );
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Demo Customer', 'customer@digimenu.com', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'customer', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'customer@digimenu.com');
+SELECT 'Demo Customer', 'customer@ravimenu.com', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'customer', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'customer@ravimenu.com');
 
 INSERT INTO customer_profiles (user_id, phone, delivery_address, city, preferences)
 SELECT u.id, '+234 801 555 0200', 'Lekki Phase 1, Lagos', 'Lagos', '["rice","grills","cafe"]'
 FROM users u
-WHERE u.email = 'customer@digimenu.com'
+WHERE u.email = 'customer@ravimenu.com'
   AND NOT EXISTS (SELECT 1 FROM customer_profiles existing WHERE existing.user_id = u.id);

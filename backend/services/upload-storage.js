@@ -4,8 +4,8 @@ const path = require("path");
 
 function getLocalUploadRoot() {
   if (process.env.LOCAL_UPLOAD_ROOT) return process.env.LOCAL_UPLOAD_ROOT;
-  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT) {
-    return path.join(os.tmpdir(), "digi-menu", "uploads");
+  if (process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT) {
+    return path.join(os.tmpdir(), "ravi-menu", "uploads");
   }
   return path.join(__dirname, "..", "uploads");
 }

@@ -24,7 +24,7 @@ async function getCloudinarySettings() {
     cloudName: await getSetting(CLOUDINARY_SETTING_KEYS.cloudName, ""),
     apiKey: await getSetting(CLOUDINARY_SETTING_KEYS.apiKey, ""),
     apiSecret: await getSetting(CLOUDINARY_SETTING_KEYS.apiSecret, ""),
-    folder: await getSetting(CLOUDINARY_SETTING_KEYS.folder, "digi-menu/menu-items"),
+    folder: await getSetting(CLOUDINARY_SETTING_KEYS.folder, "ravi-menu/menu-items"),
   };
 }
 
@@ -41,7 +41,7 @@ async function setCloudinarySettings(settings) {
     [CLOUDINARY_SETTING_KEYS.cloudName, settings.cloudName],
     [CLOUDINARY_SETTING_KEYS.apiKey, settings.apiKey],
     [CLOUDINARY_SETTING_KEYS.apiSecret, settings.apiSecret],
-    [CLOUDINARY_SETTING_KEYS.folder, settings.folder || "digi-menu/menu-items"],
+    [CLOUDINARY_SETTING_KEYS.folder, settings.folder || "ravi-menu/menu-items"],
   ];
 
   for (const [key, value] of updates) {

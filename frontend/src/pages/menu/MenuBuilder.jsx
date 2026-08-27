@@ -84,7 +84,7 @@ function MenuBuilder() {
         category_id: categoryId || data.categories[0]?.id,
         name: itemName,
         price,
-        description: description || 'New menu item added from Digi Menu.',
+        description: description || 'New menu item added from Ravi Menu.',
         availability,
         image_url: imageUrl,
         prep_time: minutesToPrepTime(prepTime),

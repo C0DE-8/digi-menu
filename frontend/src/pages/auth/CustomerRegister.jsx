@@ -56,7 +56,7 @@ function CustomerRegister() {
       <section className="customer-register-hero">
         <div>
           <p className="eyebrow">Customer account</p>
-          <h1>Find food faster on Digi Menu.</h1>
+          <h1>Find food faster on Ravi Menu.</h1>
           <p>Save your details now so cart, checkout, pickup, and delivery can plug in cleanly during Phase 3.</p>
           <div className="customer-benefits">
             <span><FiShoppingBag /> Cart-ready profile</span>

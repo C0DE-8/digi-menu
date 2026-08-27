@@ -50,7 +50,7 @@ function PublicMenu() {
 
   useEffect(() => {
     localStorage.setItem(cartKey(slug), JSON.stringify(cart))
-    window.dispatchEvent(new Event('digiMenuCartChanged'))
+    window.dispatchEvent(new Event('raviMenuCartChanged'))
   }, [cart, slug])
 
   const items = useMemo(() => {
@@ -199,7 +199,7 @@ function PublicMenu() {
 }
 
 function cartKey(slug) {
-  return `digiMenuCart:${slug}`
+  return `raviMenuCart:${slug}`
 }
 
 function readCart(slug) {

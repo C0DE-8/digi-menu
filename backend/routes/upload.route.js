@@ -69,7 +69,7 @@ router.post("/menu-items", requireAuth, async (req, res) => {
   handleImageUpload(req, res, {
     localUpload: menuItemLocalUpload,
     localFolder: "menu-items",
-    cloudinaryFolder: "digi-menu/menu-items",
+    cloudinaryFolder: "ravi-menu/menu-items",
   });
 });
 
@@ -83,7 +83,7 @@ router.post("/restaurant-assets/:type", requireAuth, async (req, res) => {
   handleImageUpload(req, res, {
     localUpload: restaurantAssetLocalUpload,
     localFolder: "restaurant-assets",
-    cloudinaryFolder: `digi-menu/restaurants/${type}`,
+    cloudinaryFolder: `ravi-menu/restaurants/${type}`,
   });
 });
 
@@ -164,7 +164,7 @@ async function uploadCloudinary(file, folder) {
 
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: folder || settings.folder || "digi-menu/menu-items",
+        folder: folder || settings.folder || "ravi-menu/menu-items",
         resource_type: "image",
       },
       (error, result) => {

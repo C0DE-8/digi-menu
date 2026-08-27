@@ -4,7 +4,7 @@ import { FiLoader, FiLock, FiMail } from 'react-icons/fi'
 import api, { clearSession, setSession } from '../../api/client'
 
 function Login({ adminLock = false }) {
-  const [email, setEmail] = useState(adminLock ? 'admin@admin.com' : '8amlight@gmail.com')
+  const [email, setEmail] = useState(adminLock ? 'admin@ravimenu.com' : '8amlight@gmail.com')
   const [password, setPassword] = useState('123456')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -41,7 +41,7 @@ function Login({ adminLock = false }) {
     <main className="auth-page">
       <form className="auth-card" onSubmit={submit}>
         <p className="eyebrow">{adminLock ? 'Restricted access' : 'Account access'}</p>
-        <h1>{adminLock ? 'Admin lock' : 'Sign in to Digi Menu'}</h1>
+        <h1>{adminLock ? 'Admin lock' : 'Sign in to Ravi Menu'}</h1>
         <label>
           <span>Email</span>
           <div className="input-wrap">
@@ -74,10 +74,10 @@ function Login({ adminLock = false }) {
         <div className="demo-accounts">
           {adminLock ? (
             <>
-              <button type="button" onClick={() => setEmail('admin@admin.com')}>
+              <button type="button" onClick={() => setEmail('admin@ravimenu.com')}>
                 Admin access
               </button>
-              <button type="button" onClick={() => setEmail('superadmin@admin.com')}>
+              <button type="button" onClick={() => setEmail('superadmin@ravimenu.com')}>
                 Super admin access
               </button>
             </>
@@ -86,10 +86,10 @@ function Login({ adminLock = false }) {
               <button type="button" onClick={() => setEmail('8amlight@gmail.com')}>
                 Restaurant account
               </button>
-              <button type="button" onClick={() => setEmail('manager@digimenu.com')}>
+              <button type="button" onClick={() => setEmail('manager@ravimenu.com')}>
                 Manager account
               </button>
-              <button type="button" onClick={() => setEmail('customer@digimenu.com')}>
+              <button type="button" onClick={() => setEmail('customer@ravimenu.com')}>
                 Customer account
               </button>
             </>

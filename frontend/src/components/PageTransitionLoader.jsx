@@ -11,7 +11,7 @@ function PageTransitionLoader() {
           <span></span>
           <span></span>
         </div>
-        <strong>Digi Menu</strong>
+        <strong>Ravi Menu</strong>
       </div>
     </div>
   )

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { get } = require("../data/database");
 
-const jwtSecret = process.env.JWT_SECRET || "digi-menu-dev-secret";
+const jwtSecret = process.env.JWT_SECRET || "ravi-menu-dev-secret";
 
 async function requireAuth(req, res, next) {
   try {

@@ -135,7 +135,7 @@ function Home() {
   const [cuisine, setCuisine] = useState('')
   const [loading, setLoading] = useState(true)
   const [usingFallback, setUsingFallback] = useState(false)
-  const [cookieVisible, setCookieVisible] = useState(() => !localStorage.getItem('digiMenuCookieConsent'))
+  const [cookieVisible, setCookieVisible] = useState(() => !localStorage.getItem('raviMenuCookieConsent'))
   const [headlineIndex, setHeadlineIndex] = useState(0)
 
   useEffect(() => {
@@ -193,12 +193,12 @@ function Home() {
   const cartTotal = cartPreviewItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   function acceptCookies() {
-    localStorage.setItem('digiMenuCookieConsent', 'accepted')
+    localStorage.setItem('raviMenuCookieConsent', 'accepted')
     setCookieVisible(false)
   }
 
   function rejectCookies() {
-    localStorage.setItem('digiMenuCookieConsent', 'rejected')
+    localStorage.setItem('raviMenuCookieConsent', 'rejected')
     setCookieVisible(false)
   }
 
@@ -212,7 +212,7 @@ function Home() {
           </h1>
           <p>
             Browse restaurants, discover meals, preview your basket, and open live menus from food businesses already using
-            Digi Menu.
+            Ravi Menu.
           </p>
           <div className="location-search">
             <FiMapPin aria-hidden="true" />
@@ -369,7 +369,7 @@ function Home() {
           </button>
           <div>
             <span><FiCheck /> Cookies</span>
-            <p>We use cookies to keep sessions working and understand how restaurants and customers use Digi Menu.</p>
+            <p>We use cookies to keep sessions working and understand how restaurants and customers use Ravi Menu.</p>
           </div>
           <div className="cookie-actions">
             <button className="secondary-button" type="button" onClick={rejectCookies}>Reject</button>

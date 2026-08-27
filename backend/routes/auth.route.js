@@ -6,7 +6,7 @@ const { publicUser, requireAuth } = require("../middleware/auth");
 const { getRestaurantForUser, slugify } = require("../services/restaurants");
 
 const router = express.Router();
-const jwtSecret = process.env.JWT_SECRET || "digi-menu-dev-secret";
+const jwtSecret = process.env.JWT_SECRET || "ravi-menu-dev-secret";
 
 router.post("/register", async (req, res) => {
   const {

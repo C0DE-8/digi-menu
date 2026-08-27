@@ -70,7 +70,7 @@ SET s.coupon_code = COALESCE(s.coupon_code, p.coupon_code),
   s.status = CASE WHEN r.status = 'approved' AND s.status = 'trial' THEN 'active' ELSE s.status END;
 
 INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at, description, payment_method)
-SELECT r.id, s.id, COALESCE(p.monthly_price, 0), CONCAT('DM-', UPPER(r.slug), '-PLAN'), 'paid',
+SELECT r.id, s.id, COALESCE(p.monthly_price, 0), CONCAT('RM-', UPPER(r.slug), '-PLAN'), 'paid',
   CASE WHEN r.status = 'approved' THEN CURRENT_TIMESTAMP ELSE NULL END,
   CONCAT(p.name, ' plan setup'),
   'manual'

@@ -5,32 +5,32 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('digiMenuToken')
+  const token = localStorage.getItem('raviMenuToken')
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
 export function setSession(session) {
-  localStorage.setItem('digiMenuToken', session.token)
-  localStorage.setItem('digiMenuUser', JSON.stringify(session.user))
+  localStorage.setItem('raviMenuToken', session.token)
+  localStorage.setItem('raviMenuUser', JSON.stringify(session.user))
   if (session.restaurant) {
-    localStorage.setItem('digiMenuRestaurant', JSON.stringify(session.restaurant))
+    localStorage.setItem('raviMenuRestaurant', JSON.stringify(session.restaurant))
   } else {
-    localStorage.removeItem('digiMenuRestaurant')
+    localStorage.removeItem('raviMenuRestaurant')
   }
   notifySessionChanged()
 }
 
 export function clearSession() {
-  localStorage.removeItem('digiMenuToken')
-  localStorage.removeItem('digiMenuUser')
-  localStorage.removeItem('digiMenuRestaurant')
+  localStorage.removeItem('raviMenuToken')
+  localStorage.removeItem('raviMenuUser')
+  localStorage.removeItem('raviMenuRestaurant')
   notifySessionChanged()
 }
 
 export function getStoredUser() {
-  const token = localStorage.getItem('digiMenuToken')
-  const value = localStorage.getItem('digiMenuUser')
+  const token = localStorage.getItem('raviMenuToken')
+  const value = localStorage.getItem('raviMenuUser')
   if (!token || !value || isExpiredToken(token)) {
     clearSession()
     return null
@@ -45,22 +45,22 @@ export function getStoredUser() {
 }
 
 export function getStoredRestaurant() {
-  const token = localStorage.getItem('digiMenuToken')
-  const value = localStorage.getItem('digiMenuRestaurant')
+  const token = localStorage.getItem('raviMenuToken')
+  const value = localStorage.getItem('raviMenuRestaurant')
   if (!token || !value || isExpiredToken(token)) return null
 
   try {
     return JSON.parse(value)
   } catch {
-    localStorage.removeItem('digiMenuRestaurant')
+    localStorage.removeItem('raviMenuRestaurant')
     return null
   }
 }
 
 export function updateStoredRestaurant(restaurant) {
-  const token = localStorage.getItem('digiMenuToken')
+  const token = localStorage.getItem('raviMenuToken')
   if (!token || !restaurant) return
-  localStorage.setItem('digiMenuRestaurant', JSON.stringify(restaurant))
+  localStorage.setItem('raviMenuRestaurant', JSON.stringify(restaurant))
   notifySessionChanged()
 }
 
@@ -74,7 +74,7 @@ function isExpiredToken(token) {
 }
 
 function notifySessionChanged() {
-  window.dispatchEvent(new Event('digiMenuSessionChanged'))
+  window.dispatchEvent(new Event('raviMenuSessionChanged'))
 }
 
 export default api

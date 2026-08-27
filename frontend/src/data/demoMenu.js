@@ -115,7 +115,7 @@ const demoMenu = {
     },
   ],
   qrCode: {
-    menu_url: 'https://digi-menu-iota.vercel.app/menu/8am-light-kitchen',
+    menu_url: 'https://ravimenu.com/menu/8am-light-kitchen',
   },
 }
 

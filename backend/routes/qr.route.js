@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/regenerate", requireAuth, async (req, res) => {
   const restaurant = await getRestaurantForUser(req.user);
-  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://digi-menu-iota.vercel.app").replace(/\/$/, "");
+  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://ravimenu.com").replace(/\/$/, "");
   const menuUrl = `${baseUrl}/menu/${restaurant.slug}`;
   const image = await QRCode.toDataURL(menuUrl);
   const existing = await get("SELECT * FROM qr_codes WHERE restaurant_id = ?", [restaurant.id]);

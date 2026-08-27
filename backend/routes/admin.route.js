@@ -86,11 +86,11 @@ async function ensureApprovedRestaurantSetup(restaurantId) {
   if (!invoice && activeSubscription && plan) {
     await run(
       "INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at, description, payment_method) VALUES (?, ?, ?, ?, 'paid', CURRENT_TIMESTAMP, ?, 'manual')",
-      [restaurant.id, activeSubscription.id, plan.monthly_price || 0, `DM-${restaurant.slug.toUpperCase()}-PLAN`, `${plan.name} plan setup`]
+      [restaurant.id, activeSubscription.id, plan.monthly_price || 0, `RM-${restaurant.slug.toUpperCase()}-PLAN`, `${plan.name} plan setup`]
     );
   }
 
-  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://digi-menu-iota.vercel.app").replace(/\/$/, "");
+  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://ravimenu.com").replace(/\/$/, "");
   const menuUrl = `${baseUrl}/menu/${restaurant.slug}`;
   const qrCode = await get("SELECT * FROM qr_codes WHERE restaurant_id = ?", [restaurant.id]);
   const image = await QRCode.toDataURL(menuUrl);

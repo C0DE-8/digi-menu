@@ -59,7 +59,7 @@ function Register() {
     <main className="vendor-register-page">
       <section className="vendor-register-shell">
         <header className="register-topbar">
-          <Link className="brand" to="/">Digi Menu</Link>
+          <Link className="brand" to="/">Ravi Menu</Link>
           <Link className="text-button" to="/login">Have an account? Log in</Link>
         </header>
 

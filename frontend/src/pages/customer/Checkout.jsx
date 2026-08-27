@@ -50,7 +50,7 @@ function Checkout() {
       })
       setCreatedOrder(response.data.order)
       localStorage.removeItem(cartKey(slug))
-      window.dispatchEvent(new Event('digiMenuCartChanged'))
+      window.dispatchEvent(new Event('raviMenuCartChanged'))
     } catch (orderError) {
       setError(orderError.response?.data?.error || 'Could not create this order.')
     } finally {
@@ -64,7 +64,7 @@ function Checkout() {
         <section className="panel checkout-success">
           <p className="eyebrow">Order created</p>
           <h1>{createdOrder.order_number}</h1>
-          <p>Your order has been sent into Digi Menu. Payment is not active yet, so confirm with the restaurant on WhatsApp.</p>
+          <p>Your order has been sent into Ravi Menu. Payment is not active yet, so confirm with the restaurant on WhatsApp.</p>
           <div className="hero-actions">
             <a className="primary-button" href={createdOrder.whatsapp_url} target="_blank" rel="noreferrer">
               <FiMessageCircle /> Confirm on WhatsApp
@@ -156,7 +156,7 @@ function Checkout() {
 }
 
 function cartKey(slug) {
-  return `digiMenuCart:${slug}`
+  return `raviMenuCart:${slug}`
 }
 
 function readCart(slug) {

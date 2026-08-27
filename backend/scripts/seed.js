@@ -27,7 +27,7 @@ const restaurants = [
     menu: baseMenu()
   },
   {
-    owner: ["Lola Cafe", "lola.cafe@digimenu.test"],
+    owner: ["Lola Cafe", "lola.cafe@ravimenu.test"],
     name: "Lola Cafe",
     slug: "lola-cafe",
     plan: "professional",
@@ -62,7 +62,7 @@ const restaurants = [
     }
   },
   {
-    owner: ["Suya Street Grill", "suya.street@digimenu.test"],
+    owner: ["Suya Street Grill", "suya.street@ravimenu.test"],
     name: "Suya Street Grill",
     slug: "suya-street-grill",
     plan: "starter",
@@ -80,7 +80,7 @@ const restaurants = [
     menu: baseMenu("Suya Street")
   },
   {
-    owner: ["Bistro Mainland", "bistro.mainland@digimenu.test"],
+    owner: ["Bistro Mainland", "bistro.mainland@ravimenu.test"],
     name: "Bistro Mainland",
     slug: "bistro-mainland",
     plan: "professional",
@@ -98,7 +98,7 @@ const restaurants = [
     menu: baseMenu("Mainland")
   },
   {
-    owner: ["Ocean Pearl Seafood", "ocean.pearl@digimenu.test"],
+    owner: ["Ocean Pearl Seafood", "ocean.pearl@ravimenu.test"],
     name: "Ocean Pearl Seafood",
     slug: "ocean-pearl-seafood",
     plan: "enterprise",
@@ -116,7 +116,7 @@ const restaurants = [
     menu: baseMenu("Ocean Pearl")
   },
   {
-    owner: ["Green Bowl Lagos", "green.bowl@digimenu.test"],
+    owner: ["Green Bowl Lagos", "green.bowl@ravimenu.test"],
     name: "Green Bowl Lagos",
     slug: "green-bowl-lagos",
     plan: "starter",
@@ -134,7 +134,7 @@ const restaurants = [
     menu: baseMenu("Green Bowl")
   },
   {
-    owner: ["Mama Ada Kitchen", "mama.ada@digimenu.test"],
+    owner: ["Mama Ada Kitchen", "mama.ada@ravimenu.test"],
     name: "Mama Ada Kitchen",
     slug: "mama-ada-kitchen",
     plan: "professional",
@@ -156,10 +156,10 @@ const restaurants = [
 async function seed() {
   await initDatabase();
 
-  await upsertUser("Super Admin", "superadmin@admin.com", passwordHash, "super_admin");
-  await upsertUser("Admin", "admin@admin.com", passwordHash, "admin");
-  await upsertUser("Digi Menu Manager", "manager@digimenu.com", passwordHash, "manager");
-  await upsertUser("Demo Customer", "customer@digimenu.com", passwordHash, "customer");
+  await upsertUser("Super Admin", "superadmin@ravimenu.com", passwordHash, "super_admin");
+  await upsertUser("Admin", "admin@ravimenu.com", passwordHash, "admin");
+  await upsertUser("Ravi Menu Manager", "manager@ravimenu.com", passwordHash, "manager");
+  await upsertUser("Demo Customer", "customer@ravimenu.com", passwordHash, "customer");
   await seedCustomerProfile();
   await seedSystemSettings();
   await seedPlans();
@@ -173,7 +173,7 @@ async function seed() {
     await seedAnalytics(restaurant.id);
   }
 
-  console.log("Seed complete: admin@admin.com / 123456, restaurant owners / 123456, manager@digimenu.com / 123456");
+  console.log("Seed complete: admin@ravimenu.com / 123456, restaurant owners / 123456, manager@ravimenu.com / 123456");
 }
 
 async function upsertUser(name, email, passwordHash, role) {
@@ -261,7 +261,7 @@ async function seedRestaurant(item) {
 }
 
 async function seedCustomerProfile() {
-  const customer = await get("SELECT * FROM users WHERE email = ?", ["customer@digimenu.com"]);
+  const customer = await get("SELECT * FROM users WHERE email = ?", ["customer@ravimenu.com"]);
   if (!customer) return;
   const existing = await get("SELECT * FROM customer_profiles WHERE user_id = ?", [customer.id]);
   if (existing) return;
@@ -360,7 +360,7 @@ async function seedSubscription(restaurantId, slug) {
     subscription = await get("SELECT * FROM subscriptions WHERE restaurant_id = ?", [restaurantId]);
   }
 
-  const invoiceNumber = `DM-${slug.toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
+  const invoiceNumber = `RM-${slug.toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
   const invoice = await get("SELECT * FROM invoices WHERE invoice_number = ?", [invoiceNumber]);
   if (!invoice) {
     await run(
@@ -371,7 +371,7 @@ async function seedSubscription(restaurantId, slug) {
 }
 
 async function seedManagerStaff(restaurantId) {
-  const manager = await get("SELECT * FROM users WHERE email = ?", ["manager@digimenu.com"]);
+  const manager = await get("SELECT * FROM users WHERE email = ?", ["manager@ravimenu.com"]);
   const existing = await get("SELECT * FROM restaurant_staff WHERE restaurant_id = ? AND user_id = ?", [restaurantId, manager.id]);
   if (existing) return;
   await run("INSERT INTO restaurant_staff (restaurant_id, user_id, role, permissions) VALUES (?, ?, 'manager', ?)", [
@@ -383,7 +383,7 @@ async function seedManagerStaff(restaurantId) {
 
 async function seedQr(restaurantId, slug) {
   const existing = await get("SELECT * FROM qr_codes WHERE restaurant_id = ?", [restaurantId]);
-  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://digi-menu-iota.vercel.app").replace(/\/$/, "");
+  const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://ravimenu.com").replace(/\/$/, "");
   const menuUrl = `${baseUrl}/menu/${slug}`;
   const image = await QRCode.toDataURL(menuUrl);
   if (existing) {

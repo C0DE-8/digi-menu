@@ -51,7 +51,7 @@ router.post("/public/restaurants/:slug/orders", async (req, res) => {
   const subtotal = resolvedItems.reduce((sum, item) => sum + item.line_total, 0);
   const deliveryFee = fulfillmentType === "delivery" ? Number(req.body.delivery_fee || 0) : 0;
   const total = subtotal + deliveryFee;
-  const orderNumber = `DM-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 900 + 100)}`;
+  const orderNumber = `RM-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 900 + 100)}`;
   const whatsappUrl = buildWhatsAppUrl(restaurant, {
     orderNumber,
     customerName,
@@ -160,7 +160,7 @@ function buildWhatsAppUrl(restaurant, order) {
   const phone = String(restaurant.whatsapp || restaurant.phone || "").replace(/\D/g, "");
   const itemLines = order.items.map((item) => `${item.quantity}x ${item.name}`).join("\n");
   const message = [
-    `New Digi Menu order ${order.orderNumber}`,
+    `New Ravi Menu order ${order.orderNumber}`,
     `Customer: ${order.customerName}`,
     `Phone: ${order.customerPhone}`,
     `Type: ${order.fulfillmentType}`,

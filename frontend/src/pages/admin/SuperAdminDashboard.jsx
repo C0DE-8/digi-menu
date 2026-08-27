@@ -7,7 +7,7 @@ import StatCard from '../../components/StatCard'
 function SuperAdminDashboard() {
   const [data, setData] = useState(null)
   const [uploadProvider, setUploadProvider] = useState('cloudinary')
-  const [cloudinary, setCloudinary] = useState({ cloudName: '', apiKey: '', apiSecret: '', folder: 'digi-menu/menu-items' })
+  const [cloudinary, setCloudinary] = useState({ cloudName: '', apiKey: '', apiSecret: '', folder: 'ravi-menu/menu-items' })
   const [saving, setSaving] = useState(false)
   const [savingCloudinary, setSavingCloudinary] = useState(false)
   const [message, setMessage] = useState('')
@@ -17,7 +17,7 @@ function SuperAdminDashboard() {
     api.get('/admin/overview').then((response) => {
       setData(response.data)
       setUploadProvider(response.data.settings?.uploadProvider || 'cloudinary')
-      setCloudinary(response.data.settings?.cloudinary || { cloudName: '', apiKey: '', apiSecret: '', folder: 'digi-menu/menu-items' })
+      setCloudinary(response.data.settings?.cloudinary || { cloudName: '', apiKey: '', apiSecret: '', folder: 'ravi-menu/menu-items' })
     })
   }, [])
 

@@ -15,13 +15,13 @@ app.use(express.json({ limit: "2mb" }));
 app.use("/uploads", express.static(ensureLocalUploadDirs().root));
 
 app.get("/", (req, res) => {
-  res.json({ ok: true, service: "digi-menu-api" });
+  res.json({ ok: true, service: "ravi-menu-api" });
 });
 
 app.get("/health", async (req, res) => {
   try {
     await initDatabase();
-    res.json({ ok: true, app: "Digi Menu", database: "ready" });
+    res.json({ ok: true, app: "Ravi Menu", database: "ready" });
   } catch (error) {
     res.status(503).json({ ok: false, error: error.message });
   }
@@ -41,7 +41,7 @@ async function start() {
   await initDatabase();
   await seed();
   const server = app.listen(port, () => {
-    console.log(`Digi Menu API listening on http://localhost:${port}`);
+    console.log(`Ravi Menu API listening on http://localhost:${port}`);
   });
   server.on("error", (error) => {
     if (error.code === "EADDRINUSE") {

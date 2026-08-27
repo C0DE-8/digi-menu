@@ -15,47 +15,47 @@ SELECT '8am Light Kitchen', '8amlight@gmail.com', '$2b$10$x32vkXRKuCkIZNnwABUReO
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = '8amlight@gmail.com');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Digi Menu Manager', 'manager@digimenu.com', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'manager', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'manager@digimenu.com');
+SELECT 'Ravi Menu Manager', 'manager@ravimenu.com', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'manager', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'manager@ravimenu.com');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Lola Cafe', 'lola.cafe@digimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'lola.cafe@digimenu.test');
+SELECT 'Lola Cafe', 'lola.cafe@ravimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'lola.cafe@ravimenu.test');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Suya Street Grill', 'suya.street@digimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'suya.street@digimenu.test');
+SELECT 'Suya Street Grill', 'suya.street@ravimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'suya.street@ravimenu.test');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Bistro Mainland', 'bistro.mainland@digimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'bistro.mainland@digimenu.test');
+SELECT 'Bistro Mainland', 'bistro.mainland@ravimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'bistro.mainland@ravimenu.test');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Ocean Pearl Seafood', 'ocean.pearl@digimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'ocean.pearl@digimenu.test');
+SELECT 'Ocean Pearl Seafood', 'ocean.pearl@ravimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'ocean.pearl@ravimenu.test');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Green Bowl Lagos', 'green.bowl@digimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'green.bowl@digimenu.test');
+SELECT 'Green Bowl Lagos', 'green.bowl@ravimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'green.bowl@ravimenu.test');
 
 INSERT INTO users (name, email, password_hash, role, status)
-SELECT 'Mama Ada Kitchen', 'mama.ada@digimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
-WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'mama.ada@digimenu.test');
+SELECT 'Mama Ada Kitchen', 'mama.ada@ravimenu.test', '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e', 'owner', 'active'
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'mama.ada@ravimenu.test');
 
 UPDATE users
 SET password_hash = '$2b$10$x32vkXRKuCkIZNnwABUReOaVtrqAOplWGC6zbAXFPPdmjjndX459e',
   status = 'active',
-  role = CASE WHEN email = 'manager@digimenu.com' THEN 'manager' ELSE 'owner' END,
+  role = CASE WHEN email = 'manager@ravimenu.com' THEN 'manager' ELSE 'owner' END,
   updated_at = CURRENT_TIMESTAMP
 WHERE email IN (
   '8amlight@gmail.com',
-  'manager@digimenu.com',
-  'lola.cafe@digimenu.test',
-  'suya.street@digimenu.test',
-  'bistro.mainland@digimenu.test',
-  'ocean.pearl@digimenu.test',
-  'green.bowl@digimenu.test',
-  'mama.ada@digimenu.test'
+  'manager@ravimenu.com',
+  'lola.cafe@ravimenu.test',
+  'suya.street@ravimenu.test',
+  'bistro.mainland@ravimenu.test',
+  'ocean.pearl@ravimenu.test',
+  'green.bowl@ravimenu.test',
+  'mama.ada@ravimenu.test'
 );
 
 INSERT INTO restaurants (
@@ -68,12 +68,12 @@ SELECT u.id, d.name, d.slug, 'approved', d.plan, d.logo_url, d.cover_url, d.desc
   d.social_links, d.delivery_info
 FROM (
   SELECT '8am Light Kitchen' AS name, '8am-light-kitchen' AS slug, 'professional' AS plan, '8amlight@gmail.com' AS email, '+234 800 000 0000' AS phone, '14 Admiralty Way, Lekki Phase 1, Lagos' AS address, 'Fresh Nigerian meals, grills, drinks, and quick lunch plates for busy teams and families.' AS description, 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=240&q=80' AS logo_url, 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1400&q=80' AS cover_url, '{"instagram":"https://instagram.com/8amlight","x":"https://x.com/8amlight"}' AS social_links, 'Pickup and delivery available within Lekki, Victoria Island, and Ikoyi.' AS delivery_info
-  UNION ALL SELECT 'Lola Cafe', 'lola-cafe', 'professional', 'lola.cafe@digimenu.test', '+234 801 555 0101', '22 Akin Adesola Street, Victoria Island, Lagos', 'Cafe plates, fresh pastries, espresso drinks, and easy brunch for casual meetings.', 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/lolacafelagos"}', 'Counter pickup, office delivery, and weekend brunch reservations available.'
-  UNION ALL SELECT 'Suya Street Grill', 'suya-street-grill', 'starter', 'suya.street@digimenu.test', '+234 801 555 0102', '9 Allen Avenue, Ikeja, Lagos', 'Open-flame suya, grilled fish, sharable sides, and cold drinks.', 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/suyastreetgrill"}', 'Evening delivery available across Ikeja, Maryland, and Ogba.'
-  UNION ALL SELECT 'Bistro Mainland', 'bistro-mainland', 'professional', 'bistro.mainland@digimenu.test', '+234 801 555 0103', '31 Herbert Macaulay Way, Yaba, Lagos', 'Modern Nigerian bistro with rice bowls, soups, grills, and family platters.', 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/bistromainland"}', 'Pickup and rider delivery available daily from 10 AM.'
-  UNION ALL SELECT 'Ocean Pearl Seafood', 'ocean-pearl-seafood', 'enterprise', 'ocean.pearl@digimenu.test', '+234 801 555 0104', '6 Admiralty Road, Lekki Phase 1, Lagos', 'Seafood bowls, pepper soup, grilled fish, and coastal platters.', 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/oceanpearlseafood"}', 'Pre-order seafood platters for pickup, delivery, or private dining.'
-  UNION ALL SELECT 'Green Bowl Lagos', 'green-bowl-lagos', 'starter', 'green.bowl@digimenu.test', '+234 801 555 0105', '18 Admiralty Road, Lekki Phase 1, Lagos', 'Healthy bowls, smoothies, wraps, and vegetarian-friendly daily specials.', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/greenbowllagos"}', 'Office lunch packs and subscription meal bowls available on weekdays.'
-  UNION ALL SELECT 'Mama Ada Kitchen', 'mama-ada-kitchen', 'professional', 'mama.ada@digimenu.test', '+234 801 555 0106', '12 Toyin Street, Ikeja, Lagos', 'Homestyle soups, swallow, rice dishes, and party trays for families.', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/mamaadakitchen"}', 'Bulk lunch delivery and weekend event trays available by request.'
+  UNION ALL SELECT 'Lola Cafe', 'lola-cafe', 'professional', 'lola.cafe@ravimenu.test', '+234 801 555 0101', '22 Akin Adesola Street, Victoria Island, Lagos', 'Cafe plates, fresh pastries, espresso drinks, and easy brunch for casual meetings.', 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/lolacafelagos"}', 'Counter pickup, office delivery, and weekend brunch reservations available.'
+  UNION ALL SELECT 'Suya Street Grill', 'suya-street-grill', 'starter', 'suya.street@ravimenu.test', '+234 801 555 0102', '9 Allen Avenue, Ikeja, Lagos', 'Open-flame suya, grilled fish, sharable sides, and cold drinks.', 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/suyastreetgrill"}', 'Evening delivery available across Ikeja, Maryland, and Ogba.'
+  UNION ALL SELECT 'Bistro Mainland', 'bistro-mainland', 'professional', 'bistro.mainland@ravimenu.test', '+234 801 555 0103', '31 Herbert Macaulay Way, Yaba, Lagos', 'Modern Nigerian bistro with rice bowls, soups, grills, and family platters.', 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/bistromainland"}', 'Pickup and rider delivery available daily from 10 AM.'
+  UNION ALL SELECT 'Ocean Pearl Seafood', 'ocean-pearl-seafood', 'enterprise', 'ocean.pearl@ravimenu.test', '+234 801 555 0104', '6 Admiralty Road, Lekki Phase 1, Lagos', 'Seafood bowls, pepper soup, grilled fish, and coastal platters.', 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/oceanpearlseafood"}', 'Pre-order seafood platters for pickup, delivery, or private dining.'
+  UNION ALL SELECT 'Green Bowl Lagos', 'green-bowl-lagos', 'starter', 'green.bowl@ravimenu.test', '+234 801 555 0105', '18 Admiralty Road, Lekki Phase 1, Lagos', 'Healthy bowls, smoothies, wraps, and vegetarian-friendly daily specials.', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/greenbowllagos"}', 'Office lunch packs and subscription meal bowls available on weekdays.'
+  UNION ALL SELECT 'Mama Ada Kitchen', 'mama-ada-kitchen', 'professional', 'mama.ada@ravimenu.test', '+234 801 555 0106', '12 Toyin Street, Ikeja, Lagos', 'Homestyle soups, swallow, rice dishes, and party trays for families.', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=240&q=80', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1400&q=80', '{"instagram":"https://instagram.com/mamaadakitchen"}', 'Bulk lunch delivery and weekend event trays available by request.'
 ) d
 JOIN users u ON u.email = d.email
 WHERE NOT EXISTS (SELECT 1 FROM restaurants r WHERE r.slug = d.slug);
@@ -124,7 +124,7 @@ WHERE r.slug IN ('8am-light-kitchen', 'lola-cafe', 'suya-street-grill', 'bistro-
   AND NOT EXISTS (SELECT 1 FROM subscriptions existing WHERE existing.restaurant_id = r.id);
 
 INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at)
-SELECT r.id, s.id, COALESCE(p.monthly_price, 25000), CONCAT('DM-', UPPER(REPLACE(r.slug, '-', '-'))), 'paid', CURRENT_TIMESTAMP
+SELECT r.id, s.id, COALESCE(p.monthly_price, 25000), CONCAT('RM-', UPPER(REPLACE(r.slug, '-', '-'))), 'paid', CURRENT_TIMESTAMP
 FROM restaurants r
 JOIN subscriptions s ON s.restaurant_id = r.id
 JOIN subscription_plans p ON p.id = s.plan_id
@@ -134,12 +134,12 @@ WHERE r.slug IN ('8am-light-kitchen', 'lola-cafe', 'suya-street-grill', 'bistro-
 INSERT INTO restaurant_staff (restaurant_id, user_id, role, permissions)
 SELECT r.id, u.id, 'manager', '["menu:update","profile:update","qr:view","analytics:view"]'
 FROM restaurants r
-JOIN users u ON u.email = 'manager@digimenu.com'
+JOIN users u ON u.email = 'manager@ravimenu.com'
 WHERE r.slug IN ('8am-light-kitchen', 'lola-cafe', 'suya-street-grill', 'bistro-mainland', 'ocean-pearl-seafood', 'green-bowl-lagos', 'mama-ada-kitchen')
   AND NOT EXISTS (SELECT 1 FROM restaurant_staff existing WHERE existing.restaurant_id = r.id AND existing.user_id = u.id);
 
 INSERT INTO qr_codes (restaurant_id, menu_url, scans)
-SELECT r.id, CONCAT('https://digi-menu-iota.vercel.app/menu/', r.slug), 42
+SELECT r.id, CONCAT('https://ravimenu.com/menu/', r.slug), 42
 FROM restaurants r
 WHERE r.slug IN ('8am-light-kitchen', 'lola-cafe', 'suya-street-grill', 'bistro-mainland', 'ocean-pearl-seafood', 'green-bowl-lagos', 'mama-ada-kitchen')
   AND NOT EXISTS (SELECT 1 FROM qr_codes existing WHERE existing.restaurant_id = r.id);
