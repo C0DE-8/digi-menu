@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
 const QRCode = require("qrcode");
+const db = require("../db");
 const { get, initDatabase, run } = require("../data/database");
 
 const passwordHash = bcrypt.hashSync("123456", 10);
@@ -439,10 +440,12 @@ function baseMenu(prefix = "") {
 }
 
 if (require.main === module) {
-  seed().catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+  seed()
+    .catch((error) => {
+      console.error(error);
+      process.exitCode = 1;
+    })
+    .finally(() => db.end());
 }
 
 module.exports = seed;

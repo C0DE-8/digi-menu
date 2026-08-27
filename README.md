@@ -133,7 +133,7 @@ Run migrations manually:
 
 ```bash
 cd backend
-DBMS_TIMEOUT_MS=10000 npm run migrate
+npm run migrate
 ```
 
 The backend also runs migrations and seed data on startup.
