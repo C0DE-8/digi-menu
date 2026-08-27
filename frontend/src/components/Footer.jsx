@@ -1,7 +1,11 @@
+import logo from '../assets/logo.png'
+
 function Footer() {
   return (
     <footer className="footer">
-      <span>Ravi Menu</span>
+      <span>
+        <img className="footer-logo" src={logo} alt="Ravi Menu" />
+      </span>
       <span>Digital menus, QR links, analytics, and restaurant operations.</span>
     </footer>
   )

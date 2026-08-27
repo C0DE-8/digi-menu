@@ -30,8 +30,11 @@
   text-decoration: none;
 }
 
-.brand svg {
-  color: var(--green);
+.brand-logo {
+  width: auto;
+  height: 42px;
+  max-width: 170px;
+  object-fit: contain;
 }
 
 .nav {
@@ -2102,6 +2105,13 @@ button:disabled {
 .footer span:first-child {
   color: var(--ink);
   font-weight: 900;
+}
+
+.footer-logo {
+  width: auto;
+  height: 38px;
+  max-width: 160px;
+  object-fit: contain;
 }
 
 .page-loader {

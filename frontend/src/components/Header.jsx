@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { FiMenu, FiX, FiGrid, FiLogOut, FiShoppingBag } from 'react-icons/fi'
+import { FiMenu, FiX, FiLogOut, FiShoppingBag } from 'react-icons/fi'
 import { clearSession, getStoredRestaurant, getStoredUser } from '../api/client'
+import logo from '../assets/logo.png'
 
 function Header() {
   const [open, setOpen] = useState(false)
@@ -72,8 +73,7 @@ function Header() {
   return (
     <header className="site-header">
       <Link className="brand" to="/">
-        <FiGrid aria-hidden="true" />
-        <span>Ravi Menu</span>
+        <img className="brand-logo" src={logo} alt="Ravi Menu" />
       </Link>
       <button className="icon-button mobile-only" type="button" onClick={() => setOpen(!open)} aria-label="Toggle navigation">
         {open ? <FiX /> : <FiMenu />}
