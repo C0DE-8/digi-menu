@@ -1,6 +1,6 @@
 const { get, run } = require("../data/database");
 
-const DEFAULT_UPLOAD_PROVIDER = "cloudinary";
+const DEFAULT_UPLOAD_PROVIDER = "local";
 const UPLOAD_PROVIDERS = new Set(["cloudinary", "local"]);
 const CLOUDINARY_SETTING_KEYS = {
   cloudName: "cloudinary_cloud_name",

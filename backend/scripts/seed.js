@@ -276,8 +276,11 @@ async function seedCustomerProfile() {
 
 async function seedSystemSettings() {
   const existing = await get("SELECT * FROM system_settings WHERE setting_key = 'upload_provider'");
-  if (existing) return;
-  await run("INSERT INTO system_settings (setting_key, setting_value) VALUES ('upload_provider', 'cloudinary')");
+  if (existing) {
+    await run("UPDATE system_settings SET setting_value = 'local', updated_at = CURRENT_TIMESTAMP WHERE setting_key = 'upload_provider'");
+    return;
+  }
+  await run("INSERT INTO system_settings (setting_key, setting_value) VALUES ('upload_provider', 'local')");
 }
 
 async function seedPlans() {

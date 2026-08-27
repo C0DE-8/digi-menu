@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FiLoader, FiLock, FiMail } from 'react-icons/fi'
-import api, { setSession } from '../../api/client'
+import api, { clearSession, setSession } from '../../api/client'
 
-function Login() {
-  const [email, setEmail] = useState('8amlight@gmail.com')
+function Login({ adminLock = false }) {
+  const [email, setEmail] = useState(adminLock ? 'admin@admin.com' : '8amlight@gmail.com')
   const [password, setPassword] = useState('123456')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const adminRoles = new Set(['admin', 'super_admin'])
 
   async function submit(event) {
     event.preventDefault()
@@ -16,10 +17,21 @@ function Login() {
     setLoading(true)
     try {
       const { data } = await api.post('/auth/login', { email, password })
+      const isAdminUser = adminRoles.has(data.user.role)
+      if (adminLock && !isAdminUser) {
+        clearSession()
+        setError('This access point is only for platform admins.')
+        return
+      }
+      if (!adminLock && isAdminUser) {
+        clearSession()
+        setError('Invalid email or password')
+        return
+      }
       setSession(data)
       navigate(data.user.role === 'super_admin' ? '/super-admin' : data.user.role === 'admin' ? '/admin' : data.user.role === 'customer' ? '/#restaurants' : '/dashboard')
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed')
+      setError(adminLock ? 'Admin login failed' : err.response?.data?.error || 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -28,8 +40,8 @@ function Login() {
   return (
     <main className="auth-page">
       <form className="auth-card" onSubmit={submit}>
-        <p className="eyebrow">Demo access</p>
-        <h1>Sign in to Digi Menu</h1>
+        <p className="eyebrow">{adminLock ? 'Restricted access' : 'Account access'}</p>
+        <h1>{adminLock ? 'Admin lock' : 'Sign in to Digi Menu'}</h1>
         <label>
           <span>Email</span>
           <div className="input-wrap">
@@ -49,25 +61,39 @@ function Login() {
           {loading ? <FiLoader className="spin" /> : null}
           {loading ? 'Signing in...' : 'Login'}
         </button>
-        <Link className="secondary-button full" to="/register">
-          Register restaurant
-        </Link>
-        <Link className="secondary-button full" to="/store/sign-up">
-          Create customer account
-        </Link>
+        {!adminLock ? (
+          <>
+            <Link className="secondary-button full" to="/register">
+              Register restaurant
+            </Link>
+            <Link className="secondary-button full" to="/store/sign-up">
+              Create customer account
+            </Link>
+          </>
+        ) : null}
         <div className="demo-accounts">
-          <button type="button" onClick={() => setEmail('admin@admin.com')}>
-            Admin: admin@admin.com / 123456
-          </button>
-          <button type="button" onClick={() => setEmail('8amlight@gmail.com')}>
-            User: 8amlight@gmail.com / 123456
-          </button>
-          <button type="button" onClick={() => setEmail('manager@digimenu.com')}>
-            Manager: manager@digimenu.com / 123456
-          </button>
-          <button type="button" onClick={() => setEmail('customer@digimenu.com')}>
-            Customer: customer@digimenu.com / 123456
-          </button>
+          {adminLock ? (
+            <>
+              <button type="button" onClick={() => setEmail('admin@admin.com')}>
+                Admin access
+              </button>
+              <button type="button" onClick={() => setEmail('superadmin@admin.com')}>
+                Super admin access
+              </button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={() => setEmail('8amlight@gmail.com')}>
+                Restaurant account
+              </button>
+              <button type="button" onClick={() => setEmail('manager@digimenu.com')}>
+                Manager account
+              </button>
+              <button type="button" onClick={() => setEmail('customer@digimenu.com')}>
+                Customer account
+              </button>
+            </>
+          )}
         </div>
       </form>
     </main>

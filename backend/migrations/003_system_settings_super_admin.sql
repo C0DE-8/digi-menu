@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS system_settings (
 );
 
 INSERT INTO system_settings (setting_key, setting_value)
-SELECT 'upload_provider', 'cloudinary'
+SELECT 'upload_provider', 'local'
 WHERE NOT EXISTS (
   SELECT 1 FROM system_settings WHERE setting_key = 'upload_provider'
 );

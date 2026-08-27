@@ -31,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-lock" element={<Login adminLock />} />
         <Route path="/register" element={<Register />} />
         <Route path="/store/sign-up" element={<CustomerRegister />} />
         <Route path="/customer/sign-up" element={<CustomerRegister />} />

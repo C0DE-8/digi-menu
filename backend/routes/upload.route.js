@@ -88,7 +88,7 @@ router.post("/restaurant-assets/:type", requireAuth, async (req, res) => {
 });
 
 async function handleImageUpload(req, res, options) {
-  let provider = "cloudinary";
+  let provider = "local";
   try {
     provider = await getUploadProvider();
   } catch (error) {

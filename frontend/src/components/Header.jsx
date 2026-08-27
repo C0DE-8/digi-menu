@@ -41,6 +41,8 @@ function Header() {
           { to: '/super-admin', label: 'Super admin' },
           { to: '/admin', label: 'Admin view' },
         ]
+      : user.role === 'admin'
+      ? [{ to: '/admin', label: 'Admin' }]
       : [
           { to: '/dashboard', label: 'Dashboard' },
           { to: '/menu-builder', label: 'Menu' },
@@ -50,7 +52,6 @@ function Header() {
           { to: '/qr-code', label: 'QR' },
           { to: '/subscriptions', label: 'Billing' },
           { to: '/settings', label: 'Settings' },
-          ...(user.role === 'admin' ? [{ to: '/admin', label: 'Admin' }] : []),
           ...(restaurant?.slug ? [{ to: `/menu/${restaurant.slug}`, label: 'Public menu' }] : []),
         ]
     : [
@@ -61,10 +62,11 @@ function Header() {
       ]
 
   function logout() {
+    const logoutPath = ['admin', 'super_admin'].includes(user?.role) ? '/admin-lock' : '/login'
     clearSession()
     setSessionState({ user: null, restaurant: null })
     setOpen(false)
-    navigate('/login')
+    navigate(logoutPath)
   }
 
   return (
