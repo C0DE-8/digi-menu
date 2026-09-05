@@ -8,7 +8,9 @@
     "dev": "node server.js",
     "migrate": "node -e \"const database = require('./data/database'); const db = require('./db'); database.initDatabase().then(() => console.log('Migrations complete')).finally(() => db.end())\"",
     "seed": "node scripts/seed.js",
-    "test": "node --check server.js && node --check db.js && node --check data/database.js && node --check scripts/seed.js && node --check middleware/auth.js && node --check services/restaurants.js && node --check services/system-settings.js && node --check services/upload-storage.js && node --check routes/auth.route.js && node --check routes/dashboard.route.js && node --check routes/restaurant.route.js && node --check routes/menu.route.js && node --check routes/upload.route.js && node --check routes/public.route.js && node --check routes/orders.route.js && node --check routes/admin.route.js && node --check routes/qr.route.js"
+    "test": "node --check server.js && node --check db.js && node --check data/database.js && node --check scripts/seed.js && node --check middleware/auth.js && node --check services/restaurants.js && node --check services/system-settings.js && node --check services/upload-storage.js && node --check routes/auth.route.js && node --check routes/dashboard.route.js && node --check routes/restaurant.route.js && node --check routes/menu.route.js && node --check routes/upload.route.js && node --check routes/public.route.js && node --check routes/orders.route.js && node --check routes/admin.route.js && node --check routes/qr.route.js",
+    "test:integration": "node --test test/integration.test.js test/migration.test.js",
+    "check:production": "node scripts/production-check.js"
   },
   "keywords": [],
   "author": "",
@@ -19,10 +21,15 @@
     "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
     "mysql2": "^3.24.2",
     "qrcode": "^1.5.4"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }

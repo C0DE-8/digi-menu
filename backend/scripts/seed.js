@@ -154,6 +154,7 @@ const restaurants = [
 ];
 
 async function seed() {
+  if (process.env.NODE_ENV === "production") throw new Error("Demo seeding is disabled in production");
   await initDatabase();
 
   await upsertUser("Super Admin", "superadmin@ravimenu.com", passwordHash, "super_admin");

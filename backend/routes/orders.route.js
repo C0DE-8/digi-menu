@@ -1,5 +1,5 @@
 const express = require("express");
-const { all, get, run } = require("../data/database");
+const { all, get, run, transaction } = require("../data/database");
 const { requireAuth } = require("../middleware/auth");
 const { getRestaurantForUser } = require("../services/restaurants");
 
@@ -7,14 +7,19 @@ const router = express.Router();
 
 const allowedStatuses = ["pending", "accepted", "preparing", "ready", "completed", "cancelled"];
 
-router.post("/public/restaurants/:slug/orders", async (req, res) => {
+router.post("/public/restaurants/:slug/orders", (req, res, next) => req.headers.authorization ? requireAuth(req, res, next) : next(), async (req, res) => {
   const restaurant = await get("SELECT * FROM restaurants WHERE slug = ? AND status = 'approved'", [req.params.slug]);
   if (!restaurant) return res.status(404).json({ error: "Restaurant not found" });
+
+  if (!restaurant.is_open) return res.status(409).json({ error: "This restaurant is currently closed." });
 
   const items = Array.isArray(req.body.items) ? req.body.items : [];
   if (!items.length) return res.status(400).json({ error: "Add at least one item to the cart." });
 
+  if (items.length > 50 || items.some((item) => !item || !Number.isSafeInteger(item.menu_item_id) || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 20) || new Set(items.map((item) => item.menu_item_id)).size !== items.length) return res.status(400).json({ error: "Use up to 50 unique items, with quantities from 1 to 20." });
+  if (!["pickup", "delivery"].includes(req.body.fulfillment_type)) return res.status(400).json({ error: "Choose pickup or delivery." });
   const customer = req.body.customer || {};
+  if ([customer.name, customer.phone, customer.email, customer.delivery_address, req.body.notes].some((value) => value != null && (typeof value !== "string" || value.length > 2000)) || String(customer.name || "").length > 180 || String(customer.phone || "").length > 80 || String(customer.email || "").length > 190) return res.status(400).json({ error: "Invalid customer details." });
   const customerName = String(customer.name || "").trim();
   const customerPhone = String(customer.phone || "").trim();
   const fulfillmentType = req.body.fulfillment_type === "delivery" ? "delivery" : "pickup";
@@ -34,7 +39,7 @@ router.post("/public/restaurants/:slug/orders", async (req, res) => {
 
   for (const item of items) {
     const menuItem = byId.get(Number(item.menu_item_id));
-    if (!menuItem || !["available", "seasonal"].includes(menuItem.availability)) continue;
+    if (!menuItem || !["available", "seasonal"].includes(menuItem.availability)) return res.status(409).json({ error: "An item is unavailable. Please refresh the menu and update your basket." });
     const quantity = Math.max(1, Math.min(20, Number(item.quantity) || 1));
     resolvedItems.push({
       menu_item_id: menuItem.id,
@@ -49,7 +54,7 @@ router.post("/public/restaurants/:slug/orders", async (req, res) => {
   if (!resolvedItems.length) return res.status(400).json({ error: "No available menu items were found in this cart." });
 
   const subtotal = resolvedItems.reduce((sum, item) => sum + item.line_total, 0);
-  const deliveryFee = fulfillmentType === "delivery" ? Number(req.body.delivery_fee || 0) : 0;
+  const deliveryFee = fulfillmentType === "delivery" ? 1000 : 0;
   const total = subtotal + deliveryFee;
   const orderNumber = `RM-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 900 + 100)}`;
   const whatsappUrl = buildWhatsAppUrl(restaurant, {
@@ -62,7 +67,8 @@ router.post("/public/restaurants/:slug/orders", async (req, res) => {
     items: resolvedItems,
   });
 
-  const orderId = await run(
+  const orderId = await transaction(async ({ run }) => {
+  const id = await run(
     `INSERT INTO orders (
       restaurant_id, customer_id, order_number, customer_name, customer_phone, customer_email,
       fulfillment_type, delivery_address, notes, subtotal, delivery_fee, total, whatsapp_url
@@ -87,10 +93,12 @@ router.post("/public/restaurants/:slug/orders", async (req, res) => {
   for (const item of resolvedItems) {
     await run(
       "INSERT INTO order_items (order_id, menu_item_id, name, price, quantity, line_total, notes) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [orderId, item.menu_item_id, item.name, item.price, item.quantity, item.line_total, item.notes]
+      [id, item.menu_item_id, item.name, item.price, item.quantity, item.line_total, item.notes]
     );
   }
 
+  return id;
+  });
   const order = await getOrder(orderId);
   res.status(201).json({ order, whatsapp_url: whatsappUrl });
 });

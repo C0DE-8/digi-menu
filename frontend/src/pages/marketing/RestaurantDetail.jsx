@@ -9,6 +9,7 @@ import SkeletonPage from '../../components/SkeletonPage'
 function RestaurantDetail() {
   const { slug } = useParams()
   const [data, setData] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     let active = true
@@ -18,7 +19,7 @@ function RestaurantDetail() {
         if (active) setData(response.data)
       })
       .catch(() => {
-        if (active) setData(null)
+        if (active) setError(true)
       })
 
     return () => {
@@ -26,6 +27,7 @@ function RestaurantDetail() {
     }
   }, [slug])
 
+  if (error) return <main className="page-shell"><section className="panel" role="alert"><h1>Restaurant unavailable</h1><p>This restaurant may still be awaiting approval. Please try again later.</p><Link className="primary-button" to="/#restaurants">Explore restaurants</Link></section></main>
   if (!data) return <SkeletonPage />
 
   const { restaurant } = data

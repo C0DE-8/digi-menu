@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react'
 import { FiClock, FiMapPin, FiMonitor, FiMousePointer, FiNavigation, FiTrendingUp } from 'react-icons/fi'
 import api from '../../api/client'
+import LoadError from '../../components/LoadError'
 import SkeletonPage from '../../components/SkeletonPage'
 import StatCard from '../../components/StatCard'
 
 function Analytics() {
   const [data, setData] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
-    api.get('/dashboard').then((response) => setData(response.data))
+    api.get('/dashboard').then((response) => setData(response.data)).catch(() => setError(true))
   }, [])
 
+  if (error) return <LoadError />
   if (!data) return <SkeletonPage />
 
   return (

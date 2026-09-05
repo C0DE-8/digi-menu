@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { FiImage, FiLoader, FiSave, FiToggleLeft, FiToggleRight, FiUpload } from 'react-icons/fi'
 import api, { updateStoredRestaurant } from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
+import LoadError from '../../components/LoadError'
 import SkeletonPage from '../../components/SkeletonPage'
 
 function RestaurantSettings() {
@@ -11,9 +12,10 @@ function RestaurantSettings() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get('/dashboard').then((response) => setForm(toSettingsForm(response.data.restaurant)))
+    api.get('/dashboard').then((response) => setForm(toSettingsForm(response.data.restaurant))).catch(() => setError("Could not load settings."))
   }, [])
 
+  if (!form && error) return <LoadError message={error} />
   if (!form) return <SkeletonPage />
 
   function update(field, value) {

@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post("/regenerate", requireAuth, async (req, res) => {
   const restaurant = await getRestaurantForUser(req.user);
+  if (!restaurant) return res.status(403).json({ error: "Restaurant access required" });
   const baseUrl = String(process.env.PUBLIC_MENU_BASE_URL || "https://ravimenu.com").replace(/\/$/, "");
   const menuUrl = `${baseUrl}/menu/${restaurant.slug}`;
   const image = await QRCode.toDataURL(menuUrl);

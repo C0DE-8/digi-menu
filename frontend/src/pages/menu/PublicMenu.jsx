@@ -5,12 +5,11 @@ import api from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
 import MenuItemCard from '../../components/MenuItemCard'
 import SkeletonPage from '../../components/SkeletonPage'
-import { getMenuFallback } from '../../data/demoMenu'
 
 function PublicMenu() {
   const { slug } = useParams()
   const [data, setData] = useState(null)
-  const [usingFallback, setUsingFallback] = useState(false)
+  const [error, setError] = useState('')
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
   const [selectedItem, setSelectedItem] = useState(null)
@@ -24,19 +23,10 @@ function PublicMenu() {
       .then((response) => {
         if (active) {
           setData(response.data)
-          setUsingFallback(false)
+          setError('')
         }
       })
-      .catch(() => {
-        const fallback = getMenuFallback(slug)
-        if (active && fallback) {
-          setData(fallback)
-          setUsingFallback(true)
-        } else if (active) {
-          setData(null)
-          setUsingFallback(false)
-        }
-      })
+      .catch(() => { if (active) setError('This menu is unavailable. It may still be awaiting approval. Please try again later.') })
 
     return () => {
       active = false
@@ -57,14 +47,13 @@ function PublicMenu() {
     if (!data) return []
     return data.items.filter((item) => {
       const matchesCategory = category === 'all' || item.category_id === Number(category)
-      const matchesQuery = item.name.toLowerCase().includes(query.toLowerCase()) || item.description.toLowerCase().includes(query.toLowerCase())
+      const matchesQuery = item.name.toLowerCase().includes(query.toLowerCase()) || String(item.description || '').toLowerCase().includes(query.toLowerCase())
       return matchesCategory && matchesQuery
     })
   }, [data, query, category])
 
   async function track(item) {
     setSelectedItem(item)
-    if (usingFallback) return
     await api.post(`/public/menu/${slug}/events`, { event_type: 'item_view', menu_item_id: item.id, category_id: item.category_id }).catch(() => {})
   }
 
@@ -72,7 +61,7 @@ function PublicMenu() {
     setCart((current) => {
       const existing = current.find((cartItem) => cartItem.menu_item_id === item.id)
       if (existing) {
-        return current.map((cartItem) => cartItem.menu_item_id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem)
+        return current.map((cartItem) => cartItem.menu_item_id === item.id ? { ...cartItem, quantity: Math.min(20, cartItem.quantity + 1) } : cartItem)
       }
       return [
         ...current,
@@ -91,9 +80,11 @@ function PublicMenu() {
     setCart((current) => current.flatMap((item) => {
       if (item.menu_item_id !== menuItemId) return [item]
       if (quantity <= 0) return []
-      return [{ ...item, quantity }]
+      return [{ ...item, quantity: Math.min(20, quantity) }]
     }))
   }
+
+  if (error) return <main className="page-shell"><section className="panel" role="alert"><h1>Menu unavailable</h1><p>{error}</p><Link className="primary-button" to="/#restaurants">Explore restaurants</Link></section></main>
 
   if (!data) return <SkeletonPage variant="menu" />
 
@@ -116,7 +107,6 @@ function PublicMenu() {
         </div>
       </section>
       <section className="menu-browser">
-        {usingFallback ? <p className="fallback-note">Showing the saved demo menu while live data reconnects.</p> : null}
         <div className="search-row">
           <FiSearch />
           <input placeholder="Search meals, drinks, categories" value={query} onChange={(event) => setQuery(event.target.value)} />

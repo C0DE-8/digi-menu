@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { get } = require("../data/database");
 
-const jwtSecret = process.env.JWT_SECRET || "ravi-menu-dev-secret";
+const jwtSecret = require("../services/jwt-secret");
 
 async function requireAuth(req, res, next) {
   try {
@@ -10,7 +10,7 @@ async function requireAuth(req, res, next) {
 
     const payload = jwt.verify(token, jwtSecret);
     const user = await get("SELECT * FROM users WHERE id = ?", [payload.id]);
-    if (!user) return res.status(401).json({ error: "Invalid auth token" });
+    if (!user || user.status !== "active") return res.status(401).json({ error: "Invalid auth token" });
 
     req.user = user;
     return next();

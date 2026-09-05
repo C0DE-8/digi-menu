@@ -3,6 +3,7 @@ import { FiEdit2, FiEye, FiEyeOff, FiPlus, FiSave, FiUpload, FiX } from 'react-i
 import api from '../../api/client'
 import { resolveAssetUrl } from '../../api/assets'
 import MenuItemCard from '../../components/MenuItemCard'
+import LoadError from '../../components/LoadError'
 import SkeletonPage from '../../components/SkeletonPage'
 
 function prepTimeToMinutes(value) {
@@ -42,7 +43,7 @@ function MenuBuilder() {
     api.get('/dashboard').then((response) => {
       setData(response.data)
       setCategoryId((current) => current || (response.data.categories[0]?.id ? String(response.data.categories[0].id) : ''))
-    })
+    }).catch(() => setError('Could not load your menu.'))
   }, [])
 
   useEffect(() => {
@@ -167,6 +168,7 @@ function MenuBuilder() {
     }))
   }, [data])
 
+  if (!data && error) return <LoadError message={error} />
   if (!data) return <SkeletonPage />
 
   return (

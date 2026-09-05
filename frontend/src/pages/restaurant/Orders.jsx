@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { FiCheckCircle, FiClock, FiRefreshCw, FiTruck } from 'react-icons/fi'
 import api from '../../api/client'
+import LoadError from '../../components/LoadError'
 import SkeletonPage from '../../components/SkeletonPage'
 
 const statusFlow = ['pending', 'accepted', 'preparing', 'ready', 'completed']
 
 function Orders() {
   const [orders, setOrders] = useState(null)
+  const [error, setError] = useState(false)
   const [updatingId, setUpdatingId] = useState(null)
 
   useEffect(() => {
@@ -14,8 +16,7 @@ function Orders() {
   }, [])
 
   async function loadOrders() {
-    const response = await api.get('/orders')
-    setOrders(response.data.orders || [])
+    try { const response = await api.get('/orders'); setOrders(response.data.orders || []) } catch { setError(true) }
   }
 
   async function updateStatus(order, status) {
@@ -23,11 +24,12 @@ function Orders() {
     try {
       const response = await api.patch(`/orders/${order.id}/status`, { status })
       setOrders((current) => current.map((item) => item.id === order.id ? response.data.order : item))
-    } finally {
+    } catch { setError(true) } finally {
       setUpdatingId(null)
     }
   }
 
+  if (error) return <LoadError />
   if (!orders) return <SkeletonPage />
 
   return (

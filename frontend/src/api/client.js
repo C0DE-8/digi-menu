@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5050/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
+  timeout: 15000,
 })
 
 api.interceptors.request.use((config) => {
@@ -22,10 +23,11 @@ export function setSession(session) {
 }
 
 export function clearSession() {
+  const hadSession = localStorage.getItem("raviMenuToken") || localStorage.getItem("raviMenuUser") || localStorage.getItem("raviMenuRestaurant");
   localStorage.removeItem('raviMenuToken')
   localStorage.removeItem('raviMenuUser')
   localStorage.removeItem('raviMenuRestaurant')
-  notifySessionChanged()
+  if (hadSession) notifySessionChanged()
 }
 
 export function getStoredUser() {

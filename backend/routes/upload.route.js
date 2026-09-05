@@ -1,3 +1,5 @@
+const { randomUUID } = require("crypto");
+const fs = require("fs");
 const path = require("path");
 const { Readable } = require("stream");
 const { v2: cloudinary } = require("cloudinary");
@@ -9,6 +11,7 @@ const { ensureLocalUploadDirs } = require("../services/upload-storage");
 
 const router = express.Router();
 ensureLocalUploadDirs();
+router.use(requireAuth, (req, res, next) => ["owner", "manager", "admin", "super_admin"].includes(req.user.role) ? next() : res.status(403).json({ error: "Restaurant access required" }));
 
 function getBaseUrl(req) {
   return (process.env.BACKEND_BASE_URL || process.env.API_BASE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/$/, "");
@@ -20,7 +23,7 @@ function createLocalStorage(destinationDir, defaultStem) {
       cb(null, destinationDir);
     },
     filename: (_req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase();
+      const ext = ({ "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "image/gif": ".gif" })[file.mimetype];
       const stem =
         path
           .basename(file.originalname, ext)
@@ -28,7 +31,7 @@ function createLocalStorage(destinationDir, defaultStem) {
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/^-|-$/g, "")
           .slice(0, 48) || defaultStem;
-      cb(null, `${Date.now()}-${stem}${ext}`);
+      cb(null, `${randomUUID()}-${stem}${ext}`);
     },
   });
 }
@@ -111,6 +114,7 @@ async function handleImageUpload(req, res, options) {
       return;
     }
 
+    if (!validImage(req.file.buffer, req.file.mimetype)) return res.status(400).json({ message: "File content is not a supported image" });
     uploadCloudinary(req.file, options.cloudinaryFolder)
       .then((result) => {
         res.status(201).json({
@@ -137,6 +141,11 @@ function uploadLocal(req, res, options) {
       return;
     }
 
+    const bytes = fs.readFileSync(req.file.path);
+    if (!validImage(bytes, req.file.mimetype)) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ message: "File content is not a supported image" });
+    }
     const pathUrl = `/uploads/${options.localFolder}/${req.file.filename}`;
     res.status(201).json({
       image_url: localAssetUrl(req, options.localFolder, req.file.filename),
@@ -177,4 +186,10 @@ async function uploadCloudinary(file, folder) {
   });
 }
 
+function validImage(bytes, mime) {
+  if (mime === "image/png") return bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]));
+  if (mime === "image/jpeg") return bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
+  if (mime === "image/gif") return /^GIF8[79]a$/.test(bytes.subarray(0, 6).toString());
+  return mime === "image/webp" && bytes.subarray(0, 4).toString() === "RIFF" && bytes.subarray(8, 12).toString() === "WEBP";
+}
 module.exports = router;

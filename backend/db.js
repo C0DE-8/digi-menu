@@ -24,6 +24,24 @@ const db = {
     return result;
   },
 
+  async transaction(work) {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      const result = await work({
+        query: async (sql, params = []) => (await connection.query(sql, params))[0],
+        execute: async (sql, params = []) => (await connection.execute(sql, params))[0],
+      });
+      await connection.commit();
+      return result;
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  },
+
   async end() {
     await pool.end();
   }

@@ -5,33 +5,52 @@ const db = require("../db");
 const migrationsDir = path.join(__dirname, "..", "migrations");
 
 let initialized = false;
+let initialization;
 
 async function initDatabase() {
   if (initialized) return db;
 
-  await db.execute(`
+  if (initialization) return initialization;
+  initialization = (async () => {
+    await db.execute(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
       id INT AUTO_INCREMENT PRIMARY KEY,
       filename VARCHAR(255) NOT NULL UNIQUE,
       applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `);
-  initialized = true;
-  await runMigrations();
-  return db;
+    await runMigrations();
+    initialized = true;
+    return db;
+  })();
+  try {
+    return await initialization;
+  } catch (error) {
+    initialization = null;
+    throw error;
+  }
 }
 
 async function runMigrations() {
-  const files = fs.readdirSync(migrationsDir).filter((file) => file.endsWith(".sql")).sort();
+  const files = fs
+    .readdirSync(migrationsDir)
+    .filter((file) => file.endsWith(".sql"))
+    .sort();
   for (const file of files) {
-    const existing = await get("SELECT id FROM schema_migrations WHERE filename = ?", [file]);
+    const existing = (
+      await db.query("SELECT id FROM schema_migrations WHERE filename = ?", [
+        file,
+      ])
+    )[0];
     if (existing) continue;
 
     const sql = fs.readFileSync(path.join(migrationsDir, file), "utf8");
     for (const statement of splitSql(sql)) {
-      await db.execute(statement);
+      await db.query(statement);
     }
-    await db.execute("INSERT INTO schema_migrations (filename) VALUES (?)", [file]);
+    await db.execute("INSERT INTO schema_migrations (filename) VALUES (?)", [
+      file,
+    ]);
   }
 }
 
@@ -48,9 +67,8 @@ async function get(sql, params = []) {
 
 async function run(sql, params = []) {
   await ensureInitialized();
-  await db.execute(sql, params);
-  const rows = await db.query("SELECT LAST_INSERT_ID() AS id");
-  return rows[0]?.id || null;
+  const result = await db.execute(sql, params);
+  return result.insertId || null;
 }
 
 async function ensureInitialized() {
@@ -60,7 +78,14 @@ async function ensureInitialized() {
 function normalizeRows(rows) {
   return rows.map((row) => {
     const parsed = { ...row };
-    for (const key of ["opening_hours", "social_links", "features", "metadata", "cuisine_tags", "preferences"]) {
+    for (const key of [
+      "opening_hours",
+      "social_links",
+      "features",
+      "metadata",
+      "cuisine_tags",
+      "preferences",
+    ]) {
       if (typeof parsed[key] === "string" && parsed[key]) {
         try {
           parsed[key] = JSON.parse(parsed[key]);
@@ -75,9 +100,22 @@ function normalizeRows(rows) {
 
 function splitSql(sql) {
   return sql
+    .replace(/^\s*--.*$/gm, "")
     .split(/;\s*(?:\r?\n|$)/)
     .map((statement) => statement.trim())
     .filter(Boolean);
 }
 
-module.exports = { all, get, initDatabase, run };
+async function transaction(work) {
+  await ensureInitialized();
+  return db.transaction((connection) =>
+    work({
+      run: async (sql, params = []) =>
+        (await connection.execute(sql, params)).insertId || null,
+      get: async (sql, params = []) =>
+        normalizeRows(await connection.query(sql, params))[0] || null,
+    }),
+  );
+}
+
+module.exports = { all, get, initDatabase, run, transaction };

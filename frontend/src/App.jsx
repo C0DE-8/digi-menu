@@ -1,5 +1,6 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom'
 import './App.css'
+import './refresh.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import PageTransitionLoader from './components/PageTransitionLoader'
@@ -23,6 +24,11 @@ import RestaurantSettings from './pages/restaurant/RestaurantSettings'
 import Subscriptions from './pages/restaurant/Subscriptions'
 import NotFound from './pages/system/NotFound'
 
+function SlugPage({ component: Component }) {
+  const { slug } = useParams()
+  return <Component key={slug} />
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -35,9 +41,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/store/sign-up" element={<CustomerRegister />} />
         <Route path="/customer/sign-up" element={<CustomerRegister />} />
-        <Route path="/restaurants/:slug" element={<RestaurantDetail />} />
-        <Route path="/menu/:slug" element={<PublicMenu />} />
-        <Route path="/checkout/:slug" element={<Checkout />} />
+        <Route path="/restaurants/:slug" element={<SlugPage component={RestaurantDetail} />} />
+        <Route path="/menu/:slug" element={<SlugPage component={PublicMenu} />} />
+        <Route path="/checkout/:slug" element={<SlugPage component={Checkout} />} />
         <Route
           path="/dashboard"
           element={

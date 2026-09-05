@@ -7,10 +7,13 @@ import StatCard from '../../components/StatCard'
 
 function Dashboard() {
   const [data, setData] = useState(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    api.get('/dashboard').then((response) => setData(response.data))
+    api.get('/dashboard').then((response) => setData(response.data)).catch(() => setError("Your dashboard couldn’t load. Please try again."))
   }, [])
+
+  if (error) return <main className="page-shell"><section className="panel" role="alert"><h1>Let’s try that again.</h1><p>{error}</p><button className="primary-button" onClick={() => window.location.reload()}>Try again</button></section></main>
 
   if (!data) return <SkeletonPage />
 
@@ -76,7 +79,7 @@ function Dashboard() {
         <article className="panel">
           <h2>QR menu link</h2>
           {data.qrCode?.image_data_url ? <img className="qr-image" src={data.qrCode.image_data_url} alt="Restaurant QR code" /> : null}
-          <p>{data.qrCode?.menu_url}</p>
+          {data.qrCode?.menu_url ? <p>{data.qrCode.menu_url}</p> : <><p>Your menu deserves a shortcut. Create a QR code to share on tables, takeaway bags, and social media.</p><Link className="secondary-button" to="/qr-code">Create your QR code</Link></>}
         </article>
         <article className="panel">
           <h2>Subscription</h2>
@@ -87,6 +90,7 @@ function Dashboard() {
         </article>
         <article className="panel wide">
           <h2>Popular foods</h2>
+          {!data.analytics.popularItems.length ? <p className="muted-line">Your most-viewed dishes will appear here when customers start exploring your menu.</p> : null}
           <div className="table-list">
             {data.analytics.popularItems.map((item) => (
               <div key={item.name}>

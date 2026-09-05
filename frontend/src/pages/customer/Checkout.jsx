@@ -64,7 +64,7 @@ function Checkout() {
         <section className="panel checkout-success">
           <p className="eyebrow">Order created</p>
           <h1>{createdOrder.order_number}</h1>
-          <p>Your order has been sent into Ravi Menu. Payment is not active yet, so confirm with the restaurant on WhatsApp.</p>
+          <p>Your order has been sent into Ravi Menu. Confirm your order and arrange payment with the restaurant on WhatsApp.</p>
           <div className="hero-actions">
             <a className="primary-button" href={createdOrder.whatsapp_url} target="_blank" rel="noreferrer">
               <FiMessageCircle /> Confirm on WhatsApp
@@ -148,7 +148,7 @@ function Checkout() {
             <span>Total</span>
             <strong>₦{total.toLocaleString()}</strong>
           </div>
-          <p className="muted-line">Online payment is coming in Phase 5. Orders use WhatsApp confirmation for now.</p>
+          <p className="muted-line">Pay directly to the restaurant. Confirm your order and delivery details on WhatsApp.</p>
         </aside>
       </form>
     </main>

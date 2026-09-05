@@ -57,9 +57,9 @@ function CustomerRegister() {
         <div>
           <p className="eyebrow">Customer account</p>
           <h1>Find food faster on Ravi Menu.</h1>
-          <p>Save your details now so cart, checkout, pickup, and delivery can plug in cleanly during Phase 3.</p>
+          <p>Discover local favourites, build your basket, and order directly from the restaurants you love.</p>
           <div className="customer-benefits">
-            <span><FiShoppingBag /> Cart-ready profile</span>
+            <span><FiShoppingBag /> Your next favourite meal</span>
             <span><FiMapPin /> Delivery area</span>
             <span><FiPhone /> Faster ordering</span>
           </div>
@@ -93,8 +93,8 @@ function CustomerRegister() {
           <input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} required />
         </label>
         <label>
-          <span>Password</span>
-          <input type="password" minLength={6} value={form.password} onChange={(event) => update('password', event.target.value)} required />
+          <span>Password · at least 10 characters</span>
+          <input type="password" minLength={10} autoComplete="new-password" value={form.password} onChange={(event) => update('password', event.target.value)} required />
         </label>
         <label>
           <span>Phone</span>

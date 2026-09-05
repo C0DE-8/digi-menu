@@ -1,20 +1,14 @@
+import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-function PageTransitionLoader() {
-  const location = useLocation()
-
-  return (
-    <div className="page-loader" role="status" aria-live="polite" aria-label="Loading page" key={location.pathname}>
-      <div className="page-loader-card">
-        <div className="loader-mark">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <strong>Ravi Menu</strong>
-      </div>
-    </div>
-  )
+export default function PageTransitionLoader() {
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+      else window.scrollTo(0, 0)
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [pathname, hash])
+  return null
 }
-
-export default PageTransitionLoader

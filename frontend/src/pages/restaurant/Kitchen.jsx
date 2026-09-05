@@ -1,23 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { FiCheckCircle, FiRefreshCw } from 'react-icons/fi'
 import api from '../../api/client'
+import LoadError from '../../components/LoadError'
 import SkeletonPage from '../../components/SkeletonPage'
 
 function Kitchen() {
   const [orders, setOrders] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     loadOrders()
   }, [])
 
   async function loadOrders() {
-    const response = await api.get('/orders')
-    setOrders(response.data.orders || [])
+    try { const response = await api.get('/orders'); setOrders(response.data.orders || []) } catch { setError(true) }
   }
 
   async function updateStatus(order, status) {
+    try {
     const response = await api.patch(`/orders/${order.id}/status`, { status })
     setOrders((current) => current.map((item) => item.id === order.id ? response.data.order : item))
+    } catch { setError(true) }
   }
 
   const activeOrders = useMemo(
@@ -25,6 +28,7 @@ function Kitchen() {
     [orders],
   )
 
+  if (error) return <LoadError />
   if (!orders) return <SkeletonPage />
 
   return (

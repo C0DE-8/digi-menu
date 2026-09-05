@@ -4,8 +4,8 @@ import { FiLoader, FiLock, FiMail } from 'react-icons/fi'
 import api, { clearSession, setSession } from '../../api/client'
 
 function Login({ adminLock = false }) {
-  const [email, setEmail] = useState(adminLock ? 'admin@ravimenu.com' : '8amlight@gmail.com')
-  const [password, setPassword] = useState('123456')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -46,14 +46,14 @@ function Login({ adminLock = false }) {
           <span>Email</span>
           <div className="input-wrap">
             <FiMail aria-hidden="true" />
-            <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" />
+            <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" autoComplete="email" required />
           </div>
         </label>
         <label>
           <span>Password</span>
           <div className="input-wrap">
             <FiLock aria-hidden="true" />
-            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" />
+            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" autoComplete="current-password" required />
           </div>
         </label>
         {error ? <p className="error-text">{error}</p> : null}
@@ -71,30 +71,7 @@ function Login({ adminLock = false }) {
             </Link>
           </>
         ) : null}
-        <div className="demo-accounts">
-          {adminLock ? (
-            <>
-              <button type="button" onClick={() => setEmail('admin@ravimenu.com')}>
-                Admin access
-              </button>
-              <button type="button" onClick={() => setEmail('superadmin@ravimenu.com')}>
-                Super admin access
-              </button>
-            </>
-          ) : (
-            <>
-              <button type="button" onClick={() => setEmail('8amlight@gmail.com')}>
-                Restaurant account
-              </button>
-              <button type="button" onClick={() => setEmail('manager@ravimenu.com')}>
-                Manager account
-              </button>
-              <button type="button" onClick={() => setEmail('customer@ravimenu.com')}>
-                Customer account
-              </button>
-            </>
-          )}
-        </div>
+
       </form>
     </main>
   )

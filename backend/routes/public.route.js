@@ -76,7 +76,7 @@ router.get("/restaurants/:slug", async (req, res) => {
     itemCount: (await get("SELECT COUNT(*) AS count FROM menu_items WHERE restaurant_id = ? AND availability != 'hidden'", [restaurant.id]))?.count || 0,
   };
 
-  res.json({ restaurant, categories, popularItems, stats });
+  res.json({ restaurant: publicRestaurant(restaurant), categories, popularItems, stats });
 });
 
 router.get("/menu/:slug", async (req, res) => {
@@ -91,13 +91,16 @@ router.get("/menu/:slug", async (req, res) => {
   const categories = await all("SELECT * FROM menu_categories WHERE restaurant_id = ? AND is_active = 1 ORDER BY sort_order", [restaurant.id]);
   const items = await all("SELECT * FROM menu_items WHERE restaurant_id = ? AND availability != 'hidden' ORDER BY sort_order", [restaurant.id]);
   const qrCode = await get("SELECT * FROM qr_codes WHERE restaurant_id = ?", [restaurant.id]);
-  res.json({ restaurant, categories, items, qrCode });
+  res.json({ restaurant: publicRestaurant(restaurant), categories, items, qrCode });
 });
 
 router.post("/menu/:slug/events", async (req, res) => {
-  const restaurant = await get("SELECT * FROM restaurants WHERE slug = ?", [req.params.slug]);
+  const restaurant = await get("SELECT * FROM restaurants WHERE slug = ? AND status = 'approved'", [req.params.slug]);
   if (!restaurant) return res.status(404).json({ error: "Menu not found" });
   const { event_type, menu_item_id, category_id } = req.body;
+  if (!["item_view", "category_view", "qr_scan", "whatsapp_click", "call_click", "directions_click", "interaction"].includes(event_type)) return res.status(400).json({ error: "Invalid event type" });
+  if (menu_item_id && !await get("SELECT id FROM menu_items WHERE id = ? AND restaurant_id = ?", [menu_item_id, restaurant.id])) return res.status(400).json({ error: "Invalid menu item" });
+  if (category_id && !await get("SELECT id FROM menu_categories WHERE id = ? AND restaurant_id = ?", [category_id, restaurant.id])) return res.status(400).json({ error: "Invalid category" });
   await run(
     "INSERT INTO analytics_events (restaurant_id, event_type, menu_item_id, category_id, device_type, metadata) VALUES (?, ?, ?, ?, ?, ?)",
     [restaurant.id, event_type || "interaction", menu_item_id || null, category_id || null, deviceFromAgent(req.headers["user-agent"]), JSON.stringify({ source: "public_menu" })]
@@ -105,5 +108,10 @@ router.post("/menu/:slug/events", async (req, res) => {
   if (event_type === "qr_scan") await run("UPDATE qr_codes SET scans = scans + 1 WHERE restaurant_id = ?", [restaurant.id]);
   res.json({ ok: true });
 });
+
+function publicRestaurant(restaurant) {
+ const { owner_id, approval_note, onboarding_completed_at, ...visible } = restaurant;
+ return visible;
+}
 
 module.exports = router;

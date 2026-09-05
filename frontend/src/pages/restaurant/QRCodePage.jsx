@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FiDownload, FiFileText, FiRefreshCw } from 'react-icons/fi'
 import api from '../../api/client'
+import LoadError from '../../components/LoadError'
 import SkeletonPage from '../../components/SkeletonPage'
 
 function QRCodePage() {
   const [data, setData] = useState(null)
+  const [error, setError] = useState(false)
 
   const refresh = useCallback(() => {
-    api.get('/dashboard').then((response) => setData(response.data))
+    api.get('/dashboard').then((response) => setData(response.data)).catch(() => setError(true))
   }, [])
 
   useEffect(() => {
@@ -15,14 +17,14 @@ function QRCodePage() {
   }, [refresh])
 
   async function regenerate() {
-    await api.post('/qr/regenerate')
-    refresh()
+    try { await api.post('/qr/regenerate'); refresh() } catch { setError(true) }
   }
 
   function printPdf() {
     window.print()
   }
 
+  if (error) return <LoadError />
   if (!data) return <SkeletonPage />
 
   return (

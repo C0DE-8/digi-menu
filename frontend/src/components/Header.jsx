@@ -6,6 +6,7 @@ import logo from '../assets/logo.png'
 
 function Header() {
   const [open, setOpen] = useState(false)
+  const [cartOpen, setCartOpen] = useState(false)
   const navigate = useNavigate()
   const [session, setSessionState] = useState(() => readSession())
   const [cartCount, setCartCount] = useState(() => readCartCount())
@@ -75,7 +76,7 @@ function Header() {
       <Link className="brand" to="/">
         <img className="brand-logo" src={logo} alt="Ravi Menu" />
       </Link>
-      <button className="icon-button mobile-only" type="button" onClick={() => setOpen(!open)} aria-label="Toggle navigation">
+      <button className="icon-button mobile-only" type="button" onClick={() => setOpen(!open)} aria-label="Toggle navigation" aria-expanded={open}>
         {open ? <FiX /> : <FiMenu />}
       </button>
       <nav className={open ? 'nav open' : 'nav'}>
@@ -84,7 +85,7 @@ function Header() {
             {link.label}
           </NavLink>
         ))}
-        <button className="cart-nav-button" type="button" aria-label="Cart">
+        <button className="cart-nav-button" type="button" aria-label="Cart" aria-expanded={cartOpen} onClick={() => setCartOpen(!cartOpen)}>
           <FiShoppingBag aria-hidden="true" />
           <span>{cartCount}</span>
         </button>
@@ -101,8 +102,15 @@ function Header() {
           </NavLink>
         )}
       </nav>
+      {cartOpen ? <aside className="cart-popover" aria-label="Your baskets"><h2>Your baskets</h2>{readCarts().length ? readCarts().map(({ slug, count }) => <Link key={slug} to={`/checkout/${slug}`} onClick={() => { setCartOpen(false); setOpen(false) }}><span>{slug.replaceAll("-", " ")}</span><strong>{count} items →</strong></Link>) : <p>Your basket is waiting for something delicious. Explore a restaurant menu to get started.</p>}<button className="text-button" onClick={() => setCartOpen(false)}>Close</button></aside> : null}
     </header>
   )
+}
+
+function readCarts() {
+  return Object.keys(localStorage).filter((key) => key.startsWith("raviMenuCart:")).flatMap((key) => {
+    try { const items = JSON.parse(localStorage.getItem(key)); const count = items.reduce((sum, item) => sum + Number(item.quantity || 0), 0); return count > 0 ? [{ slug: key.slice("raviMenuCart:".length), count }] : [] } catch { return [] }
+  })
 }
 
 function readCartCount() {

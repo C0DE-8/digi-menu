@@ -85,7 +85,7 @@ async function ensureApprovedRestaurantSetup(restaurantId) {
   const invoice = await get("SELECT * FROM invoices WHERE restaurant_id = ?", [restaurant.id]);
   if (!invoice && activeSubscription && plan) {
     await run(
-      "INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at, description, payment_method) VALUES (?, ?, ?, ?, 'paid', CURRENT_TIMESTAMP, ?, 'manual')",
+      "INSERT INTO invoices (restaurant_id, subscription_id, amount, invoice_number, status, paid_at, description, payment_method) VALUES (?, ?, ?, ?, 'pending', NULL, ?, 'manual')",
       [restaurant.id, activeSubscription.id, plan.monthly_price || 0, `RM-${restaurant.slug.toUpperCase()}-PLAN`, `${plan.name} plan setup`]
     );
   }

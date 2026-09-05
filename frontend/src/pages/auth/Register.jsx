@@ -64,10 +64,12 @@ function Register() {
         </header>
 
         <form className="vendor-register-card" onSubmit={submit}>
+          <div className="register-progress" aria-label="Registration progress"><span className={step === 1 ? "current" : ""}>01 · Your business</span><span className={step === 2 ? "current" : ""}>02 · Your account</span><span>03 · Set up your menu</span></div>
           {step === 1 ? (
             <>
               <p className="eyebrow">Vendor onboarding</p>
-              <h1>What type of business do you run?</h1>
+              <h1>Good things start with your business.</h1>
+              <p className="register-intro">A menu your customers can open anywhere. An easier way to manage every order. Let’s get your business set up.</p>
               <div className="business-type-grid">
                 {businessTypes.map((type) => (
                   <button
@@ -89,7 +91,8 @@ function Register() {
           ) : (
             <>
               <p className="eyebrow">{businessLabel} details</p>
-              <h1>Create your account</h1>
+              <h1>Your next chapter starts here.</h1>
+              <p className="register-intro">Create your account and start building your menu today. Your public menu goes live after our team approves your business.</p>
               <div className="form-grid compact-grid">
                 <label>
                   <span>Owner name</span>
@@ -97,11 +100,11 @@ function Register() {
                 </label>
                 <label>
                   <span>Email</span>
-                  <input type="email" value={form.email} onChange={(event) => update('email', event.target.value)} required />
+                  <input autoComplete="email" type="email" value={form.email} onChange={(event) => update('email', event.target.value)} required />
                 </label>
                 <label>
-                  <span>Password</span>
-                  <input type="password" value={form.password} onChange={(event) => update('password', event.target.value)} minLength={6} required />
+                  <span>Password · at least 10 characters</span>
+                  <input type="password" value={form.password} onChange={(event) => update('password', event.target.value)} autoComplete="new-password" minLength={10} required />
                 </label>
                 <label>
                   <span>{businessLabel} name</span>
@@ -124,12 +127,12 @@ function Register() {
                   <textarea value={form.description} onChange={(event) => update('description', event.target.value)} />
                 </label>
               </div>
-              {error ? <p className="error-text">{error}</p> : null}
+              {error ? <p className="error-text" role="alert">{error}</p> : null}
               <div className="hero-actions">
                 <button className="secondary-button" type="button" onClick={() => setStep(1)}>Back</button>
                 <button className="primary-button" type="submit" disabled={loading}>
                   {loading ? <FiLoader className="spin" /> : null}
-                  {loading ? 'Creating account...' : 'Submit for approval'}
+                  {loading ? 'Creating account...' : 'Create account'}
                 </button>
               </div>
             </>
