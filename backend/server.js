@@ -20,8 +20,6 @@ const allowedOrigins = String(process.env.FRONTEND_URL || "http://localhost:5173
 app.set("trust proxy", Number(process.env.TRUST_PROXY_HOPS || 0));
 app.disable("x-powered-by");
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, limit: 40, standardHeaders: "draft-8", legacyHeaders: false, message: { error: "Too many attempts. Please try again in 15 minutes." } }));
-app.use("/api", rateLimit({ windowMs: 60 * 1000, limit: 200, standardHeaders: "draft-8", legacyHeaders: false }));
 app.use(
   cors({
     origin(origin, callback) {
@@ -30,6 +28,8 @@ app.use(
     },
   }),
 );
+app.use("/api/auth", rateLimit({ windowMs: 15 * 60 * 1000, limit: 40, standardHeaders: "draft-8", legacyHeaders: false, message: { error: "Too many attempts. Please try again in 15 minutes." } }));
+app.use("/api", rateLimit({ windowMs: 60 * 1000, limit: 200, standardHeaders: "draft-8", legacyHeaders: false }));
 app.use(express.json({ limit: "2mb" }));
 app.use((req, res, next) => { req.body ||= {}; next(); });
 app.use("/uploads", express.static(ensureLocalUploadDirs().root));

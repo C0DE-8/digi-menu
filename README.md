@@ -162,3 +162,16 @@ Restaurant: `/dashboard`, `/menu-builder`, `/orders`, `/kitchen`, `/analytics`, 
 Administration: `/admin-lock`, `/admin`, `/super-admin`.
 
 Owners can set up their business immediately. Public menus remain hidden until admin approval.
+
+## Local CORS and API troubleshooting
+
+Development requests use `/api` through Vite’s proxy to `http://127.0.0.1:5050`.
+Start the backend on port 5050, then restart Vite after pulling configuration changes.
+Production builds still use `VITE_API_URL`.
+
+A LiteSpeed 503 response without CORS headers means the hosted API is unavailable.
+Check the hosting Node application logs and restart the API after resolving the startup error.
+Verify the Node version, production JWT secret, database credentials, and dependencies.
+Adding an allowed origin does not fix a hosting 503.
+The backend accepts comma-separated exact origins in `FRONTEND_URL`.
+CORS runs before rate limiting so allowed clients can read API errors.
